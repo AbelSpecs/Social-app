@@ -48,11 +48,13 @@ export default function EditProfile() {
     const jwt = auth.isAuthenticated();
     const [user, setUser] = useState({
         name: '',
+        about: '',
         email: ''
     });
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [values, setValues] = useState({
         name: '',
+        about: '',
         email: '',
         password: '',
         error: '',
@@ -90,6 +92,7 @@ export default function EditProfile() {
 
         const user = {
             name: values.name || undefined,
+            about: values.about || undefined,
             email: values.email || undefined,
             password: values.password || undefined
         }
@@ -111,11 +114,9 @@ export default function EditProfile() {
     }
 
     if(redirectToSigin)
-        // return (<redirect to='/signin'/>);
         navigate('/signin');
 
     if(values.redirectToProfile)
-        // return (<redirect to={'/user/' + userId.userId}/>)
         navigate('/user/' + userId.userId);
     
     return(
@@ -127,6 +128,10 @@ export default function EditProfile() {
                     </Typography>
                     <TextField id="name" label="Name" className={classes.textField}
                                 value={values.name || user.name} onChange={handleChange('name')}
+                                margin="normal"/>
+                    <br/>
+                    <TextField id="multiline-flexible" label="About" multiline rows="2" className={classes.textField}
+                                value={values.about || user.about} onChange={handleChange('about')}
                                 margin="normal"/>
                     <br/>
                     <TextField id="email" type="email" label="Email" className={classes.textField}
