@@ -7,6 +7,10 @@ const UserSchema = new mongoose.Schema({
         trim: true,
         required: 'Name is required'
     },
+    about: {
+        type: String,
+        trim: true
+    },
     email: {
         type: String,
         trim: true,
@@ -23,7 +27,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: "Password is required"
     },
-    salt: String
+    salt: String,
+    photo: {
+        data: Buffer,
+        contentType: String
+    }
 
 });
 

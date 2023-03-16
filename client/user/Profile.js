@@ -18,7 +18,6 @@ import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import React from "react";
 import Edit from '@material-ui/icons/Edit';
-import Person from '@material-ui/icons/Person';
 import DeleteUser from "./DeleteUser";
 
 
@@ -32,6 +31,11 @@ const useStyles = makeStyles(theme => ({
     title: {
       marginTop: theme.spacing(3),
       color: theme.palette.protectedTitle
+    },
+    bigAvatar: {
+        width: 60,
+        height: 60,
+        margin: 10
     }
   }));
 
@@ -46,8 +50,6 @@ export default function Profile() {
         const abortController = new AbortController();
         const signal = abortController.signal;
         const jwt = auth.isAuthenticated();
-        console.log(jwt);
-        console.log(userId);
         read({
             params: { userId: userId.userId },
             credentials: { divineMole: jwt.token },
@@ -70,6 +72,10 @@ export default function Profile() {
         }
     }, [userId]);
 
+    const photoUrl = user._id
+    ? `/api/users/photo/${user._id}?${new Date().getTime()}`
+    : '/api/users/defaultphoto';
+
     if(redirectToSigin)
         navigate('/signin');
 
@@ -81,11 +87,10 @@ export default function Profile() {
             <List dense>
                 <ListItem>
                     <ListItemAvatar>
-                        <Avatar>
-                            <Person/>
-                        </Avatar>
+                        <Avatar src={photoUrl} className={classes.bigAvatar}/>
                     </ListItemAvatar>
                     <ListItemText primary={user.name} secondary={user.email}/>
+                    <ListItemText primary={user.about}/>
                     { auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id
                         &&
                         (<ListItemSecondaryAction>
