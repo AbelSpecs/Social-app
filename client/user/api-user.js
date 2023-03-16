@@ -28,8 +28,6 @@ const list = async (signal) => {
 }
 
 const read = async ({params, credentials, signal}) => {
-    console.log(params);
-    console.log(credentials);
     try {
         let response = await fetch('/api/users/' + params.userId, {
             method: 'GET',
@@ -53,10 +51,9 @@ const update = async ({params, credentials, user}) => {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + credentials.divineMole
             },
-            body: JSON.stringify(user)
+            body: user
         });
         return await response.json();
     } catch (error) {
