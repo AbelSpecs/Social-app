@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 import Edit from '@material-ui/icons/Edit';
 import DeleteUser from "./DeleteUser";
+import FollowButton from "./FollowButton";
 
 
 const useStyles = makeStyles(theme => ({
@@ -55,11 +56,9 @@ export default function Profile() {
             credentials: { divineMole: jwt.token },
             signal
         }).then(data => {
-            console.log(data);
             if(data && data.error)
             {
                 setRedirectToSignin(true);
-                console.log(redirectToSigin);
             }
             else
             {
@@ -92,12 +91,16 @@ export default function Profile() {
                     <ListItemText primary={user.name} secondary={user.email}/>
                     <ListItemText primary={user.about}/>
                     { auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id
-                        &&
+                        ?
                         (<ListItemSecondaryAction>
                             <Link to={"/user/" + user._id + "/edit"}>
                                 <IconButton aria-label="Edit" color="primary"><Edit/></IconButton>
                             </Link>
                             <DeleteUser userId={user._id}/>
+                        </ListItemSecondaryAction>)
+                        :
+                        (<ListItemSecondaryAction>
+                            <FollowButton/>
                         </ListItemSecondaryAction>)
                     }
                     

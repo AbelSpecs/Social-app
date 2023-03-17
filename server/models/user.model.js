@@ -31,7 +31,9 @@ const UserSchema = new mongoose.Schema({
     photo: {
         data: Buffer,
         contentType: String
-    }
+    },
+    following: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
+    followers: [{type: mongoose.Schema.ObjectId, ref: 'User'}]
 
 });
 
@@ -39,12 +41,9 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.virtual('password')
     .set(function(password){
-        console.log(password);
         this._password = password;
         this.salt = this.makeSalt();
-        console.log('salt: ' ,this.salt);
         this.hashed_password = this.encryptPassword(password, this.salt);
-        console.log('pass ', this.hashed_password);
     })
 
     .get(function() {
@@ -57,10 +56,8 @@ UserSchema.methods = {
     },
 
     encryptPassword: function(password, salt) {
-        console.log('entre', password);
         if(!password) 
         {
-            console.log('if',password)
             return '';
 
         }
@@ -70,10 +67,8 @@ UserSchema.methods = {
                         .update(password)
                         .digest('hex')
 
-            console.log(cr);
             return cr;
         } catch (error) {
-            console.log(error)
             return '';
         }
     },
@@ -85,12 +80,10 @@ UserSchema.methods = {
 
 UserSchema.path('hashed_password').validate(function (v) {
     if(this._password && this._password.lenght < 6) {
-        console.log('hola2');
         this.invalidate('password', 'Password must be at least 6 characters');
     }
 
     if(this.isNew && !this._password) {
-        console.log('hola');
         this.invalidate('password', 'Password is required');
     }
 }, null);
