@@ -114,8 +114,8 @@ const defaultPhoto = (req, res) => {
 
 const addFollowing = async (req, res, next) => {
     try {
-        await User.findByIdAndUpdate(req.body.userId, 
-            {$push : { following: req.body.followId }});
+        await User.findByIdAndUpdate(req.body.followId, 
+            {$push : { following: req.body.userId }});
         next();
     } catch (error) {
         return res.status(400).json({
@@ -126,8 +126,8 @@ const addFollowing = async (req, res, next) => {
 
 const addFollower = async (req, res) => {
     try {
-        const result = await User.findByIdAndUpdate(req.body.followId,
-            {$push: {followers: req.body.userId}},
+        const result = await User.findByIdAndUpdate(req.body.userId,
+            {$push: {followers: req.body.followId}},
             {new: true})
             .populate('following', '_id name')
             .populate('followers', '_id name')
