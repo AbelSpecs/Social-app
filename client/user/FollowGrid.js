@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { GridList, GridListTile, Typography, Link, Avatar, ImageListItem } from '@material-ui/core';
+import { Typography, Link, Avatar, ImageListItem } from '@material-ui/core';
 import { makeStyles } from "@material-ui/styles";
 import ImageList from '@material-ui/core/ImageList'
 

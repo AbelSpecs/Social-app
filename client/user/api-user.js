@@ -20,7 +20,6 @@ const list = async (signal) => {
             method: 'GET',
             signal: signal
         });
-        console.log(response);
         return await response.json();
     } catch (error) {
         console.log(error);
@@ -38,7 +37,6 @@ const read = async ({params, credentials, signal}) => {
                 'Authorization': 'Bearer ' + credentials.divineMole
             }
         });
-        console.log(response);
         return await response.json();
     } catch (error) {
         console.log(error);
@@ -94,7 +92,7 @@ const follow = async ({params, credentials, followId}) => {
     }
 }
 
-const unfollow = async ({params, credentials, unfollowId}) => {
+const unfollow = async ({params, credentials, followId}) => {
     try {
         let response = await fetch('/api/users/unfollow/', {
             method: 'PUT',
@@ -103,7 +101,7 @@ const unfollow = async ({params, credentials, unfollowId}) => {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + credentials.divineMole
             },
-            body: JSON.stringify({userId: params.userId, unfollowId})
+            body: JSON.stringify({userId: params.userId, followId})
         });
         return await response.json();
     } catch (error) {
@@ -111,4 +109,22 @@ const unfollow = async ({params, credentials, unfollowId}) => {
     }
 }
 
-export { create, list, update, read, remove, follow, unfollow };
+const findpeople = async ({params, credentials, signal}) => {
+    try {
+        let response = await fetch('/api/users/findpeople/' + params.userId, {
+            method: 'GET',
+            signal: signal,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + credentials.divineMole
+            },
+            
+        });
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export { create, list, update, read, remove, follow, unfollow, findpeople };

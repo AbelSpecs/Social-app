@@ -142,10 +142,10 @@ const addFollower = async (req, res) => {
     }
 }
 
-const removeFollower = async (req, res, next) => {
+const removeFollowing = async (req, res, next) => {
     try {
-        await User.findByIdAndUpdate(req.body.userId, 
-            {$pull: {following: req.body.unfollowId}})
+        await User.findByIdAndUpdate(req.body.followId, 
+            {$pull: {following: req.body.userId}})
         next();
     } catch (error) {
         return res.status(400).json({
@@ -154,17 +154,31 @@ const removeFollower = async (req, res, next) => {
     }
 }
 
-const removeFollowing = async (req, res) => {
+const removeFollower = async (req, res) => {
     try {
-        const result = await User.findByIdAndUpdate(req.body.unfollowId,
-            {$pull: {followers: req.body.userId}},
+        const result = await User.findByIdAndUpdate(req.body.userId,
+            {$pull: {followers: req.body.followId}},
             {new: true})
             .populate('following', '_id name')
             .populate('followers', '_id name')
             .exec()
         result.hashed_password = undefined;
         result.salt = undefined;
-        res.json();
+        res.json(result);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+const findPeople = async (req, res) => {
+    let following = req.profile.followers;
+    following.push(req.profile._id);
+    try {
+        const users = await User.find({_id: {$nin: following}})
+                                    .select('name')
+        res.json(users);
     } catch (error) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(error)
@@ -184,5 +198,6 @@ export default {
     addFollower, 
     addFollowing, 
     removeFollower, 
-    removeFollowing 
+    removeFollowing,
+    findPeople 
 };

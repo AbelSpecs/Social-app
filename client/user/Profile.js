@@ -88,14 +88,19 @@ export default function Profile() {
     }
 
     const clickFollowButton = (api) => {
+        console.log(api);
         api({
             params: {userId: userId.userId},
             credentials: {divineMole: jwt.token},
             followId: jwt.user._id
         }).then((data) => {
-            if(data.error)
-                setUser({...values, error: data.error})
+            if(data.error){
+                console.log('error');
+                setUser({...values, error: data.error});
+            }
             else{
+                console.log('no dio error');
+                console.log(data);
                 setUser(data);
                 setFollowing(!following);
             }
