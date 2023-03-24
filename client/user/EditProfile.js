@@ -10,11 +10,11 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { isNull } from "lodash";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import auth from "../auth/auth-helper";
 import { read, update } from "./api-user";
-import React from "react";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate'
 
 const useStyles = makeStyles(theme => ({

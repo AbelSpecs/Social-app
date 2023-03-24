@@ -19,6 +19,8 @@ import { Link } from "react-router-dom";
 import React from "react";
 import Edit from '@material-ui/icons/Edit';
 import DeleteUser from "./DeleteUser";
+import FollowButton from "./FollowButton";
+import ProfileTabs from "./ProfileTabs";
 
 
 const useStyles = makeStyles(theme => ({
@@ -43,27 +45,33 @@ export default function Profile() {
     const userId = useParams();
     const navigate = useNavigate();
     const classes = useStyles();
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState({
+        following: [],
+        followers: []
+    });
     const [redirectToSigin, setRedirectToSignin] = useState(false);
+    const [following, setFollowing] = useState(false);
+    const jwt = auth.isAuthenticated();
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        const jwt = auth.isAuthenticated();
         read({
             params: { userId: userId.userId },
             credentials: { divineMole: jwt.token },
             signal
         }).then(data => {
-            console.log(data);
             if(data && data.error)
             {
                 setRedirectToSignin(true);
-                console.log(redirectToSigin);
             }
             else
             {
+                let following = checkFollow(data);
                 setUser(data);
+                setFollowing(following);
+                console.log(data);
+                console.log(following);
             }
         });
 
@@ -71,6 +79,33 @@ export default function Profile() {
             abortController.abort();
         }
     }, [userId]);
+
+    const checkFollow = (user) => {
+        const match = user.followers.some((follower) => {
+            return follower._id === jwt.user._id;
+        });
+        return match;
+    }
+
+    const clickFollowButton = (api) => {
+        console.log(api);
+        api({
+            params: {userId: userId.userId},
+            credentials: {divineMole: jwt.token},
+            followId: jwt.user._id
+        }).then((data) => {
+            if(data.error){
+                console.log('error');
+                setUser({...values, error: data.error});
+            }
+            else{
+                console.log('no dio error');
+                console.log(data);
+                setUser(data);
+                setFollowing(!following);
+            }
+        })
+    }
 
     const photoUrl = user._id
     ? `/api/users/photo/${user._id}?${new Date().getTime()}`
@@ -92,12 +127,16 @@ export default function Profile() {
                     <ListItemText primary={user.name} secondary={user.email}/>
                     <ListItemText primary={user.about}/>
                     { auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id
-                        &&
+                        ?
                         (<ListItemSecondaryAction>
                             <Link to={"/user/" + user._id + "/edit"}>
                                 <IconButton aria-label="Edit" color="primary"><Edit/></IconButton>
                             </Link>
                             <DeleteUser userId={user._id}/>
+                        </ListItemSecondaryAction>)
+                        :
+                        (<ListItemSecondaryAction>
+                            <FollowButton following={following} onButtonClick={clickFollowButton}/>
                         </ListItemSecondaryAction>)
                     }
                     
@@ -106,6 +145,7 @@ export default function Profile() {
                 <ListItem>
                     <ListItemText primary={"Joined: " + (new Date(user.created)).toDateString()}/>
                 </ListItem>
+                <ProfileTabs people={user}></ProfileTabs>
             </List>
         </Paper>
     )
