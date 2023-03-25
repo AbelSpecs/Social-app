@@ -18,7 +18,7 @@ const MainRouter = () => {
                 <Route path="/signin" element={<Signin/>}/>
                 <Route path="/user/:userId" element={<Profile/>}/>
                 <Route path="/user/:userId/edit" element={<EditProfile/>}/>
-               
+                
             </Routes>
         </div>)
 }
