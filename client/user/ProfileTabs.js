@@ -43,7 +43,7 @@ export default function ProfileTabs(props) {
         <BottomNavigationAction label="Following" icon={<PeopleIcon/>}/>
         <BottomNavigationAction label="Followers" icon={<SupervisorAccountIcon/>} />
       </BottomNavigation>
-    {/*value === 0 && <TabContainer><PostList removeUpdate={props.removePostUpdate} posts={props.posts}/></TabContainer>*/}
+    {value === 0 && <PostList removeUpdate={props.removePostUpdate} posts={props.posts}/>}
     {value === 1 && <FollowGrid people={props.people.following}/>}
     {value === 2 && <FollowGrid people={props.people.followers}/>}
     </Box>

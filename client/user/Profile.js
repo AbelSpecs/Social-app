@@ -12,6 +12,7 @@ Divider
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { read } from "./api-user";
+import { loadPostsByUser } from "../post/api-post";
 import auth from "../auth/auth-helper";
 import { makeStyles } from "@material-ui/styles";
 import { useNavigate, useParams } from "react-router";
@@ -51,6 +52,7 @@ export default function Profile() {
     });
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [following, setFollowing] = useState(false);
+    const [posts, setPosts] = useState([]);
     const jwt = auth.isAuthenticated();
 
     useEffect(() => {
@@ -80,6 +82,25 @@ export default function Profile() {
         }
     }, [userId]);
 
+    useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        loadPostsByUser({
+            params: { params: userId },
+            credentials: { divineMole: jwt.token },
+            signal
+        }).then(data => {
+            if(data.error){
+                console.log(data.error);
+            }else{
+                setPosts(data);
+            }
+        })
+
+    }, [userId])
+
+    
     const checkFollow = (user) => {
         const match = user.followers.some((follower) => {
             return follower._id === jwt.user._id;
@@ -145,7 +166,7 @@ export default function Profile() {
                 <ListItem>
                     <ListItemText primary={"Joined: " + (new Date(user.created)).toDateString()}/>
                 </ListItem>
-                <ProfileTabs people={user}></ProfileTabs>
+                <ProfileTabs people={user} posts={posts}></ProfileTabs>
             </List>
         </Paper>
     )
