@@ -14,6 +14,15 @@ router.route('/api/posts/postsby/:userId')
 router.route('/apit/posts/new/:userId')
     .post(authController.requireSignin, postController.create)
 
+router.route('/api/posts/delete/:postId')
+    .delete(authController.requireSignin, postController.delete)
+
+router.route('/api/posts/like')
+    .put(authController.requireSignin, postController.like)
+
+router.route('/api/posts/dislike')
+    .put(authController.requireSignin, postController.dislike)
+
 router.route('/api/posts/photo/:postId')
     .get(postController.photo)
 

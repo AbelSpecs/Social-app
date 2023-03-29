@@ -64,6 +64,18 @@ const create = async (req, res) => {
     });
 }
 
+const remove = async (req, res) => {
+    try {
+        let post = req.post;
+        let deletedPost = await post.remove();
+        return res.json(deletedPost);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
 const photo = (req, res) => {
     if(req.post.photo.data){
         res.set("Content-Type", req.post.photo.contentType);
@@ -91,4 +103,34 @@ const postById = async (req, res, next, id) => {
     }
 }
 
-export default {listNewsFeed, listPostsByUser, create, photo, postById};
+const like = async (req, res) => {
+    const userId = req.body.userId;
+    const postId = req.body.postId;
+    try {
+        const result = await Post.findByIdAndUpdate(postId, 
+            {$push: {likes: userId}},
+            {new: true});
+        return res.json(result);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+const dislike = async (req, res) => {
+    const userId = req.body.userId;
+    const postId = req.body.postId;
+    try {
+        const result = await Post.findByIdAndUpdate(postId, 
+            {$pull: {likes: userId}},
+            {new: true});
+        return res.json(result);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+export default {listNewsFeed, listPostsByUser, create, photo, postById, remove, like, dislike};

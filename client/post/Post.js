@@ -7,54 +7,88 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import DeleteIcon from '@material-ui/icons/Delete';
+import auth from '../auth/auth-helper';
+import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { remove } from './api-post';
 
 export default function Post(props) {
+  const [values, setValues] = useState({
+    like: checkLike(props.post.like),
+    likes: props.post.likes.length,
+    comments: props.post.comments
+  });
   const classes = useStyles();
+  const jwt = auth.isAuthenticated();
+
+  const deletePost = () => {
+    remove({
+      params: { postId: props.post._id},
+      credentials: { divineMole: jwt.token }
+    }).then(data => {
+      if(data.error){
+        console.log(data.error);
+      }else{
+        props.onRemove(props.post);
+      }
+    });
+  }
+
+  const checkLike = (likes) => {
+    let match = likes.indexOf(jwt.user._id) !== -1;
+    return match;
+  }
+
+  const clickLike = () => {
+    let callApi = values.like ? like : dislike;
+
+  } 
 
   return (
     <div>
-      {/*<Card className={classes.card}>
+      <Card className={classes.card}>
         <CardHeader
           avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
+            <Avatar src={'/api/users/photo/' + props.post.postedBy._id} className={classes.avatar}/>
           }
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
+          action={ props.post.postedBy._id === auth.isAuthenticated().user._id && 
+            (<IconButton onClick={deletePost}>
+                <DeleteIcon />               
+              </IconButton>)}
+          title={ <Link to={"/user/" + props.post.postedBy._id}></Link>}
+          subheader={(new Date(props.post.created)).toDateString()}
+          className={classes.cardHeader}
         />
-        <CardMedia className={classes.media} image="/static/images/cards/paella.jpg" title="Paella dish"/>
-        <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            This impressive paella is a perfect party dish and a fun meal to cook together with your
-            guests. Add 1 cup of frozen peas along with the mussels, if you like.
+        <CardContent className={classes.cardContent}>
+          <Typography className={classes.text} component="p">
+            {props.post.text}
           </Typography>
         </CardContent>
-        <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
+        {props.post.photo &&
+          (<CardMedia src={'/api/posts/photo/' + props.post._id}/>)}
+        <CardActions>
+          {values.likes
+            ? <IconButton onClick={clickLike} className={classes.button} aria-label="Like" color="secondary">
+                <FavoriteIcon />
+              </IconButton>  
+            : <IconButton onClick={clickLike} className={classes.button} aria-label="Dislike" color="secondary">
+                <FavoriteBorderIcon/>
+              </IconButton>
+          }
+          <span>{values.likes}</span>
+          <IconButton className={classes.button} aria-label="Comment" color="secondary">
+            <CommentIcon />
           </IconButton>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
+          <span>{values.comments.length}</span>
         </CardActions>
-          </Card>*/}
+        <Comments postId={props.post._id} comments={values.comments} updateComments={updateComments}/>
+      </Card>
     </div>
   )
 }
