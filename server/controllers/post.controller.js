@@ -133,4 +133,52 @@ const dislike = async (req, res) => {
     }
 }
 
-export default {listNewsFeed, listPostsByUser, create, photo, postById, remove, like, dislike};
+const comments = async (req, res) => {
+    let postId = req.body.postId;
+    let comment = req.body.comment;
+    comment.postedBy = req.body.userId;
+    try {
+        const result = await Post.findByIdAndUpdate(postId, 
+            {$push: {comments: comment}},
+            {new: true})
+            .populate('comments.postedBy', '_id name')
+            .populate('postedBy', '_id name')
+            .exec()
+        return res.json(result);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+const deleteComments = async (req, res) => {
+    let postId = req.body.postId;
+    let comment = req.body.comment;
+    try {
+        const result = await Post.findByIdAndUpdate(postId, 
+            {$pull: {comments: {_id: comment._id}}},
+            {new: true})
+            .populate('comments.postedBy', '_id name')
+            .populate('postedBy', '_id name')
+            .exec()
+        return res.json(result);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+export default {
+    listNewsFeed, 
+    listPostsByUser, 
+    create, 
+    photo, 
+    postById, 
+    remove, 
+    like, 
+    dislike, 
+    comments,
+    deleteComments
+};

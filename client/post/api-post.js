@@ -98,4 +98,38 @@ const dislike = async({params, credentials, postId}) => {
     }
 }
 
-export {postList, loadPostsByUser, create, remove, like, dislike};
+const comments = async({params, credentials, comment}) => {
+    try {
+        let response = await fetch('/api/posts/comments', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + credentials.divineMole
+            },
+            body: JSON.stringify({userId: params.userId, postId: params.postId, comment})
+        });
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteComments = async({params, credentials, comment}) => {
+    try {
+        let response = await fetch('/api/post/deletecomment', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + credentials.divineMole
+            },
+            body: JSON.stringify({userId: params.userId, postId: params.postId, comment})
+        });
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export {postList, loadPostsByUser, create, remove, like, dislike, comments, deleteComments};

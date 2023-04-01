@@ -47,8 +47,22 @@ export default function Post(props) {
 
   const clickLike = () => {
     let callApi = values.like ? like : dislike;
-
+    callApi({
+      params: {userId: jwt.user._id},
+      credentials: {divineMole: jwt.token},
+      postId: props.post._id 
+    }).then(data => {
+      if(data.error){
+        console.log(error);
+      }else{
+        setValues({...values, like: !values.like, likes: data.likes.length});
+      }
+    })
   } 
+
+  const updateComments = (comment) => {
+    setValues({...values, comments: comment})
+  }
 
   return (
     <div>

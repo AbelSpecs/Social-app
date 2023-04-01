@@ -23,6 +23,12 @@ router.route('/api/posts/like')
 router.route('/api/posts/dislike')
     .put(authController.requireSignin, postController.dislike)
 
+router.route('/api/posts/comments')
+    .put(authController.requireSignin, postController.comments)
+
+router.route('/api/posts/deletecomment')
+    .put(authController.requireSignin, postController.deleteComments)
+
 router.route('/api/posts/photo/:postId')
     .get(postController.photo)
 
