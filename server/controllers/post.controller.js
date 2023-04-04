@@ -23,6 +23,7 @@ const listNewsFeed = async(req, res) => {
 }
 
 const listPostsByUser = async(req, res) => {
+    console.log(req.profile);
     const userId = req.profile._id;
     try {
         const posts = await Post.find({ postedBy: {$in: userId}})

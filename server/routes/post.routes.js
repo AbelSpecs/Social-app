@@ -11,11 +11,18 @@ router.route('/api/posts/feed/:userId')
 router.route('/api/posts/postsby/:userId')
     .get(authController.requireSignin, postController.listPostsByUser)
 
-router.route('/apit/posts/new/:userId')
+router.route('/api/posts/new/:userId')
     .post(authController.requireSignin, postController.create)
 
+router.param('userId', userCtrl.userById);
+
+router.route('/api/posts/photo/:postId')
+    .get(postController.photo)
+
 router.route('/api/posts/delete/:postId')
-    .delete(authController.requireSignin, postController.delete)
+    .delete(authController.requireSignin, postController.remove)
+
+router.param('postId', postController.postById);
 
 router.route('/api/posts/like')
     .put(authController.requireSignin, postController.like)
@@ -28,10 +35,5 @@ router.route('/api/posts/comments')
 
 router.route('/api/posts/deletecomment')
     .put(authController.requireSignin, postController.deleteComments)
-
-router.route('/api/posts/photo/:postId')
-    .get(postController.photo)
-
-router.param('postId', postController.postById);
 
 export default router;

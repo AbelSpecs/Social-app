@@ -11,6 +11,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import FollowGrid from "./FollowGrid";
+import PostList from "../post/PostList";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {

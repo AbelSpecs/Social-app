@@ -87,7 +87,7 @@ export default function Profile() {
         const signal = abortController.signal;
 
         loadPostsByUser({
-            params: { params: userId },
+            params: { userId: userId.userId },
             credentials: { divineMole: jwt.token },
             signal
         }).then(data => {
@@ -98,7 +98,11 @@ export default function Profile() {
             }
         })
 
-    }, [userId])
+        return function cleanup() {
+            abortController.abort();
+        }
+
+    }, [userId]);
 
     
     const checkFollow = (user) => {

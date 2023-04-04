@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
-import { useState } from 'react';
+import { Typography, Card, Divider, Paper } from '@material-ui/core';
 import NewPost from './NewPost';
 import PostList from './PostList';
 import { postList } from './api-post';
 import auth from '../auth/auth-helper';
+import { makeStyles } from "@material-ui/styles";
 
+const useStyles = makeStyles(theme => ({
+  card: {
+      padding: '10px'
+  }
+}));
 
-export default NewsFeed = function() {
-  const [post, setPost] = useState([]);
+export default function NewsFeed() {
+  const classes = useStyles();
   const jwt = auth.isAuthenticated();
+  const [post, setPost] = useState([]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -25,6 +31,7 @@ export default NewsFeed = function() {
         console.log(data.error);
       }else{
         console.log(data);
+        setPost([...post, data]);
       }
     });
 
@@ -35,6 +42,7 @@ export default NewsFeed = function() {
   },[jwt.user._id]);
   
   const addPost = (post) => {
+    console.log(post);
     const updatedPosts = [...post];
     updatedPosts.unshift(post);
     setPost(updatedPosts);
@@ -48,13 +56,13 @@ export default NewsFeed = function() {
   }
 
   return (
-    <Card>
+    <Paper className={classes.card}>
       <Typography type="title">NewsFeed</Typography>
+      
+      <NewPost addUpdate={addPost}/>
       <Divider/>
-        <NewPost addUpdate={addPost}/>
-      <Divider/>
-        <PostList removeUpdate={removePost} posts={post}/>
-    </Card>
+      <PostList removeUpdate={removePost} posts={post}/>
+    </Paper>
 
   ) 
 }

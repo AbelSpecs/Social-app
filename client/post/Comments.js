@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, CardHeader, TextField } from '@material-ui/core';
 import auth from '../auth/auth-helper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { comments, deleteComments } from './api-post';
+import { makeStyles } from '@material-ui/core/styles';
 
+const useStyles = makeStyles(theme => ({
+  // card: {
+  //     padding: '10px'
+  // }
+}));
 
 export default function Comments(props) {
+  const classes = useStyles();
   const jwt = auth.isAuthenticated();
   const [value, setValue] = useState({
     text: ''
@@ -67,7 +74,7 @@ export default function Comments(props) {
     <div>
       <CardHeader 
         avatar={
-          <Avatar className={classses.smallAvatar} src={'/api/users/photo/' + jwt.user._id}/>}
+          <Avatar className={classes.smallAvatar} src={'/api/users/photo/' + jwt.user._id}/>}
         title={<TextField 
                 multiline
                 value={value.text}
