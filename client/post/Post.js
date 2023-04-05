@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { remove } from './api-post';
 import Comments from './Comments';
+import { Divider } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -31,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Post(props) {
+  console.log(props);
   const jwt = auth.isAuthenticated();
 
   const checkLike = (likes) => {
@@ -120,7 +122,7 @@ export default function Post(props) {
           <span>{values.comments.length}</span>
         </CardActions>
         {values.comment && 
-          <Comments postId={props.post[props.index]._id} comments={values.comments} updateComments={updateComments}/>
+          <Comments postId={props.post[props.index]._id} comments={values.comments} updateComments={updateComments} profile={props.profile}/>
         }
       </Card>
     </div>

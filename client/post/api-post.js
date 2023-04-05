@@ -99,6 +99,7 @@ const dislike = async({params, credentials, postId}) => {
 }
 
 const comments = async({params, credentials, comment}) => {
+    console.log(comment);
     try {
         let response = await fetch('/api/posts/comments', {
             method: 'PUT',

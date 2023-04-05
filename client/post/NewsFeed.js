@@ -61,7 +61,7 @@ export default function NewsFeed() {
       
       <NewPost addUpdate={addPost}/>
       <Divider/>
-      <PostList removeUpdate={removePost} posts={post}/>
+      <PostList removeUpdate={removePost} posts={post} profile={false}/>
     </Paper>
 
   ) 

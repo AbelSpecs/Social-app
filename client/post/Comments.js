@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, CardHeader, TextField } from '@material-ui/core';
+import { Avatar, CardHeader, TextField, IconButton, Divider } from '@material-ui/core';
 import auth from '../auth/auth-helper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { comments, deleteComments } from './api-post';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
-  // card: {
-  //     padding: '10px'
-  // }
+  comment: {
+    textDecoration: 'none',
+    color: 'black'
+  }
 }));
 
 export default function Comments(props) {
@@ -25,18 +27,23 @@ export default function Comments(props) {
     setValue({...value, text: text});
   } 
 
-  const addComment = () => {
-    comments({
-      params: {userId: jwt.user._id, postId: props.postId},
-      credentials: {divineMole: jwt.token},
-      comment: value.txt
-    }).then(data => {
-      if(data.error){
-        console.log(data.error);
-      }else{
-        console.log(data);
-      }
-    })
+  const addComment = (event) => {
+    if(event.keyCode === 13){
+      event.preventDefault();
+      comments({
+        params: {userId: jwt.user._id, postId: props.postId},
+        credentials: {divineMole: jwt.token},
+        comment: {text: value.text}
+      }).then(data => {
+        if(data.error){
+          console.log(data.error);
+        }else{
+          console.log(data);
+          props.updateComments(data.comments);
+          setValue({...value, text: ''});
+        }
+      });
+    }
   }
 
   const deleteComment = (comment) => {
@@ -57,7 +64,7 @@ export default function Comments(props) {
   const commentBody = (comment) => {
     return (
       <p className={classes.commentText}>
-        <Link to={'/user/'+comment.postedBy._id}>{comment.postedBy.name}</Link>
+        <Link className={classes.comment} to={'/user/'+comment.postedBy._id}>{comment.postedBy.name}</Link>
         <br/>
         {comment.text} | { jwt.user._id === comment.postedBy._id && 
         <IconButton onClick={() => {deleteComment(comment)}}>
@@ -72,20 +79,22 @@ export default function Comments(props) {
 
   return (
     <div>
-      <CardHeader 
-        avatar={
-          <Avatar className={classes.smallAvatar} src={'/api/users/photo/' + jwt.user._id}/>}
-        title={<TextField 
-                multiline
-                value={value.text}
-                onChange={handleChange}
-                placeholder='Write Something ...'
-                className={classes.text}
-                margin="normal"
-                onKeyDown={addComment}
-                />}>
-      </CardHeader>
-      
+      {!props.profile &&
+        <CardHeader 
+          avatar={
+            <Avatar className={classes.smallAvatar} src={'/api/users/photo/' + jwt.user._id}/>}
+          title={<TextField 
+                  multiline
+                  value={value.text}
+                  onChange={handleChange}
+                  placeholder='Write Something ...'
+                  className={classes.text}
+                  margin="normal"
+                  onKeyDown={addComment}
+                  />}>
+        </CardHeader>
+      }
+      <Divider/>
       {props.comments.map((item, i) => {
         return (
           <CardHeader avatar={ <Avatar className={classes.smallAvatar} src={'/api/users/photo/' + item.postedBy._id}/>}
