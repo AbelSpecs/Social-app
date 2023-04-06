@@ -9,6 +9,7 @@ import userRoutes from './routes/user.routes';
 import devBundle from './devBundle';
 import path from 'path';
 import authRoutes from './routes/auth.routes';
+import postRoutes from './routes/post.routes';
 //React modules
 import React  from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -36,6 +37,7 @@ app.use(helmet());
 app.use(cors());
 app.use('/', authRoutes);
 app.use('/', userRoutes);
+app.use('/', postRoutes);
 app.use((error, req, res, next) => {
     if(error.name === 'UnauthorizedError') {
         res.status(401).json({"error" : error.name + ": " + error.message});

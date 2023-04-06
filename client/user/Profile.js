@@ -12,9 +12,10 @@ Divider
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { read } from "./api-user";
+import { loadPostsByUser } from "../post/api-post";
 import auth from "../auth/auth-helper";
 import { makeStyles } from "@material-ui/styles";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import React from "react";
 import Edit from '@material-ui/icons/Edit';
@@ -51,6 +52,7 @@ export default function Profile() {
     });
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [following, setFollowing] = useState(false);
+    const [posts, setPosts] = useState([]);
     const jwt = auth.isAuthenticated();
 
     useEffect(() => {
@@ -80,6 +82,29 @@ export default function Profile() {
         }
     }, [userId]);
 
+    useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        loadPostsByUser({
+            params: { userId: userId.userId },
+            credentials: { divineMole: jwt.token },
+            signal
+        }).then(data => {
+            if(data.error){
+                console.log(data.error);
+            }else{
+                setPosts([...posts, data]);
+            }
+        })
+
+        return function cleanup() {
+            abortController.abort();
+        }
+
+    }, [userId]);
+
+    
     const checkFollow = (user) => {
         const match = user.followers.some((follower) => {
             return follower._id === jwt.user._id;
@@ -106,6 +131,13 @@ export default function Profile() {
             }
         })
     }
+
+    const removePost = (post) => {
+        const updatedPosts = [...post];
+        const index = updatedPosts.indexOf(post);
+        updatedPosts.splice(index);
+        setPosts(updatedPosts);
+      }
 
     const photoUrl = user._id
     ? `/api/users/photo/${user._id}?${new Date().getTime()}`
@@ -145,7 +177,7 @@ export default function Profile() {
                 <ListItem>
                     <ListItemText primary={"Joined: " + (new Date(user.created)).toDateString()}/>
                 </ListItem>
-                <ProfileTabs people={user}></ProfileTabs>
+                <ProfileTabs people={user} posts={posts} profile={true} removeUpdate={removePost}></ProfileTabs>
             </List>
         </Paper>
     )

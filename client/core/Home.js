@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import FindPeople from "../user/FindPeople";
+import NewsFeed from "../post/NewsFeed";
 import auth from "../auth/auth-helper";
 import { useState } from 'react';
 
@@ -48,6 +49,11 @@ export default function Home () {
                         </CardContent>
                     </Card>
                 </Grid>
+                {defaultPage && 
+                    <Grid item xs={4}>
+                        <NewsFeed/>
+                    </Grid>
+                }
                 {defaultPage && 
                     <Grid item xs={4}>
                         <FindPeople/>

@@ -1,15 +1,34 @@
-import { Button ,AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
+import { Button ,AppBar, IconButton, Toolbar, Typography, InputBase, Paper } from "@material-ui/core";
 import HomeIcon from '@material-ui/icons/Home'
 import { useLocation, useNavigate } from "react-router-dom";
 import auth from "../auth/auth-helper";
 import React from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import SearchIcon from '@material-ui/icons/Search';
+
 
 const useStyles = makeStyles(() => ({
+    paper: {
+        padding: '1px 1px',
+        display: 'flex',
+        alignItems: 'center',
+        width: 200,
+        height: 35,
+        marginLeft: 'auto',
+        boxShadow: 'none',
+        borderRadius: '20px'
+    },
     link: {
-      textDecoration: 'none'
-    }
+        textDecoration: 'none'
+    },
+    input: {
+        marginLeft: '2px',
+        color: '#00000'
+    },
+    iconButton: {
+        padding: 10,
+    },
   }));
 
 const isActive = (location, path) => {
@@ -64,6 +83,16 @@ export default function Menu() {
 
                 )
             }
+            <Paper className={classes.paper}>
+                <IconButton className={classes.iconButton} aria-label="search">
+                    <SearchIcon />
+                </IconButton>
+                <InputBase
+                    className={classes.input}
+                    placeholder="Search..."
+                    inputProps={{ 'aria-label': 'search' }}
+                />
+            </Paper>
         </Toolbar>
     </AppBar>)
 

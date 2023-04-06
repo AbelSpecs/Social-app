@@ -11,6 +11,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import FollowGrid from "./FollowGrid";
+import PostList from "../post/PostList";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -43,7 +44,7 @@ export default function ProfileTabs(props) {
         <BottomNavigationAction label="Following" icon={<PeopleIcon/>}/>
         <BottomNavigationAction label="Followers" icon={<SupervisorAccountIcon/>} />
       </BottomNavigation>
-    {/*value === 0 && <TabContainer><PostList removeUpdate={props.removePostUpdate} posts={props.posts}/></TabContainer>*/}
+    {value === 0 && <PostList removeUpdate={props.removeUpdate} posts={props.posts} profile={props.profile}/>}
     {value === 1 && <FollowGrid people={props.people.following}/>}
     {value === 2 && <FollowGrid people={props.people.followers}/>}
     </Box>

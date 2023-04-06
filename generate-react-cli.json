@@ -5,7 +5,7 @@
   "testLibrary": "None",
   "component": {
     "default": {
-      "path": "client/user",
+      "path": "client/post",
       "withStyle": false,
       "withTest": false,
       "withStory": false,
