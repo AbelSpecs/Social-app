@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ProfileTabs(props) {
-  console.log(props);
+  console.log(props.posts);
   const classes = useStyles();
   const [value, setValue] = useState(0);
 

@@ -17,6 +17,11 @@ router.route('/api/users/follow')
 router.route('/api/users/unfollow')
     .put(authController.requireSignin, userCtrl.removeFollowing, userCtrl.removeFollower)
 
+router.route('/api/users/usersbyname/:name')
+    .get(authController.requireSignin)
+
+router.param('name', userCtrl.usersByName);
+
 router.route('/api/users/:userId')
     .get(authController.requireSignin, userCtrl.read)
     .put(authController.requireSignin, authController.hasAuthorization, userCtrl.update)
@@ -27,6 +32,9 @@ router.route('/api/users/photo/:userId')
 
 router.route('/api/users/findpeople/:userId')
     .get(authController.requireSignin, userCtrl.findPeople)
+
+router.route('/api/users/findfollowers/:userId')
+    .get(authController.requireSignin, userCtrl.listFollowers)
 
 router.param('userId', userCtrl.userById);
 

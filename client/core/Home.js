@@ -11,6 +11,8 @@ import FindPeople from "../user/FindPeople";
 import NewsFeed from "../post/NewsFeed";
 import auth from "../auth/auth-helper";
 import { useState } from 'react';
+import ProfileCard from "../user/ProfileCard";
+import Followers from "../user/Followers";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -27,6 +29,9 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         marginTop: '10px'
+    },
+    gridChild: {
+        height: 'max-content'
     }
 }));
     
@@ -37,8 +42,8 @@ export default function Home () {
     return ( 
         <div>
             <Grid container justifyContent="flex-end" spacing={2} className={classes.grid}>
-                <Grid item xs={4}>
-                    <Card className={classes.card}>
+                <Grid item xs={12} sm={3} className={classes.gridChild}>
+                    {/*<Card className={classes.card}>
                         <Typography variant="h6" className={classes.title}>
                             Home Page
                         </Typography>
@@ -47,15 +52,18 @@ export default function Home () {
                                 Welcome to the MERN Skeleton home page.
                             </Typography>
                         </CardContent>
-                    </Card>
+                    </Card>*/}
+                    <ProfileCard/>
+
+                    <Followers/>
                 </Grid>
                 {defaultPage && 
-                    <Grid item xs={4}>
+                    <Grid item xs={12} sm={5} className={classes.gridChild}>
                         <NewsFeed/>
                     </Grid>
                 }
                 {defaultPage && 
-                    <Grid item xs={4}>
+                    <Grid item xs={12} sm={4} className={classes.gridChild}>
                         <FindPeople/>
                     </Grid>
                 }

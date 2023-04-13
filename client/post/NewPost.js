@@ -6,10 +6,8 @@ import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import PhotoIcon from '@material-ui/icons/Photo';
 import { 
-    Typography, 
     Card, 
     CardHeader, 
-    Divider, 
     Avatar, 
     CardContent, 
     TextField, 
@@ -22,11 +20,23 @@ const useStyles = makeStyles(theme => ({
     card: {
         boxShadow: 'none'
     },
+    cardHeader: {
+        paddingTop: 0
+    },
     button: {
-        justifyContent: 'space-between'
+        paddingTop: 0,
+        justifyContent: 'flex-end   '
     },
     avatar: {
         marginRight: theme.spacing(1)
+    },
+    title: {
+        '& .MuiOutlinedInput-root': {
+        color: '#000000',
+        background: '#EEEDE7',
+        borderRadius: '19px',
+        padding: '12px 14px'
+        }
     }
   }));
 
@@ -67,23 +77,24 @@ export default function NewPost(props){
 
     return (
         <Card className={classes.card}>
-            <CardHeader
+            <CardHeader className={classes.cardHeader}
             avatar={
               <Avatar src={'/api/users/photo/'+ jwt.user._id} aria-label="recipe" className={classes.avatar} />
             }
-            />
-            <CardContent >
-                <TextField 
+            title={
+                <TextField className={classes.title}
                     multiline
+                    id="outlined-full-width"
                     value={values.text}
                     onChange={handleChange}
-                    placeholder='Your Thoughts ...'
-                    className={classes.text}
-                    margin="normal"
+                    style={{ margin: 8 }}
+                    placeholder="Share what you want..."
                     fullWidth
-                    //onKeyDown={addComment}
-                    />
-            </CardContent>
+                    margin="normal"
+                    variant="outlined"
+                />
+            }
+            />
             <CardActions className={classes.button}>
                 <IconButton>
                     <PhotoIcon/>

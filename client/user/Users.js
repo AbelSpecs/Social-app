@@ -11,43 +11,64 @@ import {
     Typography 
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { list } from "./api-user";
-import { Link } from "react-router-dom";
+import { findpeoplebyname } from "./api-user";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowForward } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import Person from '@material-ui/icons/Person';
+import Grid from '@material-ui/core/Grid';
+import FindPeople from "../user/FindPeople";
+import auth from "../auth/auth-helper";
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        padding: theme.spacing(3),
-        margin: theme.spacing(4),
+    paper: {
+        padding: theme.spacing(2)
     },
     title: {
-      margin: `${theme.spacing(3)}px 0 ${theme.spacing(2)}px`,
       color: theme.palette.openTitle
     },
     textDecoration: {
         textDecoration: 'none'
+    },
+    grid: {
+        marginTop: '10px'
     }
-    
 }));
 
 export default function Users() {
     const classes = useStyles();
+    const location = useLocation(); 
     const [users, setUsers] = useState([]);
+    const jwt = auth.isAuthenticated();
+    console.log(location);
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
 
-        list(signal).then((data) => {
-            if(data && data.error) {
-                console.log(data.error)
-            }else {
-                console.log(data);
+        findpeoplebyname({
+            params: { name: location.state.name },
+            credentials: { divineMole: jwt.token },
+            signal
+        }).then(data => {
+            if(data && data.error)
+            {
+                console.log(data.error);
+            }
+            else
+            {
                 setUsers(data);
             }
         });
+
+        // list(signal).then((data) => {
+        //     if(data && data.error) {
+        //         console.log(data.error)
+        //     }else {
+        //         console.log(data);
+        //         setUsers(data);
+        //     }
+        // });
 
         return function cleanup(){
             abortController.abort();
@@ -56,30 +77,37 @@ export default function Users() {
 
 
     return (
-        <Paper className={classes.root} elevation={4}>
-            <Typography variant="h6" className={classes.title}>
-                All Users
-            </Typography>
-            <List dense>
-                {users.map((item, i) => {
-                    return <Link to={"/user/" + item._id} key={i} className={classes.textDecoration}>
-                                <ListItem button>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <Person/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary={item.name}/>
-                                    <ListItemSecondaryAction>
-                                        <IconButton>
-                                            <ArrowForward/>
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </Link>
-                })}
-            </List>
-        </Paper>
+        <Grid container justifyContent="flex-end" spacing={2} className={classes.grid}>
+            <Grid item xs={4}>
+                <Paper elevation={4} className={classes.paper}>
+                    <Typography variant="h6" className={classes.title}>
+                        All Users
+                    </Typography>
+                    <List dense>
+                        {users.map((item, i) => {
+                            return <Link to={"/user/" + item._id} key={i} className={classes.textDecoration}>
+                                        <ListItem button>
+                                            <ListItemAvatar>
+                                                <Avatar>
+                                                    <Person/>
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary={item.name}/>
+                                            <ListItemSecondaryAction>
+                                                <IconButton>
+                                                    <ArrowForward/>
+                                                </IconButton>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                    </Link>
+                        })}
+                    </List>
+                </Paper>
+            </Grid> 
+            <Grid item xs={4}>
+                <FindPeople/>
+            </Grid>   
+        </Grid>
     )
 }
 

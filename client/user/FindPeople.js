@@ -60,6 +60,7 @@ export default function FindPeople () {
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
+    let isMounted = true;
     
     findpeople({
       params: { userId: jwt.user._id},
@@ -70,11 +71,18 @@ export default function FindPeople () {
         setValues({...values, error: data.error});
       }
       else{
-        setValues({...values, users: data});
+        mounted(data);
       }
     });
 
+    function mounted(data) {
+      if(isMounted){
+        setValues({...values, users: data});
+      }
+    }
+
     return function cleanup(){
+      isMounted = false
       abortController.abort();
     }
 

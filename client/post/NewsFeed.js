@@ -57,8 +57,6 @@ export default function NewsFeed() {
 
   return (
     <Paper className={classes.card}>
-      <Typography type="title">NewsFeed</Typography>
-      
       <NewPost addUpdate={addPost}/>
       <Divider/>
       <PostList removeUpdate={removePost} posts={post} profile={false}/>

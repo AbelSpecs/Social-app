@@ -100,6 +100,26 @@ const userById = async (req, res, next, id) => {
     }
 }
 
+const usersByName = async (req, res, next, name) => {
+    try {
+        const users = await User.find({name: {$regex: name}})
+                                .select('name email created updated')
+                                .populate('following', '_id name')
+                                .populate('followers', '_id name')
+                                .exec()
+        if(!users){
+            return res.status(400).json({
+                error: errorHandler.getErrorMessage(error)
+            });
+        }
+        res.json(users);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
 const photo = (req, res, next) => {
     if(req.profile.photo.data){
         res.set("Content-Type", req.profile.photo.contentType)
@@ -186,6 +206,18 @@ const findPeople = async (req, res) => {
     }
 }
 
+const listFollowers = async (req, res) => {
+    let userId = req.profile._id;
+    try {
+        const users = await User.find({following: {$in: userId}});
+        res.json(users);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
 export default { 
     create, 
     list, 
@@ -199,5 +231,7 @@ export default {
     addFollowing, 
     removeFollower, 
     removeFollowing,
-    findPeople 
+    findPeople,
+    usersByName,
+    listFollowers 
 };

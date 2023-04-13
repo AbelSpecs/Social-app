@@ -72,8 +72,6 @@ export default function Profile() {
                 let following = checkFollow(data);
                 setUser(data);
                 setFollowing(following);
-                console.log(data);
-                console.log(following);
             }
         });
 
@@ -94,9 +92,15 @@ export default function Profile() {
             if(data.error){
                 console.log(data.error);
             }else{
+                checkPosts(data);
+            }
+        });
+
+        const checkPosts = (data) => {
+            if(data.length > 0){
                 setPosts([...posts, data]);
             }
-        })
+        }
 
         return function cleanup() {
             abortController.abort();
@@ -113,7 +117,6 @@ export default function Profile() {
     }
 
     const clickFollowButton = (api) => {
-        console.log(api);
         api({
             params: {userId: userId.userId},
             credentials: {divineMole: jwt.token},
@@ -124,8 +127,6 @@ export default function Profile() {
                 setUser({...values, error: data.error});
             }
             else{
-                console.log('no dio error');
-                console.log(data);
                 setUser(data);
                 setFollowing(!following);
             }
