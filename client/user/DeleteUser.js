@@ -7,7 +7,7 @@ import {
     DialogTitle, 
     IconButton
 } from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { useState } from "react";
 import auth from "../auth/auth-helper";
 import { remove } from "./api-user";
@@ -47,7 +47,7 @@ export default function DeleteUser({userId}) {
     return (
         <span>
             <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
-                <DeleteIcon/>
+                <DeleteOutlineOutlinedIcon/>
             </IconButton>
 
             <Dialog open={values.open} onClose={handleClose}>

@@ -1,5 +1,6 @@
 import User from '../models/user.model';
 import Post from '../models/post.model';
+import Trend from '../models/trend.model';
 import extend from 'lodash/extend';
 import errorHandler from '../helpers/dbErrorHandler';
 import formidable from 'formidable';
@@ -171,6 +172,31 @@ const deleteComments = async (req, res) => {
     }
 }
 
+const createTrend = async (req, res) => {
+    const trend = new Trend(req.body);
+    try {
+        await trend.save();
+        return res.status(200).json({
+            message: 'Trend Created'
+        });
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+const listTrends = async (req, res) => {
+    try {
+        const trends = await Trend.find();
+        res.json(trends);
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
 export default {
     listNewsFeed, 
     listPostsByUser, 
@@ -181,5 +207,7 @@ export default {
     like, 
     dislike, 
     comments,
-    deleteComments
+    deleteComments,
+    createTrend,
+    listTrends
 };

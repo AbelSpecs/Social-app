@@ -79,7 +79,7 @@ export default function NewPost(props){
         <Card className={classes.card}>
             <CardHeader className={classes.cardHeader}
             avatar={
-              <Avatar src={'/api/users/photo/'+ jwt.user._id} aria-label="recipe" className={classes.avatar} />
+              <Avatar src={'/api/users/photo/'+ jwt.user._id + `?${new Date().getTime()}`} aria-label="recipe" className={classes.avatar} />
             }
             title={
                 <TextField className={classes.title}

@@ -32,9 +32,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Post(props) {
-  console.log(props);
   const jwt = auth.isAuthenticated();
-
+  
   const checkLike = (likes) => {
     let match = likes.indexOf(jwt.user._id) !== -1;
     return match;
@@ -89,7 +88,7 @@ export default function Post(props) {
       <Card className={classes.card}>
         <CardHeader
           avatar={
-            <Avatar src={'/api/users/photo/' + props.post[props.index].postedBy._id} className={classes.avatar}/>
+            <Avatar src={'/api/users/photo/' + props.post[props.index].postedBy._id + `?${new Date().getTime()}`} className={classes.avatar}/>
           }
           action={ props.post[props.index].postedBy._id === auth.isAuthenticated().user._id && 
             (<IconButton onClick={deletePost}>

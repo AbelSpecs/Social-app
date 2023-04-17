@@ -55,7 +55,6 @@ const useStyles = makeStyles(theme => ({
 export default function EditProfile() {
     const classes = useStyles();
     const userId = useParams();
-    const navigate = useNavigate();
     const jwt = auth.isAuthenticated();
     const [values, setValues] = useState({
         id: '',
@@ -80,8 +79,14 @@ export default function EditProfile() {
             if(data && data.error)
                 setValues({...values, error: data.error})
             else
-                setValues({...values, id: data._id, name: data.name, email: data.email, about: data.about});
+                setValue(data);
         });
+
+        const setValue = (data) => {
+            if(data !== undefined){
+                setValues({...values, id: data._id, name: data.name, email: data.email, about: data.about});
+            }
+        }
 
         return function cleanup() {
             abortController.abort();
@@ -91,10 +96,8 @@ export default function EditProfile() {
 
     
     const handleChange = name => event => {
-        const value = name === 'photo'
-        ? event.target.files[0]
-        : event.target.value;
-
+        const value = event.target.value;
+        
         setValues({...values, [name]: value});
     }
 
@@ -105,7 +108,7 @@ export default function EditProfile() {
         values.email && userData.append('email', values.email);
         values.about && userData.append('about', values.about);
         values.password && userData.append('password', values.password);
-        values.photo && userData.append('photo', values.photo);
+        // values.photo && userData.append('photo', values.photo);
 
         update({
             params: { userId: userId.userId },
@@ -115,15 +118,15 @@ export default function EditProfile() {
             if(data && data.error)
                 setValues({...values, error: data.error});
             else{
-                setValues({...values, redirectToProfile: true});
-                navigate('/user/' + userId.userId);
+                setValues({...values});
+                // navigate('/user/' + userId.userId);
             }
         })
     }
     
-    const photoUrl = values.id
-    ? `/api/users/photo/${values.id}?${new Date().getTime()}`
-    : '/api/users/defaultphoto';
+    // const photoUrl = values.id
+    // ? `/api/users/photo/${values.id}?${new Date().getTime()}`
+    // : '/api/users/defaultphoto';
 
     // const photoRoute = !values.id && values.photo
     // ? `${values.photo.name}`
@@ -133,7 +136,7 @@ export default function EditProfile() {
         <div>
             <Card className={classes.card}>
                 <CardContent>
-                    <Typography>
+                    {/*<Typography>
                         Edit Profile
                     </Typography>
                     <Avatar src={photoUrl} className={classes.bigAvatar}/><br/>
@@ -143,12 +146,12 @@ export default function EditProfile() {
                         <Button variant="contained" color="default" component="span">
                             Upload <FileUpload/>
                         </Button>
-                    </label>
-                    <br/>
-                    <span className={classes.filename}>
+                    </label>*/}
+                    {/*<br/>*/}
+                    {/*<span className={classes.filename}>
                         {values.photo ? values.photo.name : ''}
                     </span>
-                    <br/>
+                    <br/>*/}
                     <TextField id="name" label="Name" className={classes.textField}
                                 value={values.name} onChange={handleChange('name')}
                                 margin="normal"/>

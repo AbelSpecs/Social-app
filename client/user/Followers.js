@@ -7,6 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import auth from "../auth/auth-helper";
 import { Link } from "react-router-dom";
 import ViewIcon from '@material-ui/icons/Visibility'
+import { Fragment } from 'react';
 import { 
   IconButton, 
   List,
@@ -19,7 +20,6 @@ import {
   Paper,
   Typography
 } from '@material-ui/core';
-import { Fragment } from 'react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,9 +27,7 @@ const useStyles = makeStyles(theme => ({
     margin: 0
   },
   title: {
-    margin: `${theme.spacing(3)}px ${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    color: theme.palette.openTitle,
-    fontSize: '1em'
+    padding: `${theme.spacing(2)}px 0px 0px ${theme.spacing(2)}px`,
   },
   avatar: {
     marginRight: theme.spacing(1)
@@ -45,7 +43,12 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: '10px',
-    marginTop: '30px'
+    // marginTop: `${theme.spacing(1)}px`,
+    borderRadius: '19px'
+  },
+  link: {
+    textDecoration: 'none',
+    color: '#000000'
   }
 }))
 
@@ -115,7 +118,7 @@ export default function Followers() {
   return (  
     <Fragment>
       <Paper className={classes.paper}>
-        <Typography>
+        <Typography className={classes.title}>
           Who is Following You
         </Typography>
         <List>
@@ -125,13 +128,10 @@ export default function Followers() {
                 <ListItemAvatar className={classes.avatar}>
                   <Avatar src={'/api/users/photo/'+item._id}/>
                 </ListItemAvatar>
-                <ListItemText primary={item.name}/>
+                <Link to={"/user/" + item._id} className={classes.link}>
+                  <ListItemText primary={item.name}/>
+                </Link>
                 <ListItemSecondaryAction>
-                  <Link to={"/user/" + item._id}>
-                    <IconButton variant="contained" color='secondary' className={classes.viewButton}>
-                      <ViewIcon/>
-                    </IconButton>
-                  </Link>
                   <Button aria-label="Follow" variant="contained" color="primary" onClick={() => {clickfollow(item, i)}}>
                     Follow
                   </Button>

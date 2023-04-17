@@ -5,6 +5,8 @@ import auth from '../auth/auth-helper';
 import image from '../assets/images/cherryblossom.png';
 import { read } from "./api-user";
 import { Link } from "react-router-dom";
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import { useNavigate } from "react-router-dom";
 import { 
   Avatar,
   Button, 
@@ -14,13 +16,19 @@ import {
   CardMedia, 
   CardContent, 
   Divider,
-  Typography
+  IconButton,
+  Typography,
+  CardHeader
 } from '@material-ui/core';
+import { Fragment } from 'react';
+import Settings from '../core/settings';
 
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   card: {
-    borderRadius: '38px'
+    borderRadius: '38px',
+    position: 'relative',
+    marginBottom: `${theme.spacing(3)}px`
   },
   avatarCard: {
     top: '50%',
@@ -51,13 +59,26 @@ const useStyles = makeStyles(() => ({
   profileButton: {
     textTransform: 'capitalize'
   },
-  
+  settingsButton: {
+    position: 'absolute',
+    zIndex: 1,
+    left: '70%'
+  },
+  menu: {
+    marginTop: '3.5%',
+    '& .MuiPaper-rounded': {
+      borderRadius: '20px'
+    }
+  }
 }));
 
-export default function ProfileCard() {
+export default function ProfileCard(props) {
   const jwt = auth.isAuthenticated();
-  const photoUrl = `/api/users/photo/${jwt.user._id}?${new Date().getTime()}`
+  const photoUrl = `/api/users/photo/${jwt.user._id}?${new Date().getTime()}`;
+  const backgroundUrl = `/api/users/background/${jwt.user._id}?${new Date().getTime()}`;
   const classes = useStyles();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(null);
   const [user, setUser] = useState({
     following: [],
     followers: []
@@ -86,14 +107,34 @@ export default function ProfileCard() {
     }
 }, [jwt.user._id]);
 
+  const handleClick = (event) => {
+    setOpen(event.currentTarget);
+  }
+
+  const handleClose = () => {
+    setOpen(null);
+  }
+
   return (
     <Card className={classes.card}>
+      <CardHeader className={classes.settingsButton} action={
+        <Fragment>
+          <IconButton aria-label="settings" onClick={handleClick}>
+              <SettingsOutlinedIcon />
+          </IconButton>
+          <Settings 
+            handleClose={handleClose} 
+            open={open} 
+            clear={() => auth.clearJWT(() => navigate("/signin"))} 
+            styles={classes.menu}/>
+        </Fragment>
+        }/>
       <CardActionArea>
         <CardMedia
           component="img"
           alt="Background"
           height="140"
-          src={image}
+          src={backgroundUrl}
           title="Background"
         />
         <Avatar src={photoUrl} className={classes.avatarCard}/>

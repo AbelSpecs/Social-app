@@ -19,6 +19,7 @@ import {
   Paper,
   Typography
 } from '@material-ui/core';
+import { Fragment } from 'react';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,9 +27,7 @@ const useStyles = makeStyles(theme => ({
     margin: 0
   },
   title: {
-    margin: `${theme.spacing(3)}px ${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    color: theme.palette.openTitle,
-    fontSize: '1em'
+    padding: `${theme.spacing(2)}px 0px 0px ${theme.spacing(2)}px`,
   },
   avatar: {
     marginRight: theme.spacing(1)
@@ -43,7 +42,13 @@ const useStyles = makeStyles(theme => ({
     verticalAlign: 'middle'
   },
   paper: {
-    padding: '10px'
+    padding: '10px',
+    borderRadius: '19px',
+    marginTop: `${theme.spacing(3)}px`
+  },
+  link: {
+    textDecoration: 'none',
+    color: '#000000'
   }
 }))
 
@@ -110,43 +115,46 @@ export default function FindPeople () {
     setValues({...values, open: false});
   }
 
-  return (<div>
-    <Paper className={classes.paper}>
-      <Typography>
-        Who to follow
-      </Typography>
-      <List>
-        {values.users.map((item, i) => {
-          return <span key={i}>
-            <ListItem>
-              <ListItemAvatar className={classes.avatar}>
-                <Avatar src={'/api/users/photo/'+item._id}/>
-              </ListItemAvatar>
-              <ListItemText primary={item.name}/>
-              <ListItemSecondaryAction>
-                <Link to={"/user/" + item._id}>
-                  <IconButton variant="contained" color='secondary' className={classes.viewButton}>
-                    <ViewIcon/>
-                  </IconButton>
+  return (
+    <Fragment>
+      <Paper className={classes.paper}>
+        <Typography className={classes.title}>
+          Who to follow
+        </Typography>
+        <List>
+          {values.users.map((item, i) => {
+            return <span key={i}>
+              <ListItem>
+                <ListItemAvatar className={classes.avatar}>
+                  <Avatar src={'/api/users/photo/'+item._id}/>
+                </ListItemAvatar>
+                <Link to={"/user/" + item._id} className={classes.link}>
+                  <ListItemText primary={item.name}/>
                 </Link>
-                <Button aria-label="Follow" variant="contained" color="primary" onClick={() => {clickfollow(item, i)}}>
-                  Follow
-                </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </span>
-        })
-      }
-      </List>
-    </Paper>
-    <Snackbar
-        open={values.open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        message={values.message}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+                <ListItemSecondaryAction>
+                  {/*<Link to={"/user/" + item._id}>
+                    <IconButton variant="contained" color='secondary' className={classes.viewButton}>
+                      <ViewIcon/>
+                    </IconButton>
+                  </Link>*/}
+                  <Button aria-label="Follow" variant="contained" color="primary" onClick={() => {clickfollow(item, i)}}>
+                    Follow
+                  </Button>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </span>
+          })
+        }
+        </List>
+      </Paper>
+      <Snackbar
+          open={values.open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message={values.message}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
       />
-  </div>
+    </Fragment>
   )
 }
 

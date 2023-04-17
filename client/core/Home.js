@@ -13,6 +13,8 @@ import auth from "../auth/auth-helper";
 import { useState } from 'react';
 import ProfileCard from "../user/ProfileCard";
 import Followers from "../user/Followers";
+import Trends from "../post/Trends";
+import SearchBar from "./SearchBar";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -43,18 +45,7 @@ export default function Home () {
         <div>
             <Grid container justifyContent="flex-end" spacing={2} className={classes.grid}>
                 <Grid item xs={12} sm={3} className={classes.gridChild}>
-                    {/*<Card className={classes.card}>
-                        <Typography variant="h6" className={classes.title}>
-                            Home Page
-                        </Typography>
-                        <CardContent>
-                            <Typography variant="body2" component="p">
-                                Welcome to the MERN Skeleton home page.
-                            </Typography>
-                        </CardContent>
-                    </Card>*/}
                     <ProfileCard/>
-
                     <Followers/>
                 </Grid>
                 {defaultPage && 
@@ -64,6 +55,8 @@ export default function Home () {
                 }
                 {defaultPage && 
                     <Grid item xs={12} sm={4} className={classes.gridChild}>
+                        <SearchBar/>
+                        <Trends/>
                         <FindPeople/>
                     </Grid>
                 }

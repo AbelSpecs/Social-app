@@ -36,4 +36,10 @@ router.route('/api/posts/comments')
 router.route('/api/posts/deletecomment')
     .put(authController.requireSignin, postController.deleteComments)
 
+router.route('/api/posts/createtrend')
+    .post(authController.requireSignin, postController.createTrend)
+
+router.route('/api/posts/listtrends')
+    .get(authController.requireSignin, postController.listTrends)
+
 export default router;

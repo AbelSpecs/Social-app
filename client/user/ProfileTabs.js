@@ -34,7 +34,7 @@ export default function ProfileTabs(props) {
   }
 
   return (
-    <Box sx={{ width: 500 }} className={classes.box}>
+    <Box sx={{ width: '100%' }} className={classes.box}>
        <BottomNavigation
         showLabels
         value={value}

@@ -7,9 +7,10 @@ import { postList } from './api-post';
 import auth from '../auth/auth-helper';
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles(theme => ({
-  card: {
-      padding: '10px'
+const useStyles = makeStyles(() => ({
+  paper: {
+      padding: '10px',
+      borderRadius: '19px'
   }
 }));
 
@@ -56,7 +57,7 @@ export default function NewsFeed() {
   }
 
   return (
-    <Paper className={classes.card}>
+    <Paper className={classes.paper}>
       <NewPost addUpdate={addPost}/>
       <Divider/>
       <PostList removeUpdate={removePost} posts={post} profile={false}/>

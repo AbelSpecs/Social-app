@@ -10,16 +10,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useNavigate } from "react-router-dom";
 import auth from "../auth/auth-helper";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
       padding: '1px 1px',
       display: 'flex',
       alignItems: 'center',
-      width: 200,
+      width: '80%',
       height: 35,
-      marginLeft: 'auto',
+      marginLeft: '10%',
       boxShadow: 'none',
-      borderRadius: '20px'
+      borderRadius: '20px',
+      background: '#EEEDE7'
   },
   autocomplete: {
       display: 'flex',

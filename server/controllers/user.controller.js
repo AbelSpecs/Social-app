@@ -4,6 +4,7 @@ import errorHandler from '../helpers/dbErrorHandler';
 import formidable from 'formidable';
 import fs from 'fs';
 import profileImage from '../../client/assets/images/profile-pic.png';
+import backgroundImage from '../../client/assets/images/cherryblossom.png';
 
 const create = async (req, res, next) => {
     const user = new User(req.body);
@@ -52,6 +53,10 @@ const update = async (req, res) => {
         if(files.photo){
             user.photo.data = fs.readFileSync(files.photo.filepath);
             user.photo.ContentType = files.photo.type;
+        }
+        if(files.background){
+            user.background.data = fs.readFileSync(files.background.filepath);
+            user.background.ContentType = files.background.type;
         }
         try {
             await user.save();
@@ -132,6 +137,18 @@ const defaultPhoto = (req, res) => {
     return res.sendFile(process.cwd() + profileImage)
 }
 
+const background = (req, res, next) => {
+    if(req.profile.background.data){
+        res.set("Content-Type", req.profile.background.contentType)
+        return res.send(req.profile.background.data)
+    }
+    next();
+}
+
+const defaultBackground = (req, res) => {
+    return res.sendFile(process.cwd() + backgroundImage)
+}
+
 const addFollowing = async (req, res, next) => {
     try {
         await User.findByIdAndUpdate(req.body.followId, 
@@ -209,7 +226,8 @@ const findPeople = async (req, res) => {
 const listFollowers = async (req, res) => {
     let userId = req.profile._id;
     try {
-        const users = await User.find({following: {$in: userId}});
+        const users = await User.find({following: {$in: userId}})
+                                .limit(5);
         res.json(users);
     } catch (error) {
         return res.status(400).json({
@@ -233,5 +251,7 @@ export default {
     removeFollowing,
     findPeople,
     usersByName,
-    listFollowers 
+    listFollowers,
+    background,
+    defaultBackground 
 };
