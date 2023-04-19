@@ -2,11 +2,13 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from "@material-ui/styles";
 import auth from '../auth/auth-helper';
-import image from '../assets/images/cherryblossom.png';
 import { read } from "./api-user";
 import { Link } from "react-router-dom";
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { useNavigate } from "react-router-dom";
+import { Fragment } from 'react';
+import Settings from '../core/settings';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { 
   Avatar,
   Button, 
@@ -20,8 +22,7 @@ import {
   Typography,
   CardHeader
 } from '@material-ui/core';
-import { Fragment } from 'react';
-import Settings from '../core/settings';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -69,15 +70,19 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiPaper-rounded': {
       borderRadius: '20px'
     }
+  },
+  circularProgress: {
+    margin: '10% 0 10% 43%'
   }
 }));
 
-export default function ProfileCard(props) {
+export default function ProfileCard() {
   const jwt = auth.isAuthenticated();
   const photoUrl = `/api/users/photo/${jwt.user._id}?${new Date().getTime()}`;
   const backgroundUrl = `/api/users/background/${jwt.user._id}?${new Date().getTime()}`;
   const classes = useStyles();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(null);
   const [user, setUser] = useState({
     following: [],
@@ -87,19 +92,21 @@ export default function ProfileCard(props) {
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
+    setLoading(true);
     read({
         params: { userId: jwt.user._id },
         credentials: { divineMole: jwt.token },
         signal
     }).then(data => {
-        if(data && data.error)
-        {
-            console.log(data.error);
-        }
-        else
-        {
-            setUser(data);
-        }
+      setLoading(false);
+      if(data && data.error)
+      {
+          console.log(data.error);
+      }
+      else
+      {
+          setUser(data);
+      }
     });
 
     return function cleanup() {
@@ -117,64 +124,72 @@ export default function ProfileCard(props) {
 
   return (
     <Card className={classes.card}>
-      <CardHeader className={classes.settingsButton} action={
-        <Fragment>
-          <IconButton aria-label="settings" onClick={handleClick}>
-              <SettingsOutlinedIcon />
-          </IconButton>
-          <Settings 
-            handleClose={handleClose} 
-            open={open} 
-            clear={() => auth.clearJWT(() => navigate("/signin"))} 
-            styles={classes.menu}/>
-        </Fragment>
-        }/>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          alt="Background"
-          height="140"
-          src={backgroundUrl}
-          title="Background"
-        />
-        <Avatar src={photoUrl} className={classes.avatarCard}/>
-        <CardContent className={classes.cardContent}>
-          <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
-            {user.name}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-            {user.about}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <Divider/>
-      <CardActions className={classes.cardAction} disableSpacing>
-        <div>
-          <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
-            {user.followers.length}
-          </Typography>
-          <Typography variant='body2' component="p">
-            Followers
-          </Typography>
-        </div>
-        <Divider variant="middle" orientation="vertical" flexItem className={classes.divider}/>
-        <div>
-          <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
-            {user.following.length}
-          </Typography>
-          <Typography variant='body2' component="p">
-            Following
-          </Typography>
-        </div>
-      </CardActions>
-      <Divider/>
-      <CardActions className={classes.cardAction} disableSpacing>
-      <Link to={"/user/" + jwt.user._id} className={classes.link}>
-        <Button color='primary' className={classes.profileButton}>
-          My Profile
-        </Button>
-      </Link>
-      </CardActions>
+    {
+      loading && <CircularProgress className={classes.circularProgress}/>
+    }
+    {
+      !loading &&
+      <Fragment>
+        <CardHeader className={classes.settingsButton} action={
+          <Fragment>
+            <IconButton aria-label="settings" onClick={handleClick}>
+                <SettingsOutlinedIcon />
+            </IconButton>
+            <Settings 
+              handleClose={handleClose} 
+              open={open} 
+              clear={() => auth.clearJWT(() => navigate("/signin"))} 
+              styles={classes.menu}/>
+          </Fragment>
+          }/>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            alt="Background"
+            height="140"
+            src={backgroundUrl}
+            title="Background"
+          />
+          <Avatar src={photoUrl} className={classes.avatarCard}/>
+          <CardContent className={classes.cardContent}>
+            <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
+              {user.name}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
+              {user.about}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <Divider/>
+        <CardActions className={classes.cardAction} disableSpacing>
+          <div>
+            <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
+              {user.followers.length}
+            </Typography>
+            <Typography variant='body2' component="p">
+              Followers
+            </Typography>
+          </div>
+          <Divider variant="middle" orientation="vertical" flexItem className={classes.divider}/>
+          <div>
+            <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
+              {user.following.length}
+            </Typography>
+            <Typography variant='body2' component="p">
+              Following
+            </Typography>
+          </div>
+        </CardActions>
+        <Divider/>
+        <CardActions className={classes.cardAction} disableSpacing>
+        <Link to={"/user/" + jwt.user._id} className={classes.link}>
+          <Button color='primary' className={classes.profileButton}>
+            My Profile
+          </Button>
+        </Link>
+        </CardActions>
+      </Fragment>
+    }
     </Card>
   )
 }

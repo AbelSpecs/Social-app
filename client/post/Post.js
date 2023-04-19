@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -19,9 +19,8 @@ import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { remove } from './api-post';
 import Comments from './Comments';
-import { Divider } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   card: {
     boxShadow: 'none'
   },
@@ -33,13 +32,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function Post(props) {
   const jwt = auth.isAuthenticated();
-  
+  const classes = useStyles();
+  const photoUrl = '/api/users/photo/' + props.post[props.index].postedBy._id + `?${new Date().getTime()}`;
   const checkLike = (likes) => {
     let match = likes.indexOf(jwt.user._id) !== -1;
     return match;
   }
 
-  const classes = useStyles();
   const [values, setValues] = useState({
     like: checkLike(props.post[props.index].likes),
     likes: props.post[props.index].likes.length,
@@ -84,11 +83,11 @@ export default function Post(props) {
   }
 
   return (
-    <div>
+    <Fragment>
       <Card className={classes.card}>
         <CardHeader
           avatar={
-            <Avatar src={'/api/users/photo/' + props.post[props.index].postedBy._id + `?${new Date().getTime()}`} className={classes.avatar}/>
+            <Avatar src={photoUrl} className={classes.avatar}/>
           }
           action={ props.post[props.index].postedBy._id === auth.isAuthenticated().user._id && 
             (<IconButton onClick={deletePost}>
@@ -124,7 +123,7 @@ export default function Post(props) {
           <Comments postId={props.post[props.index]._id} comments={values.comments} updateComments={updateComments} profile={props.profile}/>
         }
       </Card>
-    </div>
+    </Fragment>
   )
 }
 

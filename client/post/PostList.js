@@ -4,11 +4,16 @@ import Post from './Post';
 
 
 export default function PostList(props) {
-  console.log(props);
   return (
     <div style={{marginTop: '24px'}}>
       {props.posts.map((item, i) => {
-        return <Post post={item} key={i} index={i} onRemove={props.removeUpdate} profile={props.profile}></Post>
+        return <Post post={item} 
+                      key={i} 
+                      index={i} 
+                      onRemove={props.removeUpdate} 
+                      profile={props.profile} 
+                      >
+                </Post>
       })}
     </div>
   )

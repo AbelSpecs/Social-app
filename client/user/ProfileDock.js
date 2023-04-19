@@ -43,6 +43,12 @@ const useStyles = makeStyles(theme => ({
   },
   gridChild: {
       height: 'max-content'
+  },
+  profileGrid: {
+    height: 'max-content',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center'
   }
 }));
 
@@ -61,7 +67,7 @@ export default function ProfileDock() {
             <Followers/>
           </Grid>
           {defaultPage && 
-              <Grid item xs={12} sm={12} md={6} className={classes.gridChild}>
+              <Grid item xs={12} sm={12} md={6} className={classes.profileGrid} >
                   <Profile/>
               </Grid>
           }

@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/styles";
 import { trendList } from './api-post';
 import auth from "../auth/auth-helper";
 import { Fragment } from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { 
   List,
   ListItem, 
@@ -47,12 +48,16 @@ const useStyles = makeStyles(theme => ({
   listItemTextSecondary: { 
     fontSize: '0.7rem',
     fontWeight: '400'
+  },
+  circularProgress: {
+    margin: '10% 0 10% 43%'
   }
 }));
 
 export default function Trends(){
   const classes = useStyles();
   const jwt = auth.isAuthenticated();
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({ 
     trends: []
   });
@@ -61,12 +66,14 @@ export default function Trends(){
     const abortController = new AbortController();
     const signal = abortController.signal;
     let isMounted = true;
+    setLoading(true);
     
     trendList({
       params: { userId: jwt.user._id},
       credentials: { divineMole: jwt.token},
       signal
     }).then((data) => {
+      setLoading(false);
       if(data && data.error){
         console.log(data.error);
       }
@@ -95,29 +102,35 @@ export default function Trends(){
         <Typography className={classes.title}>
           Trends For You
         </Typography>
-        {<List>
-          {values.trends.map((item, i) => {
-            return <span key={i}>
-              <ListItem>
-                <ListItemText 
-                  primary={'#'+item.text} 
-                  className={classes.listItemText}
-                  secondary={
-                    <Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                        className={classes.listItemTextSecondary}
-                        >
-                        72k posts
-                      </Typography>
-                    </Fragment>}/>
-              </ListItem>
-            </span>
-          })
+        {
+          loading && <CircularProgress className={classes.circularProgress}/>
         }
-      </List>}
+        { 
+          !loading &&
+            <List>
+            {values.trends.map((item, i) => {
+              return <span key={i}>
+                <ListItem>
+                  <ListItemText 
+                    primary={'#'+item.text} 
+                    className={classes.listItemText}
+                    secondary={
+                      <Fragment>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="textPrimary"
+                          className={classes.listItemTextSecondary}
+                          >
+                          72k posts
+                        </Typography>
+                      </Fragment>}/>
+                </ListItem>
+              </span>
+              })
+            }
+          </List>
+        }
       </Paper>
   </Fragment>
   )

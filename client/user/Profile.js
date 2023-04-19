@@ -5,6 +5,7 @@ CardActions,
 CardActionArea,
 CardMedia,
 CardContent,
+Icon,
 IconButton, 
 ListItemSecondaryAction, 
 Paper, 
@@ -26,8 +27,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import EditProfile from "./EditProfile";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate';
 import Slide from '@material-ui/core/Slide';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles(theme => ({
@@ -60,9 +60,6 @@ const useStyles = makeStyles(theme => ({
         '& .MuiAvatar-circular': {
             width: '100%',
             height: '100%'
-        },
-        '& .MuiIconButton-label':{
-            height: '100%'
         }
     },
     avatarLabel: {
@@ -70,12 +67,15 @@ const useStyles = makeStyles(theme => ({
         cursor: 'pointer',
         color: '#ffffff',
         opacity: 0,
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
         transition: 'all .4s ease-out',
         '&:hover':{
             opacity: 1
         }
     },
-    backLabel: {
+    backgroundLabel: {
         position: 'absolute',
         top: '20px',
         right: '20px',
@@ -115,11 +115,12 @@ const useStyles = makeStyles(theme => ({
     },
 
 // Paper
-    root: {
+    paper: {
       margin: 'auto',
       padding: theme.spacing(3),
       marginTop: theme.spacing(5),
-      borderRadius: '19px'
+      borderRadius: '19px',
+      width: '100%'
     },
     title: {
       marginTop: theme.spacing(3),
@@ -133,33 +134,35 @@ const useStyles = makeStyles(theme => ({
   }));
 
 export default function Profile() {
+    const jwt = auth.isAuthenticated();
     const userId = useParams();
     const navigate = useNavigate();
     const classes = useStyles();
-    const [user, setUser] = useState({
-        following: [],
-        followers: []
-    });
+    const [loading, setLoading] = useState(false);
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [following, setFollowing] = useState(false);
     const [posts, setPosts] = useState([]);
     const [edit, setEdit] = useState(false);
-    const [checked, setChecked] = useState(false);
+    const [user, setUser] = useState({
+        following: [],
+        followers: []
+    });
     const [values, setValues] = useState({
         photo: '',
         background: ''
-    })
-    const jwt = auth.isAuthenticated();
+    });
+    
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        
+        setLoading(true);
         read({
             params: { userId: userId.userId },
             credentials: { divineMole: jwt.token },
             signal
         }).then(data => {
+            setLoading(false);
             if(data && data.error)
             {
                 setRedirectToSignin(true);
@@ -262,14 +265,9 @@ export default function Profile() {
         setPosts(updatedPosts);
     }
 
-    const handleEdition = () => {
-        setEdit(!edit);
-        // setChecked((prev) => !prev); 
-    }
-
-    const handleCheck = () => {
-        
-    }
+    const handleEdit = () => {
+        setEdit((prev) => !prev);
+    };
 
     const handlePhoto = name => event => {
         const value = event.target.files[0];
@@ -290,6 +288,11 @@ export default function Profile() {
 
     return (
         <Fragment>
+        {
+            loading && <CircularProgress/>
+        }
+        {
+            !loading &&
             <Card className={classes.card}>
                 <CardHeader className={classes.settingsButton}/>
                 <CardActionArea className={classes.cardActionArea}>
@@ -301,18 +304,18 @@ export default function Profile() {
                     title="Background"
                     />
                     <input accept="image/*" type="file" onChange={handlePhoto('background')}
-                            style={{display: 'none'}} id="back-button-file" />
-                    <label htmlFor="back-button-file" className={classes.backLabel}>
+                            style={{display: 'none'}} id="background-button-file" />
+                    <label htmlFor="background-button-file" className={classes.backgroundLabel}>
                         <FileUpload/>
                     </label>
-                    <IconButton aria-label="Edit" color="primary" className={classes.avatarButton} >
+                    <Icon aria-label="Edit" className={classes.avatarButton} >
                         <Avatar src={photoUrl} />
                         <input accept="image/*" type="file" onChange={handlePhoto('photo')}
                             style={{display: 'none'}} id="icon-button-file" />
                         <label htmlFor="icon-button-file" className={classes.avatarLabel}>
                             <FileUpload/>
                         </label>
-                    </IconButton>
+                    </Icon>
                     <CardContent className={classes.cardContent}>
                         <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
                             {user.name}
@@ -329,15 +332,7 @@ export default function Profile() {
                     { auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id
                         ?
                         (<ListItemSecondaryAction>
-                            {/*<Link to={"/user/" + user._id + "/edit"}>
-                                <IconButton aria-label="Edit" color="primary">
-                                    <EditOutlinedIcon/>
-                                </IconButton>
-                            </Link>*/}
-                            {/*<FormControlLabel
-                                control={<Switch checked={checked} onChange={handleCheck} />}
-                            />*/}
-                            <IconButton aria-label="Edit" color="primary" onClick={handleEdition}>
+                            <IconButton aria-label="Edit" color="primary" onClick={handleEdit}>
                                 <EditOutlinedIcon/>
                             </IconButton>
                             <DeleteUser userId={user._id}/>
@@ -348,14 +343,16 @@ export default function Profile() {
                         </ListItemSecondaryAction>)
                     }
                 </CardActions>
-                {edit && 
-                    <EditProfile />
-                    /*<Slide direction="up" in={edit} mountOnEnter unmountOnExit>
-                    </Slide>*/
+                {
+                    <Slide direction="down" in={edit} mountOnEnter unmountOnExit>
+                        <div>
+                            <EditProfile />
+                        </div>
+                    </Slide>
                 }
             </Card>
-            
-            <Paper className={classes.root} elevation={4}>
+        }
+            <Paper className={classes.paper} elevation={4}>
                 <List dense>
                     <ProfileTabs people={user} posts={posts} profile={true} removeUpdate={removePost}></ProfileTabs>
                 </List>

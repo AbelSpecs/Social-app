@@ -18,20 +18,22 @@ export default function NewsFeed() {
   const classes = useStyles();
   const jwt = auth.isAuthenticated();
   const [post, setPost] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
+    setLoading(true);
 
     postList({
       params: {userId: jwt.user._id},
       credentials: {divineMole: jwt.token},
       signal
     }).then(data => {
+      setLoading(false);
       if(data.error){
         console.log(data.error);
-      }else{
-        console.log(data);
+      }else{       
         setPost([...post, data]);
       }
     });

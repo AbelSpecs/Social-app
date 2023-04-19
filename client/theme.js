@@ -6,6 +6,7 @@ const theme = createTheme({
        useNextVariants: true, 
     },
     palette: {
+        background: '#4D61C6',
         primary:{
             light: '#5c67a3',
             main: '#3f4771',
@@ -14,7 +15,7 @@ const theme = createTheme({
         },
         secondary: {
             light: '#ff79b0',
-            main: '#ff4081',
+            main: '#754DC6',
             dark: '#c60055',
             contrastText: '#000'
         },

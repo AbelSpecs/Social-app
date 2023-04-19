@@ -15,6 +15,7 @@ import ProfileCard from "../user/ProfileCard";
 import Followers from "../user/Followers";
 import Trends from "../post/Trends";
 import SearchBar from "./SearchBar";
+import { Fragment } from "react";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -42,7 +43,7 @@ export default function Home () {
     const classes = useStyles();
 
     return ( 
-        <div>
+        <Fragment>
             <Grid container justifyContent="flex-end" spacing={2} className={classes.grid}>
                 <Grid item xs={12} sm={3} className={classes.gridChild}>
                     <ProfileCard/>
@@ -61,6 +62,6 @@ export default function Home () {
                     </Grid>
                 }
             </Grid>
-        </div>
+        </Fragment>
     )
 }

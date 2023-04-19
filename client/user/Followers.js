@@ -6,10 +6,9 @@ import { listfollowers, follow } from './api-user';
 import Snackbar from '@material-ui/core/Snackbar';
 import auth from "../auth/auth-helper";
 import { Link } from "react-router-dom";
-import ViewIcon from '@material-ui/icons/Visibility'
 import { Fragment } from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { 
-  IconButton, 
   List,
   ListItem, 
   ListItemAvatar, 
@@ -43,18 +42,21 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: '10px',
-    // marginTop: `${theme.spacing(1)}px`,
     borderRadius: '19px'
   },
   link: {
     textDecoration: 'none',
     color: '#000000'
+  },
+  circularProgress: {
+    margin: '10% 0 10% 43%'
   }
 }))
 
 export default function Followers() {
   const classes = useStyles();
   const jwt = auth.isAuthenticated();
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({ 
     users: [],
     error: '',
@@ -66,12 +68,14 @@ export default function Followers() {
     const abortController = new AbortController();
     const signal = abortController.signal;
     let isMounted = true;
-    
+    setLoading(true);
+
     listfollowers({
       params: { userId: jwt.user._id},
       credentials: { divineMole: jwt.token},
       signal
     }).then((data) => {
+      setLoading(false);
       if(data && data.error){
         setValues({...values, error: data.error});
       }
@@ -121,26 +125,34 @@ export default function Followers() {
         <Typography className={classes.title}>
           Who is Following You
         </Typography>
-        <List>
-          {values.users.map((item, i) => {
-            return <span key={i}>
-              <ListItem>
-                <ListItemAvatar className={classes.avatar}>
-                  <Avatar src={'/api/users/photo/'+item._id}/>
-                </ListItemAvatar>
-                <Link to={"/user/" + item._id} className={classes.link}>
-                  <ListItemText primary={item.name}/>
-                </Link>
-                <ListItemSecondaryAction>
-                  <Button aria-label="Follow" variant="contained" color="primary" onClick={() => {clickfollow(item, i)}}>
-                    Follow
-                  </Button>
-                </ListItemSecondaryAction>
-              </ListItem>
-            </span>
-          })
+        {
+          loading && <CircularProgress className={classes.circularProgress}/>
         }
-        </List>
+        {
+          !loading && 
+          <List>
+          {values.users.map((item, i) => {
+            return (
+              <span key={i}>
+                <ListItem>
+                  <ListItemAvatar className={classes.avatar}>
+                    <Avatar src={'/api/users/photo/'+item._id}/>
+                  </ListItemAvatar>
+                  <Link to={"/user/" + item._id} className={classes.link}>
+                    <ListItemText primary={item.name}/>
+                  </Link>
+                  <ListItemSecondaryAction>
+                    <Button aria-label="Follow" variant="contained" color="primary" onClick={() => {clickfollow(item, i)}}>
+                      Follow
+                    </Button>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </span>
+              )
+            })
+          }
+          </List>
+        }
       </Paper>
       <Snackbar
           open={values.open}

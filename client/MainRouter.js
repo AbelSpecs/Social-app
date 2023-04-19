@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 // import Profile from "./user/Profile";
 import Signin from "./user/Signin";
 import Signup from "./user/Signup";
+import AuthDeck from "./design/authDeck";
 // import Users from './user/Users';
 import EditProfile from "./user/EditProfile";
 import Menu from "./core/Menu";
@@ -20,6 +21,7 @@ const MainRouter = () => {
             <Routes>
                 <Route index path="/" element={<React.Suspense fallback={<CircularProgress />}><Home/></React.Suspense>}/>
                 <Route path="/signin" element={<Signin/>}/>
+                <Route path="/auth" element={<AuthDeck/>}/>
                 <Route path="/users" element={<React.Suspense fallback={<CircularProgress />}><Users/></React.Suspense>}/>
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/user/:userId" element={<React.Suspense fallback={<CircularProgress />}><ProfileDock/></React.Suspense>}/>
