@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: "contain"
     },
     grid: {
-        marginTop: '10px'
+        marginTop: '10px',
+        justifyContent: 'center'
     },
     gridChild: {
         height: 'max-content'
@@ -38,18 +39,18 @@ export default function Home () {
 
     return ( 
         <Fragment>
-            <Grid container justifyContent="flex-end" spacing={2} className={classes.grid}>
-                <Grid item xs={12} sm={3} className={classes.gridChild}>
+            <Grid container justifyContent="flex-end" spacing={5} className={classes.grid}>
+                <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
                     <ProfileCard/>
                     <Followers/>
                 </Grid>
                 {defaultPage && 
-                    <Grid item xs={12} sm={5} className={classes.gridChild}>
+                    <Grid item xs={12} sm={12} md={5} className={classes.gridChild}>
                         <NewsFeed/>
                     </Grid>
                 }
                 {defaultPage && 
-                    <Grid item xs={12} sm={4} className={classes.gridChild}>
+                    <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
                         <SearchBar/>
                         <Trends/>
                         <FindPeople/>

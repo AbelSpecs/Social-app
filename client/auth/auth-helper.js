@@ -3,19 +3,23 @@ import { signout } from "./api-auth";
 const auth = {
     
     authenticate(jwt, cb) {
-        if(typeof window !== "undefined") 
-            sessionStorage.setItem('jwt', JSON.stringify(jwt));
+        if(typeof window !== "undefined") {
+            ('jwt', JSON.stringify(jwt));
+        }
         cb();
     },
     
     isAuthenticated() {
-        if(typeof window == "undefined")
+        if(typeof window == "undefined"){
             return false;
-    
-        if(sessionStorage.getItem('jwt'))
+        }
+        
+        if(sessionStorage.getItem('jwt')){
             return JSON.parse(sessionStorage.getItem('jwt'));
-        else
+        }
+        else{
             return false;
+        }
     },
     
     clearJWT(cb) {

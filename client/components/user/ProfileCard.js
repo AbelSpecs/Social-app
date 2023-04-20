@@ -66,10 +66,14 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     left: '70%'
   },
+  settingsIcon: {
+    color: '#ffff'
+  },
   menu: {
     marginTop: '3.5%',
     '& .MuiPaper-rounded': {
-      borderRadius: '20px'
+      borderRadius: '20px',
+      backgroundColor: '#ffff' 
     }
   },
   circularProgress: {
@@ -78,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProfileCard() {
+  
   const photoUrl = `/api/users/photo/${jwt.id}?${new Date().getTime()}`;
   const backgroundUrl = `/api/users/background/${jwt.id}?${new Date().getTime()}`;
   const classes = useStyles();
@@ -104,7 +109,7 @@ export default function ProfileCard() {
         <CardHeader className={classes.settingsButton} action={
           <Fragment>
             <IconButton aria-label="settings" onClick={handleClick}>
-                <SettingsOutlinedIcon />
+                <SettingsOutlinedIcon className={classes.settingsIcon}/>
             </IconButton>
             <Settings 
               handleClose={handleClose} 

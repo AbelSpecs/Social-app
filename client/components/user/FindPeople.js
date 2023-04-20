@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import { makeStyles } from "@material-ui/styles";
-import { findpeople, follow } from './api-user';
+import { follow } from './api-user';
 import Snackbar from '@material-ui/core/Snackbar';
-import auth from "../../auth/auth-helper";
 import { Link } from "react-router-dom";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import jwt from '../../auth/auth-user';
+import useFindPeople from '../../hooks/useFindPeople';
 import { 
   List,
   ListItem, 
@@ -57,51 +57,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function FindPeople () {
   const classes = useStyles();
-  const jwt = auth.isAuthenticated();
-  const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({ 
-    users: [],
-    error: '',
-    open: false,
-    message: ''
-  });
+  const { values, setValues, loading, setLoading } = useFindPeople();
   
-  useEffect(() => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    let isMounted = true;
-    setLoading(true);
-    
-    findpeople({
-      params: { userId: jwt.user._id},
-      credentials: { divineMole: jwt.token},
-      signal
-    }).then((data) => {
-      setLoading(false);
-      if(data && data.error){
-        setValues({...values, error: data.error});
-      }
-      else{
-        mounted(data);
-      }
-    });
-
-    function mounted(data) {
-      if(isMounted){
-        setValues({...values, users: data});
-      }
-    }
-
-    return function cleanup(){
-      isMounted = false
-      abortController.abort();
-    }
-
-  }, [values.users.length])
-
   const clickfollow = (user, index) => {
     follow({
-      params: { userId: jwt.user._id},
+      params: { userId: jwt.id},
       credentials: { divineMole: jwt.token},
       followId: user._id
     }).then(data => {
