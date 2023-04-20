@@ -2,18 +2,18 @@ import React from "react";
 import { Route, Routes } from 'react-router-dom';
 //import Home from './core/Home';
 // import Profile from "./user/Profile";
-import Signin from "./user/Signin";
-import Signup from "./user/Signup";
-import AuthDeck from "./design/authDeck";
+import Signin from "./components/user/Signin";
+import Signup from "./components/user/Signup";
+import AuthDeck from "./components/design/authDeck";
 // import Users from './user/Users';
-import EditProfile from "./user/EditProfile";
-import Menu from "./core/Menu";
+import EditProfile from "./components/user/EditProfile";
+import Menu from "./components/core/Menu";
 import CircularProgress from '@material-ui/core/CircularProgress';
 // import ProfileDock from "./user/ProfileDock";
 
-const Home = React.lazy(() => import('./core/Home'));
-const ProfileDock = React.lazy(() => import('./user/ProfileDock'));
-const Users = React.lazy(() => import('./user/Users'));
+const Home = React.lazy(() => import('./components/core/Home'));
+const ProfileDock = React.lazy(() => import('./components/user/ProfileDock'));
+const Users = React.lazy(() => import('./components/user/Users'));
 
 const MainRouter = () => {
     return (<div>
