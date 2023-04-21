@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { findpeople } from '../components/user/api-user';
+import { findpeople } from '../services/api-user';
 import jwt from '../auth/auth-user';
 
 export default function useFindPeople() { 

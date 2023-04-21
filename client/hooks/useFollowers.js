@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listfollowers } from '../components/user/api-user';
+import { listfollowers } from '../services/api-user';
 import jwt from '../auth/auth-user';
 
 export default function useFollowers() { 

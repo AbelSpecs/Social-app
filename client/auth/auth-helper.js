@@ -4,7 +4,7 @@ const auth = {
     
     authenticate(jwt, cb) {
         if(typeof window !== "undefined") {
-            ('jwt', JSON.stringify(jwt));
+            sessionStorage.setItem("jwt", JSON.stringify(jwt));
         }
         cb();
     },

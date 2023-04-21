@@ -83,8 +83,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProfileCard() {
   
-  const photoUrl = `/api/users/photo/${jwt.id}?${new Date().getTime()}`;
-  const backgroundUrl = `/api/users/background/${jwt.id}?${new Date().getTime()}`;
+  const photoUrl = jwt.id ? `/api/users/photo/${jwt.id}?${new Date().getTime()}`
+                          : '/api/users/defaultphoto';
+  const backgroundUrl = jwt.id ? `/api/users/background/${jwt.id}?${new Date().getTime()}`
+                               : '/api/users/defaultbackground';
   const classes = useStyles();
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);

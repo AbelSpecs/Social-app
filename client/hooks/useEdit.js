@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { read } from '../components/user/api-user';
+import { read } from '../services/api-user';
 import jwt from '../auth/auth-user';
 
 export default function useEdit() {
@@ -18,7 +18,7 @@ export default function useEdit() {
         if(jwt){
             setValues({...values, id: jwt.id, name: jwt.name, email: jwt.email, about: jwt.about});
         }
-        
+
         return function cleanup() {
             abortController.abort();
         } 

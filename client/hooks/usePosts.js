@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadPostsByUser } from "../components/post/api-post";
+import { loadPostsByUser } from "../services/api-post";
 import jwt from '../auth/auth-user';
 
 export default function usePosts(){

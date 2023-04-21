@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from "@material-ui/styles";
-import { follow } from './api-user';
+import { follow } from '../../services/api-user';
 import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 import { Fragment } from 'react';

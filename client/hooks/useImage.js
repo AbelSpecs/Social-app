@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { update } from "../components/user/api-user";
+import { update } from "../services/api-user";
 import jwt from '../auth/auth-user';
 
 export default function useImage(){

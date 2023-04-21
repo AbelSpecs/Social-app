@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { read } from "../components/user/api-user";
+import { read } from "../services/api-user";
 import jwt from '../auth/auth-user';
 
 export default function useProfileUser(){

@@ -14,10 +14,10 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CommentIcon from '@material-ui/icons/Comment';
-import auth from '../../auth/auth-helper';
+import jwt from '../../auth/auth-user';
 import { Link } from "react-router-dom";
 import { useState } from 'react';
-import { remove } from './api-post';
+import { remove } from '../../services/api-post';
 import Comments from './Comments';
 
 const useStyles = makeStyles(() => ({
@@ -31,11 +31,15 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Post(props) {
-  const jwt = auth.isAuthenticated();
+  const userId = jwt.id;
+  const userPostId = props.post[props.index].postedBy._id;
   const classes = useStyles();
-  const photoUrl = '/api/users/photo/' + props.post[props.index].postedBy._id + `?${new Date().getTime()}`;
+  const photoUrl = userPostId
+  ? '/api/users/photo/' + userPostId + `?${new Date().getTime()}`
+  : '/api/users/defaultphoto';
+  
   const checkLike = (likes) => {
-    let match = likes.indexOf(jwt.user._id) !== -1;
+    let match = likes.indexOf(jwt.id) !== -1;
     return match;
   }
 
@@ -62,7 +66,7 @@ export default function Post(props) {
   const clickLike = () => {
     let callApi = values.like ? like : dislike;
     callApi({
-      params: {userId: jwt.user._id},
+      params: {userId: userId},
       credentials: {divineMole: jwt.token},
       postId: props.posts._id 
     }).then(data => {
@@ -89,11 +93,11 @@ export default function Post(props) {
           avatar={
             <Avatar src={photoUrl} className={classes.avatar}/>
           }
-          action={ props.post[props.index].postedBy._id === auth.isAuthenticated().user._id && 
+          action={ userPostId === userId && 
             (<IconButton onClick={deletePost}>
                 <DeleteIcon />               
               </IconButton>)}
-          title={ <Link className={classes.cardName} to={"/user/" + props.post[props.index].postedBy._id}>{props.post[props.index].postedBy.name}</Link>}
+          title={ <Link className={classes.cardName} to={"/user/" + userPostId}>{props.post[props.index].postedBy.name}</Link>}
           subheader={(new Date(props.post[props.index].created)).toDateString()}
           className={classes.cardHeader}
         />

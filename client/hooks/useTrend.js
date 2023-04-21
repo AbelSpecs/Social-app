@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { trendList } from '../components/post/api-post';
+import { trendList } from '../services/api-post';
 import jwt from '../auth/auth-user';
 
 export default function Trend() {

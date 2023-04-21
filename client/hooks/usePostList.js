@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { postList } from '../components/post/api-post';
+import { postList } from '../services/api-post';
 import jwt from '../auth/auth-user';
 
 export default function usePostList() {

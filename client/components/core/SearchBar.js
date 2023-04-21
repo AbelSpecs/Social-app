@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconButton, Paper, TextField } from "@material-ui/core";
 import { Fragment } from "react";
-import { findpeoplebyname } from "../../components/user/api-user";
+import { findpeoplebyname } from "../../services/api-user";
 import { useState } from "react";
 import SearchIcon from '@material-ui/icons/Search';
 import Autocomplete from '@material-ui/lab/Autocomplete';

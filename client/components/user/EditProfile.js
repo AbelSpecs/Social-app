@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { update } from "./api-user";
+import { update } from "../../services/api-user";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate';
 import jwt from '../../auth/auth-user';
 import useEdit from "../../hooks/useEdit";

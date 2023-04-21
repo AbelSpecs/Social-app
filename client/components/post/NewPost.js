@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { create } from './api-post';
+import { create } from '../../services/api-post';
 import auth from '../../auth/auth-helper';
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 export default function NewPost(props){
     const classes = useStyles();
     const jwt = auth.isAuthenticated();
+    const photoUrl = '/api/users/photo/'+ jwt.user._id + `?${new Date().getTime()}`;
     const [values, setValues] = useState({
         text: '',
         photo: '',
@@ -79,7 +80,7 @@ export default function NewPost(props){
         <Card className={classes.card}>
             <CardHeader className={classes.cardHeader}
             avatar={
-              <Avatar src={'/api/users/photo/'+ jwt.user._id + `?${new Date().getTime()}`} aria-label="recipe" className={classes.avatar} />
+              <Avatar src={photoUrl} aria-label="recipe" className={classes.avatar} />
             }
             title={
                 <TextField className={classes.title}

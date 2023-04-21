@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Avatar, CardHeader, TextField, IconButton, Divider } from '@material-ui/core';
 import auth from '../../auth/auth-helper';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { comments, deleteComments } from './api-post';
+import { comments, deleteComments } from '../../services/api-post';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
 

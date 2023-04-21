@@ -10,7 +10,7 @@ import {
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { useState } from "react";
 import auth from '../../auth/auth-helper';
-import { remove } from "./api-user";
+import { remove } from "../../services/api-user";
 import PropTypes from 'prop-types';
 import React from "react";
 
