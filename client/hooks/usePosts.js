@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { loadPostsByUser } from "../services/api-post";
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function usePosts(){
+    const userData = auth.getData();
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
@@ -10,8 +11,8 @@ export default function usePosts(){
         const signal = abortController.signal;
         
         loadPostsByUser({
-            params: { userId: jwt.id },
-            credentials: { divineMole: jwt.token },
+            params: { userId: userData.id },
+            credentials: { divineMole: userData.token },
             signal
         }).then(data => {
             if(data.error){

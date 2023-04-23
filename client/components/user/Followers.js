@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import useFollowers from '../../hooks/useFollowers';
-import jwt from '../../auth/auth-user';
+import auth from '../../auth/auth-helper';
 import { 
   List,
   ListItem, 
@@ -54,13 +54,14 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Followers() {
+  const userData = auth.getData();
   const classes = useStyles();
   const { values, setValues, loading, setLoading } = useFollowers();
 
   const clickfollow = (user, index) => {
     follow({
-      params: { userId: jwt.id},
-      credentials: { divineMole: jwt.token},
+      params: { userId: userData.id},
+      credentials: { divineMole: userData.token},
       followId: user._id
     }).then(data => {
       if(data.error){

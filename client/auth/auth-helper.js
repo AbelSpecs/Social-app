@@ -1,4 +1,4 @@
-import { signout } from "./api-auth";
+import { signout } from "../services/api-auth";
 
 const auth = {
     
@@ -15,7 +15,7 @@ const auth = {
         }
         
         if(sessionStorage.getItem('jwt')){
-            return JSON.parse(sessionStorage.getItem('jwt'));
+            return true;
         }
         else{
             return false;
@@ -23,11 +23,21 @@ const auth = {
     },
     
     clearJWT(cb) {
-        if(typeof window !== "undefined")
+        if(typeof window !== "undefined"){
             sessionStorage.removeItem('jwt');
+        }
         
         cb();
         signout();
+    },
+
+    getData() {
+        if(!sessionStorage.getItem('jwt')){
+            return;
+        }
+        const jwt = JSON.parse(sessionStorage.getItem('jwt'));
+        const user = { token: jwt.token, id: jwt.user._id, name: jwt.user.name, email: jwt.user.email, about: jwt.user.about }
+        return user;
     }
 }
 

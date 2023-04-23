@@ -14,7 +14,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CommentIcon from '@material-ui/icons/Comment';
-import jwt from '../../auth/auth-user';
+import auth from '../../auth/auth-helper';
 import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { remove } from '../../services/api-post';
@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Post(props) {
-  const userId = jwt.id;
+  const userData = auth.getData();
   const userPostId = props.post[props.index].postedBy._id;
   const classes = useStyles();
   const photoUrl = userPostId
@@ -39,7 +39,7 @@ export default function Post(props) {
   : '/api/users/defaultphoto';
   
   const checkLike = (likes) => {
-    let match = likes.indexOf(jwt.id) !== -1;
+    let match = likes.indexOf(userData.id) !== -1;
     return match;
   }
 
@@ -53,7 +53,7 @@ export default function Post(props) {
   const deletePost = () => {
     remove({
       params: { postId: props.post._id},
-      credentials: { divineMole: jwt.token }
+      credentials: { divineMole: userData.token }
     }).then(data => {
       if(data.error){
         console.log(data.error);
@@ -67,7 +67,7 @@ export default function Post(props) {
     let callApi = values.like ? like : dislike;
     callApi({
       params: {userId: userId},
-      credentials: {divineMole: jwt.token},
+      credentials: {divineMole: userData.token},
       postId: props.posts._id 
     }).then(data => {
       if(data.error){
@@ -93,7 +93,7 @@ export default function Post(props) {
           avatar={
             <Avatar src={photoUrl} className={classes.avatar}/>
           }
-          action={ userPostId === userId && 
+          action={ userPostId === userData.id && 
             (<IconButton onClick={deletePost}>
                 <DeleteIcon />               
               </IconButton>)}

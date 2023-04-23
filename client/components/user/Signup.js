@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { create } from "../../services/api-user";
 import { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import React from "react";
+import React, { Fragment } from "react";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { 
     Button, 
     Card, 
@@ -20,18 +21,31 @@ import {
 
 const useStyles = makeStyles(theme => ({
     card: {
-      maxWidth: 600,
-      margin: 'auto',
+      width: '70%',
       textAlign: 'center',
       marginTop: theme.spacing(5),
-      paddingBottom: theme.spacing(2)
+      paddingBottom: theme.spacing(2),
+      borderRadius: 20
+    },
+    cardAction:{
+      '& .MuiButton-root': {
+        textTransform: 'capitalize'
+      }
     },
     error: {
       verticalAlign: 'middle'
     },
     title: {
       marginTop: theme.spacing(2),
-      color: theme.palette.openTitle
+      color: theme.palette.openTitle,
+      fontSize: '1.5rem',
+      display: 'flex',
+      justifyContent: 'flex-start',
+      gap: '35%',
+      alignItems: 'center'
+    },
+    backArrow: {
+      cursor: 'pointer'
     },
     textField: {
       marginLeft: theme.spacing(1),
@@ -40,12 +54,14 @@ const useStyles = makeStyles(theme => ({
     },
     submit: {
       margin: 'auto',
-      marginBottom: theme.spacing(2)
+      marginBottom: theme.spacing(2),
+      width: 300
     }
-}));
+  }));
 
-export default function Signup() {
+export default function Signup(props) {
     const classes = useStyles();
+    const [variant, setVariant] = useState("contained");
     const [values, setValues] = useState({
         name: '',
         password: '',
@@ -64,6 +80,14 @@ export default function Signup() {
         setValues({...values, open: false});
     }
 
+    const handleVariantIn = () => {
+        setVariant("outlined");
+    }
+    
+    const handleVariantOut = () => {
+        setVariant("contained");
+    }
+
     const clickSubmit = () => {
         const user = {
             name: values.name || undefined,
@@ -77,15 +101,17 @@ export default function Signup() {
             }
             else{
                 setValues({...values, error: '', name: '', password: '', email: '', open: true});
+                props.handleHide;
             }
         });
     }
 
     return (
-        <div>
+        <Fragment>
             <Card className={classes.card}>
                 <CardContent>
-                    <Typography>
+                    <Typography className={classes.title}>
+                        <ArrowBackIcon className={classes.backArrow} onClick={props.handleHide}/>
                         Sign Up
                     </Typography>
                     <TextField id="name" label="Name" className={classes.textField}
@@ -106,9 +132,10 @@ export default function Signup() {
                             {values.error}</Typography>)
                     }
                 </CardContent>
-                <CardActions>
-                    <Button color="primary" variant="contained"
-                        onClick={clickSubmit} className={classes.submit}>
+                <CardActions className={classes.cardAction}>
+                    <Button color="primary" variant={variant}
+                        onClick={clickSubmit} className={classes.submit}
+                        onMouseEnter={handleVariantIn} onMouseLeave={handleVariantOut}>
                         Submit   
                     </Button>
                 </CardActions>
@@ -122,13 +149,13 @@ export default function Signup() {
                 </DialogContent>
                 <DialogActions>
                     <Link to="/signin">
-                        <Button color="primary" autoFocus="autoFocus"
-                                variant="contained">
-                            Sign In
-                        </Button>
+                      <Button color="primary" autoFocus="autoFocus"
+                              variant="contained">
+                          Sign In
+                      </Button>
                     </Link>
                 </DialogActions>
             </Dialog>
-        </div>
-    )
+        </Fragment> 
+      )
 } 

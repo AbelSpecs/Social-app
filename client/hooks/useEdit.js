@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { read } from '../services/api-user';
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function useEdit() {
+    const userData = auth.getData();
     const [values, setValues] = useState({
         id: '',
         name: '',
@@ -13,17 +13,19 @@ export default function useEdit() {
     });
 
     useEffect(() => {
+        let isMounted = true;
         const abortController = new AbortController();
 
-        if(jwt){
-            setValues({...values, id: jwt.id, name: jwt.name, email: jwt.email, about: jwt.about});
+        if(userData && isMounted){
+            setValues({...values, id: userData.id, name: userData.name, email: userData.email, about: userData.about});
         }
 
         return function cleanup() {
+            isMounted = false
             abortController.abort();
         } 
         
-    }, [jwt.id]);
+    }, [userData.id]);
 
     return { values, setValues };
 }

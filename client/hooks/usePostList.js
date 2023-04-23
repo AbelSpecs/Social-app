@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { postList } from '../services/api-post';
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function usePostList() {
+    const userData = auth.getData();
     const [post, setPost] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -12,8 +13,8 @@ export default function usePostList() {
         setLoading(true);
     
         postList({
-          params: {userId: jwt.id},
-          credentials: {divineMole: jwt.token},
+          params: {userId: userData.id},
+          credentials: {divineMole: userData.token},
           signal
         }).then(data => {
           setLoading(false);
@@ -28,7 +29,7 @@ export default function usePostList() {
           abortController.abort(); 
         }
     
-      },[jwt.id]);
+      },[userData.id]);
 
     return { post, setPost, loading, setLoading }; 
 }

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { read } from "../services/api-user";
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function useProfileUser(){
+    const userData = auth.getData();
     const [loading, setLoading] = useState(false);
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [following, setFollowing] = useState(false);
@@ -12,12 +13,13 @@ export default function useProfileUser(){
     });
 
     useEffect(() => {
+        let isMounted = true;
         const abortController = new AbortController();
         const signal = abortController.signal;
         setLoading(true);
         read({
-            params: { userId: jwt.id },
-            credentials: { divineMole: jwt.token },
+            params: { userId: userData.id },
+            credentials: { divineMole: userData.token },
             signal
         }).then(data => {
             setLoading(false);
@@ -27,20 +29,27 @@ export default function useProfileUser(){
             }
             else
             {
+                mounted(data);
+            }
+        });
+
+        function mounted(data) {
+            if(isMounted){
                 let following = checkFollow(data);
                 setUser(data);
                 setFollowing(following);
             }
-        });
+        } 
     
         return function cleanup() {
+            isMounted = false;
             abortController.abort();
         }
     }, []);
 
     const checkFollow = (user) => {
         const match = user.followers.some((follower) => {
-            return follower._id === jwt.id;
+            return follower._id === userData.id;
         });
         return match;
     }

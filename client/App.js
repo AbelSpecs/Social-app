@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MainRouter from './MainRouter';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/styles';
-import theme from "./theme";
+import { ThemeProvider, useTheme } from '@material-ui/styles';
+// import theme from "./theme";
 import { hot } from 'react-hot-loader';
+import design from "./theme";
+import { createTheme } from '@material-ui/core/styles';
+import Mode from "./components/core/Mode";
 
 
 
 const App = () => {
-    // const [themes, setThemes] = useState()
-    React.useEffect(() => {
+    // const { mode } = useMode();
+    // console.log(mode);
+    // const themePalette = design;
+    // themePalette.palette.type = mode;
+    // const theme =  createTheme(themePalette);
+
+    useEffect(() => {
         const jssStyles = document.querySelector('#jss-server-side');
     
         if(jssStyles){
@@ -19,9 +27,10 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            <ThemeProvider theme={theme}>
-                <MainRouter/>
-            </ThemeProvider>
+            <Mode/>
+            {/*<ThemeProvider theme={theme}>
+                <MainRouter />
+            </ThemeProvider>*/}
         </BrowserRouter>
     )
 }

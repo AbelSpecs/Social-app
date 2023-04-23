@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { listfollowers } from '../services/api-user';
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function useFollowers() { 
+    const userData = auth.getData();
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({ 
         users: [],
@@ -14,12 +15,12 @@ export default function useFollowers() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
+        // let isMounted = true;
         setLoading(true);
     
         listfollowers({
-          params: { userId: jwt.id},
-          credentials: { divineMole: jwt.token},
+          params: { userId: userData.id},
+          credentials: { divineMole: userData.token},
           signal
         }).then((data) => {
           setLoading(false);
@@ -32,13 +33,13 @@ export default function useFollowers() {
         });
     
         function mounted(data) {
-          if(isMounted){
+          // if(isMounted){
             setValues({...values, users: data});
-          }
+          // }
         }
     
         return function cleanup(){
-          isMounted = false
+          // isMounted = false
           abortController.abort();
         }
     

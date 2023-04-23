@@ -15,8 +15,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Comments(props) {
+  const userData = auth.getData();
+  const photoUrl = userData ? '/api/users/photo/' + userData.id
+                            : '/api/users/defaultphoto';
   const classes = useStyles();
-  const jwt = auth.isAuthenticated();
   const [value, setValue] = useState({
     text: ''
   });
@@ -31,8 +33,8 @@ export default function Comments(props) {
     if(event.keyCode === 13){
       event.preventDefault();
       comments({
-        params: {userId: jwt.user._id, postId: props.postId},
-        credentials: {divineMole: jwt.token},
+        params: {userId: userData.id, postId: props.postId},
+        credentials: {divineMole: userData.token},
         comment: {text: value.text}
       }).then(data => {
         if(data.error){
@@ -48,8 +50,8 @@ export default function Comments(props) {
 
   const deleteComment = (comment) => {
     deleteComments({
-      params: {userId: jwt.user._id, postId: props.postId},
-      credentials: {divineMole: jwt.token},
+      params: {userId: userData.id, postId: props.postId},
+      credentials: {divineMole: userData.token},
       comment
     }).then(data => {
       if(data.error){
@@ -66,7 +68,7 @@ export default function Comments(props) {
       <p className={classes.commentText}>
         <Link className={classes.comment} to={'/user/'+comment.postedBy._id}>{comment.postedBy.name}</Link>
         <br/>
-        {comment.text} | { jwt.user._id === comment.postedBy._id && 
+        {comment.text} | { userData.id === comment.postedBy._id && 
         <IconButton onClick={() => {deleteComment(comment)}}>
           <DeleteIcon />               
         </IconButton>}
@@ -79,10 +81,11 @@ export default function Comments(props) {
 
   return (
     <div>
-      {!props.profile &&
+      {
+        !props.profile &&
         <CardHeader 
           avatar={
-            <Avatar className={classes.smallAvatar} src={'/api/users/photo/' + jwt.user._id}/>}
+            <Avatar className={classes.smallAvatar} src={photoUrl}/>}
           title={<TextField 
                   multiline
                   value={value.text}
@@ -95,15 +98,21 @@ export default function Comments(props) {
         </CardHeader>
       }
       <Divider/>
-      {props.comments.map((item, i) => {
-        return (
-          <CardHeader avatar={ <Avatar className={classes.smallAvatar} src={'/api/users/photo/' + item.postedBy._id}/>}
-                      title={commentBody(item)}
-                      key={i}
-                      className={classes.cardHeader}
-          >           
-          </CardHeader>)
-      })}
+      {
+        props.comments.map((item, i) => {
+          const photoUserUrl = '/api/users/photo/' + item.postedBy._id;
+          
+          return (
+            <CardHeader avatar={ 
+                        <Avatar className={classes.smallAvatar} src={photoUserUrl}/>
+                        }
+                        title={commentBody(item)}
+                        key={i}
+                        className={classes.cardHeader}
+            >           
+            </CardHeader>)
+          })
+      }
 
     </div>
   )

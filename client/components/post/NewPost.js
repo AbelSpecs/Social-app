@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { create } from '../../services/api-post';
 import auth from '../../auth/auth-helper';
 import { makeStyles } from "@material-ui/styles";
-import { Link } from "react-router-dom";
 import PhotoIcon from '@material-ui/icons/Photo';
 import { 
     Card, 
     CardHeader, 
     Avatar, 
-    CardContent, 
     TextField, 
     CardActions, 
     Button,
@@ -35,15 +33,16 @@ const useStyles = makeStyles(theme => ({
         color: '#000000',
         background: '#EEEDE7',
         borderRadius: '19px',
-        padding: '12px 14px'
+        padding: '9px 14px'
         }
     }
   }));
 
 export default function NewPost(props){
     const classes = useStyles();
-    const jwt = auth.isAuthenticated();
-    const photoUrl = '/api/users/photo/'+ jwt.user._id + `?${new Date().getTime()}`;
+    const userData = auth.getData();
+    const photoUrl = userData ? '/api/users/photo/'+ userData.id + `?${new Date().getTime()}`
+                                : '/api/users/defaultphoto';
     const [values, setValues] = useState({
         text: '',
         photo: '',
@@ -56,8 +55,8 @@ export default function NewPost(props){
         postData.append('photo', values.photo);
 
         create({
-            params: { userId: jwt.user._id},
-            credentials: { divineMole: jwt.token},
+            params: { userId: userData.id},
+            credentials: { divineMole: userData.token},
             post: postData
         }).then(data => {
             if(data.error){

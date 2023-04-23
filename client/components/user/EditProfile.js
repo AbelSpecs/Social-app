@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { update } from "../../services/api-user";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate';
-import jwt from '../../auth/auth-user';
+import auth from '../../auth/auth-helper';
 import useEdit from "../../hooks/useEdit";
 import { 
     Button,
@@ -51,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function EditProfile() {
     const classes = useStyles();
+    const userData = auth.getData();
     const { values, setValues } = useEdit();
 
     const handleChange = name => event => {
@@ -59,23 +60,22 @@ export default function EditProfile() {
     }
 
     const clickSubmit = () => {
-        let userData = new FormData();
+        let userForm = new FormData();
 
-        values.name && userData.append('name', values.name);
-        values.email && userData.append('email', values.email);
-        values.about && userData.append('about', values.about);
-        values.password && userData.append('password', values.password);
+        values.name && userForm.append('name', values.name);
+        values.email && userForm.append('email', values.email);
+        values.about && userForm.append('about', values.about);
+        values.password && userForm.append('password', values.password);
 
         update({
-            params: { userId: jwt.id },
-            credentials: { divineMole: jwt.token },
-            user: userData
+            params: { userId: userData.id },
+            credentials: { divineMole: userData.token },
+            user: userForm
         }).then(data => {
             if(data && data.error)
                 setValues({...values, error: data.error});
             else{
                 setValues({...values});
-                // navigate('/user/' + userId.userId);
             }
         })
     }

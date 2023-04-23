@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { read } from "../services/api-user";
-import jwt from "../auth/auth-user";
+import auth from '../auth/auth-helper';
 
 export default function useUser(){
+    const userData = auth.getData();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [user, setUser] = useState({
@@ -13,10 +14,11 @@ export default function useUser(){
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
+        let isMounted = true;
         setLoading(true);
         read({
-            params: { userId: jwt.id },
-            credentials: { divineMole: jwt.token },
+            params: { userId: userData.id },
+            credentials: { divineMole: userData.token },
             signal
         }).then(data => {
             setLoading(false);
@@ -27,15 +29,22 @@ export default function useUser(){
             }
             else
             {
-                setUser(data);
+                mounted(data);
             }
         });
+
+        function mounted(data) {
+            if(isMounted){
+                setUser(data);
+            }
+        }
     
         return function cleanup() {
+            isMounted = false;
             abortController.abort();
         }
 
-    }, [jwt.id]);
+    }, [userData.id]);
 
     return { user, loading, error }
 }

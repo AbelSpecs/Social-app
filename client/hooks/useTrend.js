@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { trendList } from '../services/api-post';
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function Trend() {
+    const userData = auth.getData();
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({ 
         trends: []
@@ -15,8 +16,8 @@ export default function Trend() {
         setLoading(true);
         
         trendList({
-          params: { userId: jwt.id},
-          credentials: { divineMole: jwt.token},
+          params: { userId: userData.id},
+          credentials: { divineMole: userData.token},
           signal
         }).then((data) => {
           setLoading(false);

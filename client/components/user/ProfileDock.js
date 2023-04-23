@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProfileDock() {
   const navigate = useNavigate();
-  const [defaultPage, setDefaultPage] = useState(auth.isAuthenticated());
+  // const [defaultPage, setDefaultPage] = useState(auth.isAuthenticated());
   const classes = useStyles();
 
   return (
@@ -59,18 +59,17 @@ export default function ProfileDock() {
             </IconButton>
             <Followers/>
           </Grid>
-          {defaultPage && 
-              <Grid item xs={12} sm={12} md={5} className={classes.profileGrid} >
-                  <Profile/>
-              </Grid>
-          }
-          {defaultPage && 
-              <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-                  <SearchBar/>
-                  <Trends/>
-                  <FindPeople/>
-              </Grid>
-          }
+          
+          <Grid item xs={12} sm={12} md={5} className={classes.profileGrid} >
+              <Profile/>
+          </Grid>
+          
+          <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
+              <SearchBar/>
+              <Trends/>
+              <FindPeople/>
+          </Grid>
+          
       </Grid>
     </Fragment>
   )

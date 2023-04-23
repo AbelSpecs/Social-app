@@ -6,7 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import jwt from '../../auth/auth-user';
+import auth from '../../auth/auth-helper';
 import useFindPeople from '../../hooks/useFindPeople';
 import { 
   List,
@@ -57,12 +57,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function FindPeople () {
   const classes = useStyles();
-  const { values, setValues, loading, setLoading } = useFindPeople();
+  const userData = auth.getData();
+  const { values, setValues, loading } = useFindPeople();
   
   const clickfollow = (user, index) => {
     follow({
-      params: { userId: jwt.id},
-      credentials: { divineMole: jwt.token},
+      params: { userId: userData.id},
+      credentials: { divineMole: userData.token},
       followId: user._id
     }).then(data => {
       if(data.error){

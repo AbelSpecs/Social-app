@@ -138,6 +138,7 @@ const findpeoplebyname = async({params, credentials, signal}) => {
                 'Authorization': 'Bearer ' + credentials.divineMole
             },
         });
+        
         return await response.json();
     } catch (error) {
         console.log(error);

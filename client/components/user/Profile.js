@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { useNavigate } from "react-router";
-import jwt from '../../auth/auth-user';
+import auth from '../../auth/auth-helper';
 import DeleteUser from "./DeleteUser";
 import FollowButton from "./FollowButton";
 import ProfileTabs from "./ProfileTabs";
@@ -142,6 +142,7 @@ const useStyles = makeStyles(theme => ({
   }));
 
 export default function Profile() {
+    const userData = auth.getData();
     const navigate = useNavigate();
     const classes = useStyles();
     const { user, setUser, loading, redirectToSigin, following, setFollowing } = useProfileUser();
@@ -151,9 +152,9 @@ export default function Profile() {
     
     const clickFollowButton = (api) => {
         api({
-            params: {userId: jwt.id},
-            credentials: {divineMole: jwt.token},
-            followId: jwt.id
+            params: {userId: userData.id},
+            credentials: {divineMole: userData.token},
+            followId: userData.id
         }).then((data) => {
             if(data.error){
                 console.log(data.error);
@@ -237,7 +238,7 @@ export default function Profile() {
                         </CardContent>
                     </CardActionArea>
                     <CardActions className={classes.cardAction} disableSpacing>
-                        { jwt && jwt.id == user._id
+                        { userData && userData.id == user._id
                             ?
                             (<ListItemSecondaryAction>
                                 <IconButton aria-label="Edit" color="primary" onClick={handleEdit}>

@@ -1,3 +1,9 @@
+import React, { useState } from "react";
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import auth from '../../auth/auth-helper';
+import { remove } from "../../services/api-user";
+import PropTypes from 'prop-types';
+import { useNavigate } from "react-router";
 import { 
     Button,
     Dialog,
@@ -7,14 +13,10 @@ import {
     DialogTitle, 
     IconButton
 } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import { useState } from "react";
-import auth from '../../auth/auth-helper';
-import { remove } from "../../services/api-user";
-import PropTypes from 'prop-types';
-import React from "react";
 
 export default function DeleteUser({userId}) {
+    const userData = auth.getData();
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         open: false,
         redirect: false
@@ -29,11 +31,13 @@ export default function DeleteUser({userId}) {
     }
 
     const confirmDelete = () =>{
-        const jwt = auth.isAuthenticated();
+        if(userData.id !== userId){
+            navigate('/signin');
+        }
         
         remove({
             params: userId,
-            credentials: { divineMole: jwt.token }
+            credentials: { divineMole: userData.token }
         }).then(data => {
             if(data && data.error) 
                 console.log(data.error);

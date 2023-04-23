@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { findpeople } from '../services/api-user';
-import jwt from '../auth/auth-user';
+import auth from '../auth/auth-helper';
 
 export default function useFindPeople() { 
+    const userData = auth.getData();
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({ 
         users: [],
@@ -18,8 +19,8 @@ export default function useFindPeople() {
         setLoading(true);
         
         findpeople({
-          params: { userId: jwt.id},
-          credentials: { divineMole: jwt.token},
+          params: { userId: userData.id},
+          credentials: { divineMole: userData.token},
           signal
         }).then((data) => {
           setLoading(false);
@@ -38,7 +39,7 @@ export default function useFindPeople() {
         }
     
         return function cleanup(){
-          isMounted = false
+          isMounted = false;
           abortController.abort();
         }
     

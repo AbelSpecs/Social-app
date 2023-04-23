@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from "@material-ui/styles";
 import auth from '../../auth/auth-helper';
-import jwt from '../../auth/auth-user';
 import { Link } from "react-router-dom";
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { useNavigate } from "react-router-dom";
@@ -82,11 +81,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProfileCard() {
-  
-  const photoUrl = jwt.id ? `/api/users/photo/${jwt.id}?${new Date().getTime()}`
-                          : '/api/users/defaultphoto';
-  const backgroundUrl = jwt.id ? `/api/users/background/${jwt.id}?${new Date().getTime()}`
-                               : '/api/users/defaultbackground';
+  const userData = auth.getData();
+  const photoUrl = userData ? `/api/users/photo/${userData.id}?${new Date().getTime()}`
+                            : '/api/users/defaultphoto';
+  const backgroundUrl = userData ? `/api/users/background/${userData.id}?${new Date().getTime()}`
+                                 : '/api/users/defaultbackground';
   const classes = useStyles();
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
@@ -160,7 +159,7 @@ export default function ProfileCard() {
         </CardActions>
         <Divider/>
         <CardActions className={classes.cardAction} disableSpacing>
-        <Link to={"/user/" + jwt.id} className={classes.link}>
+        <Link to={"/user/" + userData.id} className={classes.link}>
           <Button color='primary' className={classes.profileButton}>
             My Profile
           </Button>

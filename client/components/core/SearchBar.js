@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useNavigate } from "react-router-dom";
 import auth from "../../auth/auth-helper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   paper: {
       padding: '1px 1px',
       display: 'flex',
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchBar() {
   const classes = useStyles();
-  const jwt = auth.isAuthenticated();
+  const userData = auth.getData();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
@@ -53,7 +53,7 @@ export default function SearchBar() {
 
     findpeoplebyname({
         params: { name: event.target.value },
-        credentials: { divineMole: jwt.token },
+        credentials: { divineMole: userData.token },
         signal
     }).then(data => {
         if(data && data.error)
