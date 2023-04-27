@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Comments(props) {
+  console.log(props);
   const userData = auth.getData();
   const photoUrl = userData ? '/api/users/photo/' + userData.id
                             : '/api/users/defaultphoto';
@@ -40,8 +41,7 @@ export default function Comments(props) {
         if(data.error){
           console.log(data.error);
         }else{
-          console.log(data);
-          props.updateComments(data.comments);
+          props.updatePostComments(data._id, data.comments);
           setValue({...value, text: ''});
         }
       });

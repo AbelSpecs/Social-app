@@ -6,11 +6,12 @@ import Post from './Post';
 export default function PostList(props) {
   return (
     <div style={{marginTop: '24px'}}>
-      {props.posts.map((item, i) => {
+      {props.posts?.map((item, i) => {
         return <Post post={item} 
                       key={i} 
-                      index={i} 
                       onRemove={props.removeUpdate} 
+                      updatePostLikes={props.updatePostLikes}
+                      updatePostComments={props.updatePostComments}
                       profile={props.profile} 
                       >
                 </Post>

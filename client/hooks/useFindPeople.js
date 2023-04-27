@@ -15,9 +15,7 @@ export default function useFindPeople() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
         setLoading(true);
-        
         findpeople({
           params: { userId: userData.id},
           credentials: { divineMole: userData.token},
@@ -25,23 +23,18 @@ export default function useFindPeople() {
         }).then((data) => {
           setLoading(false);
           if(data && data.error){
-            setValues({...values, error: data.error});
+            console.log(data.error);
           }
           else{
-            mounted(data);
-          }
-        });
-    
-        function mounted(data) {
-          if(isMounted){
             setValues({...values, users: data});
           }
-        }
-    
+        });
+        
         return function cleanup(){
-          isMounted = false;
+          console.log('me desmonte');
           abortController.abort();
         }
+      
     
     }, [values.users.length])
 

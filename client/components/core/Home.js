@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 export default function Home () {
     const classes = useStyles();
     const mode = useContext(ModeContext);
-    console.log(mode);
+    
     return ( 
         <Fragment>
             <Grid container justifyContent="flex-end" spacing={5} className={classes.grid}>
@@ -58,7 +58,7 @@ export default function Home () {
                 <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
                     <SearchBar/>
                     <Trends/>
-                    <FindPeople/>
+                    <FindPeople />
                 </Grid>
                 
             </Grid>

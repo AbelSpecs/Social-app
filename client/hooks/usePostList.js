@@ -4,7 +4,7 @@ import auth from '../auth/auth-helper';
 
 export default function usePostList() {
     const userData = auth.getData();
-    const [post, setPost] = useState([]);
+    const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -20,16 +20,16 @@ export default function usePostList() {
           setLoading(false);
           if(data.error){
             console.log(data.error);
-          }else{       
-            setPost([...post, data]);
+          }else{      
+            setPosts(data);
           }
         });
     
         return function cleanup() {
           abortController.abort(); 
         }
-    
-      },[userData.id]);
 
-    return { post, setPost, loading, setLoading }; 
+      },[]);
+
+    return { posts, setPosts, loading, setLoading }; 
 }

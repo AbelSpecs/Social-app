@@ -13,7 +13,6 @@ export default function useProfileUser(){
     });
 
     useEffect(() => {
-        let isMounted = true;
         const abortController = new AbortController();
         const signal = abortController.signal;
         setLoading(true);
@@ -29,20 +28,13 @@ export default function useProfileUser(){
             }
             else
             {
-                mounted(data);
-            }
-        });
-
-        function mounted(data) {
-            if(isMounted){
                 let following = checkFollow(data);
                 setUser(data);
                 setFollowing(following);
             }
-        } 
-    
+        });
+
         return function cleanup() {
-            isMounted = false;
             abortController.abort();
         }
     }, []);

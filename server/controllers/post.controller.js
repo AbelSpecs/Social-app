@@ -79,6 +79,7 @@ const remove = async (req, res) => {
 }
 
 const photo = (req, res) => {
+    console.log(req);
     if(req.post.photo.data){
         res.set("Content-Type", req.post.photo.contentType);
         return res.send(req.post.photo.data);    
@@ -96,6 +97,7 @@ const postById = async (req, res, next, id) => {
                 error: errorHandler.getErrorMessage(error)
             });  
         }
+        console.log(post);
         req.post = post;
         next();
     } catch (error) {
@@ -109,9 +111,11 @@ const like = async (req, res) => {
     const userId = req.body.userId;
     const postId = req.body.postId;
     try {
-        const result = await Post.findByIdAndUpdate(postId, 
+        const result = await Post.findByIdAndUpdate(postId,
             {$push: {likes: userId}},
-            {new: true});
+            {new: true})
+            .select('likes')
+            .exec();
         return res.json(result);
     } catch (error) {
         return res.status(400).json({
@@ -126,7 +130,9 @@ const dislike = async (req, res) => {
     try {
         const result = await Post.findByIdAndUpdate(postId, 
             {$pull: {likes: userId}},
-            {new: true});
+            {new: true})
+            .select('likes')
+            .exec();
         return res.json(result);
     } catch (error) {
         return res.status(400).json({

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { listfollowers } from '../services/api-user';
 import auth from '../auth/auth-helper';
 
@@ -15,7 +15,6 @@ export default function useFollowers() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        // let isMounted = true;
         setLoading(true);
     
         listfollowers({
@@ -25,21 +24,14 @@ export default function useFollowers() {
         }).then((data) => {
           setLoading(false);
           if(data && data.error){
-            setValues({...values, error: data.error});
+            console.log(data.error);
           }
           else{
-            mounted(data);
+            setValues({...values, users: data});
           }
         });
     
-        function mounted(data) {
-          // if(isMounted){
-            setValues({...values, users: data});
-          // }
-        }
-    
         return function cleanup(){
-          // isMounted = false
           abortController.abort();
         }
     

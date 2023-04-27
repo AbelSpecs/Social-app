@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 export default function Followers() {
   const userData = auth.getData();
   const classes = useStyles();
-  const { values, setValues, loading, setLoading } = useFollowers();
+  const { values, setValues, loading } = useFollowers();
 
   const clickfollow = (user, index) => {
     follow({

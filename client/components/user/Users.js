@@ -36,6 +36,7 @@ const useStyles = makeStyles(theme => ({
 export default function Users() {
     const classes = useStyles();
     const { users, error } = useUsers();
+    console.log(users);
 
     return (
         <Grid container justifyContent="flex-end" spacing={2} className={classes.grid}>
@@ -68,7 +69,7 @@ export default function Users() {
                 </Paper>
             </Grid> 
             <Grid item xs={4}>
-                <FindPeople/>
+                <FindPeople />
             </Grid>   
         </Grid>
     )

@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Fragment } from 'react';
+import useAuth from '../../hooks/useAuth';
 import { 
   Menu,
   MenuItem
 } from '@material-ui/core';
-import useAuth from '../../hooks/useAuth';
 
 
 export default function Settings(props) {
@@ -13,7 +13,7 @@ export default function Settings(props) {
 
   const handleSignOut = () => {
     logout();
-    props.clear;
+    props.clear();
   }
 
   return (

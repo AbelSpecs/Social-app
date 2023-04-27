@@ -12,21 +12,14 @@ export default function useUsers() {
     useEffect(async () => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
 
         const data = await findpeoplebyname({
             params: { name: location.state.name },
             credentials: { divineMole: userData.token },
             signal
         });
-        data.error ? setError(data.error) : mounted(data);
+        data.error ? setError(data.error) : setUsers(data);
         
-        function mounted(data) {
-            if(isMounted){
-                setUsers(data);
-            }
-        }
-
         return function cleanup(){
             abortController.abort();
         }

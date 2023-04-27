@@ -12,7 +12,6 @@ export default function Trend() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        let isMounted = true;
         setLoading(true);
         
         trendList({
@@ -25,18 +24,11 @@ export default function Trend() {
             console.log(data.error);
           }
           else{
-            mounted(data);
+            setValues({...values, trends: data});
           }
         });
     
-        function mounted(data) {
-          if(isMounted){
-            setValues({...values, trends: data});
-          }
-        }
-    
         return function cleanup(){
-          isMounted = false
           abortController.abort();
         }
     

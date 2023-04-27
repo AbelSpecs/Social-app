@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { useNavigate } from "react-router-dom";
 import { Fragment } from 'react';
-import Settings from '../core/settings';
+import Settings from '../core/Settings';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import useUser from '../../hooks/useUser';
 import { 

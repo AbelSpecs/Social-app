@@ -67,7 +67,7 @@ export default function ProfileDock() {
           <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
               <SearchBar/>
               <Trends/>
-              <FindPeople/>
+              <FindPeople />
           </Grid>
           
       </Grid>

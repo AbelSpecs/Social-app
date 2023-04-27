@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { create } from '../../services/api-post';
 import auth from '../../auth/auth-helper';
@@ -35,6 +35,17 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '19px',
         padding: '9px 14px'
         }
+    },
+    iconButton: {
+        paddingBottom: '7px'
+    },
+    img: {
+        display: 'none',
+        width: 400,
+        height: 'fit-content',
+        objectFit: 'contain',
+        margin: 'auto',
+        borderRadius: 20
     }
   }));
 
@@ -64,15 +75,40 @@ export default function NewPost(props){
             }
             else{
                 setValues({...values, text: '', photo: ''});
-                props.addUpdate(data);
+                const img = document.querySelector('#image-preview');
+                img.src = '';
+                img.style.display = 'none';
+                const updatedPosts = [data, ...props.posts];
+                props.setPosts(updatedPosts);
             }
         });
     }
 
-    const handleChange = (event) => {
-        const value = event.target.value;
+    const handleChange = name => event => {
+        const value = name === 'photo' 
+        ? event.target.files[0]
+        : event.target.value;
 
-        setValues({...values, text: value});
+        console.log(value);
+        setValues({...values, [name]: value});
+
+        if(name === 'photo'){
+            const value = event.target.files[0];
+            const img = document.querySelector('#image-preview');
+            const reader = new FileReader();
+            reader.onload = () => {
+                img.src = reader.result;
+                img.style.display = 'block';
+            }
+            reader.readAsDataURL(value);
+        }
+    }
+
+    const handleCancel = () => {
+        setValues({text: '', photo: '', error: ''});
+        const img = document.querySelector('#image-preview');
+        img.src = '';
+        img.style.display = 'none';
     }
 
     return (
@@ -86,7 +122,7 @@ export default function NewPost(props){
                     multiline
                     id="outlined-full-width"
                     value={values.text}
-                    onChange={handleChange}
+                    onChange={handleChange('text')}
                     style={{ margin: 8 }}
                     placeholder="Share what you want..."
                     fullWidth
@@ -95,9 +131,17 @@ export default function NewPost(props){
                 />
             }
             />
+            <img id='image-preview' className={classes.img}/>
             <CardActions className={classes.button}>
-                <IconButton>
-                    <PhotoIcon/>
+                <Button color='primary' onClick={handleCancel}>
+                    Cancel
+                </Button>
+                <IconButton className={classes.iconButton}>
+                    <input accept="image/*" type="file" onChange={handleChange('photo')}
+                        style={{display: 'none'}} id="icon-button-file" />
+                    <label htmlFor="icon-button-file" className={classes.avatarLabel}>
+                        <PhotoIcon/>
+                    </label>
                 </IconButton>
                 <Button color='primary' onClick={clickPost}>
                     Post
