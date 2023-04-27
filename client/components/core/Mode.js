@@ -10,25 +10,15 @@ export const ModeContext = createContext({toogleMode: () => {}})
 
 export default function Mode() {
   const [mode, setMode] = useState();
-
-  // const handleMode = useMemo(() => ({
-  //   toogleMode: () => {
-  //     setMode((prev) => prev === 'light' ? 'dark' : 'light');
-  //   }
-  // }));
+  const themePalette = design;
+  themePalette.palette.type = mode;
+  const theme =  createTheme(themePalette);
 
   const handleMode = () => {
     console.log('hey');
     setMode((prev) => prev === 'light' ? 'dark' : 'light');
   }
   
-
-  const themePalette = design;
-  themePalette.palette.type = mode;
-  const theme =  createTheme(themePalette);
-
-  // console.log(handleMode);
-
   return (
     <ModeContext.Provider value={handleMode}>
       <ThemeProvider theme={theme}>

@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cookieParser());
 app.use(compress());
-app.use(helmet.contentSecurityPolicy({useDefaults: true, directives: { "img-src": ["'self'", "https: data: blob:"] }}));
+app.use(helmet());
 app.use(cors());
 app.use('/', authRoutes);
 app.use('/', userRoutes);

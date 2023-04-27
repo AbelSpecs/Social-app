@@ -11,11 +11,6 @@ import Mode from "./components/core/Mode";
 
 
 const App = () => {
-    // const { mode } = useMode();
-    // console.log(mode);
-    // const themePalette = design;
-    // themePalette.palette.type = mode;
-    // const theme =  createTheme(themePalette);
 
     useEffect(() => {
         const jssStyles = document.querySelector('#jss-server-side');
