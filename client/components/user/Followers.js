@@ -1,21 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from "@material-ui/styles";
-import { follow } from '../../services/api-user';
-import Snackbar from '@material-ui/core/Snackbar';
+import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import useFollowers from '../../hooks/useFollowers';
-import auth from '../../auth/auth-helper';
+import getMedia from '../../auth/media-helper';
 import { 
   List,
   ListItem, 
   ListItemAvatar, 
-  ListItemSecondaryAction, 
   ListItemText,
   Avatar,
-  Button,
   Paper,
   Typography
 } from '@material-ui/core';
@@ -53,38 +49,15 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Followers() {
-  const userData = auth.getData();
+export default function Followers({user}) {
   const classes = useStyles();
-  const { values, setValues, loading } = useFollowers();
-
-  const clickfollow = (user, index) => {
-    follow({
-      params: { userId: userData.id},
-      credentials: { divineMole: userData.token},
-      followId: user._id
-    }).then(data => {
-      if(data.error){
-        console.log(error);
-      }
-      else{
-        let newToFollow = values.users;
-        newToFollow.splice(index, 1);
-        setValues({...values, users: newToFollow, open: true, message: `Following ${user.name}!`});
-       
-      }
-    })
-  }
-
-  const handleClose = () => {
-    setValues({...values, open: false});
-  }
+  const { values, loading } = useFollowers(user);
 
   return (  
     <Fragment>
       <Paper className={classes.paper}>
         <Typography className={classes.title}>
-          Who is Following You
+          Who are you Following
         </Typography>
         {
           loading && <CircularProgress className={classes.circularProgress}/>
@@ -93,20 +66,16 @@ export default function Followers() {
           !loading && 
           <List>
           {values.users.map((item, i) => {
+            const avatar = getMedia(item?.photo);
             return (
               <span key={i}>
                 <ListItem>
                   <ListItemAvatar className={classes.avatar}>
-                    <Avatar src={'/api/users/photo/'+item._id}/>
+                    <Avatar src={avatar}/>
                   </ListItemAvatar>
                   <Link to={"/user/" + item._id} className={classes.link}>
                     <ListItemText primary={item.name}/>
                   </Link>
-                  <ListItemSecondaryAction>
-                    <Button aria-label="Follow" variant="contained" color="primary" onClick={() => {clickfollow(item, i)}}>
-                      Follow
-                    </Button>
-                  </ListItemSecondaryAction>
                 </ListItem>
               </span>
               )
@@ -115,13 +84,6 @@ export default function Followers() {
           </List>
         }
       </Paper>
-      <Snackbar
-          open={values.open}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          message={values.message}
-          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-        />
   </Fragment>
   )
 }

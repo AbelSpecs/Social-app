@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { trendList } from '../services/api-post';
 import auth from '../auth/auth-helper';
 
-export default function Trend() {
-    const userData = auth.getData();
+export default function useTrend(user) {
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({ 
         trends: []
@@ -15,8 +14,8 @@ export default function Trend() {
         setLoading(true);
         
         trendList({
-          params: { userId: userData.id},
-          credentials: { divineMole: userData.token},
+          params: { userId: user.id},
+          credentials: { divineMole: user.token},
           signal
         }).then((data) => {
           setLoading(false);

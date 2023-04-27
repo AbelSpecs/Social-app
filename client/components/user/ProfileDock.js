@@ -46,8 +46,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ProfileDock() {
+  const userData = auth.getData();
   const navigate = useNavigate();
-  // const [defaultPage, setDefaultPage] = useState(auth.isAuthenticated());
   const classes = useStyles();
 
   return (
@@ -57,17 +57,17 @@ export default function ProfileDock() {
             <IconButton aria-label="home" className={classes.home} onClick={() => {navigate('/')}}>
                 <HomeIcon/>
             </IconButton>
-            <Followers/>
+            <Followers user={userData}/>
           </Grid>
           
           <Grid item xs={12} sm={12} md={5} className={classes.profileGrid} >
-              <Profile/>
+              <Profile user={userData}/>
           </Grid>
           
           <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-              <SearchBar/>
-              <Trends/>
-              <FindPeople />
+              <SearchBar user={userData}/>
+              <Trends user={userData}/>
+              <FindPeople user={userData}/>
           </Grid>
           
       </Grid>

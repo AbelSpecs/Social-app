@@ -2,8 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { listfollowers } from '../services/api-user';
 import auth from '../auth/auth-helper';
 
-export default function useFollowers() { 
-    const userData = auth.getData();
+export default function useFollowers(user) { 
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({ 
         users: [],
@@ -18,8 +17,8 @@ export default function useFollowers() {
         setLoading(true);
     
         listfollowers({
-          params: { userId: userData.id},
-          credentials: { divineMole: userData.token},
+          params: { userId: user.id},
+          credentials: { divineMole: user.token},
           signal
         }).then((data) => {
           setLoading(false);
@@ -27,6 +26,7 @@ export default function useFollowers() {
             console.log(data.error);
           }
           else{
+            console.log(data);
             setValues({...values, users: data});
           }
         });

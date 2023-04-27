@@ -37,9 +37,8 @@ const useStyles = makeStyles(() => ({
 
 
 
-export default function SearchBar() {
+export default function SearchBar(user) {
   const classes = useStyles();
-  const userData = auth.getData();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
@@ -53,7 +52,7 @@ export default function SearchBar() {
 
     findpeoplebyname({
         params: { name: event.target.value },
-        credentials: { divineMole: userData.token },
+        credentials: { divineMole: user.token },
         signal
     }).then(data => {
         if(data && data.error)

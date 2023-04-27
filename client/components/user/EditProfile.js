@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { update } from "../../services/api-user";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate';
 import auth from '../../auth/auth-helper';

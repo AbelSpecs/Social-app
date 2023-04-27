@@ -11,8 +11,8 @@ const listNewsFeed = async(req, res) => {
     following.push(req.profile._id);
     try {
         const posts = await Post.find({ postedBy: {$in: following}})
-                                .populate('comments.postedBy', '_id name')
-                                .populate('postedBy', '_id name')
+                                .populate('comments.postedBy', '_id name photo')
+                                .populate('postedBy', '_id name photo')
                                 .sort('-created')
                                 .exec()
         res.json(posts);
@@ -28,8 +28,8 @@ const listPostsByUser = async(req, res) => {
     const userId = req.profile._id;
     try {
         const posts = await Post.find({ postedBy: {$in: userId}})
-                                .populate('comments.postedBy', '_id name')
-                                .populate('postedBy', '_id name')
+                                .populate('comments.postedBy', '_id name photo')
+                                .populate('postedBy', '_id name photo')
                                 .sort('-created')
                                 .exec()
         res.json(posts);
@@ -46,7 +46,7 @@ const create = async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         if(err){
             return res.status(400).json({
-                error: errorHandler.getErrorMessage(error)
+                error: errorHandler.getErrorMessage(err)
             });
         }
         let post = new Post(fields);
@@ -90,7 +90,7 @@ const photo = (req, res) => {
 const postById = async (req, res, next, id) => {
     try {
         const post = await Post.findById(id)
-        .populate('postedBy', '_id name')
+        .populate('postedBy', '_id name photo')
         .exec();
         if(!post){
             return res.status(400).json({
@@ -149,8 +149,8 @@ const comments = async (req, res) => {
         const result = await Post.findByIdAndUpdate(postId, 
             {$push: {comments: comment}},
             {new: true})
-            .populate('comments.postedBy', '_id name')
-            .populate('postedBy', '_id name')
+            .populate('comments.postedBy', '_id name photo')
+            .populate('postedBy', '_id name photo')
             .exec()
         return res.json(result);
     } catch (error) {

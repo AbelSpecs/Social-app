@@ -1,27 +1,25 @@
 import React, { createContext, useState } from 'react';
-import PropTypes from 'prop-types';
-import { ThemeProvider } from '@material-ui/styles';
-import design from "../../theme";
+import { ThemeProvider, useTheme } from '@material-ui/styles';
+import palettes from "../../theme";
 import { createTheme } from '@material-ui/core/styles';
 import MainRouter from '../../MainRouter';
-import { useMemo } from 'react';
 
-export const ModeContext = createContext({toogleMode: () => {}})
+export const ModeContext = createContext()
 
 export default function Mode() {
-  const [mode, setMode] = useState();
-  const themePalette = design;
-  themePalette.palette.type = mode;
-  const theme =  createTheme(themePalette);
+  const [mode, setMode] = useState('light');
+  
+  let newTheme = palettes;
+  newTheme.palette.type = mode;
+  newTheme = createTheme(newTheme);
 
   const handleMode = () => {
-    console.log('hey');
     setMode((prev) => prev === 'light' ? 'dark' : 'light');
   }
   
   return (
     <ModeContext.Provider value={handleMode}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={newTheme}>
         <MainRouter />
       </ThemeProvider>
     </ModeContext.Provider>

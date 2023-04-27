@@ -90,6 +90,8 @@ const userById = async (req, res, next, id) => {
         const user = await User.findById(id)
         .populate('following', '_id name')
         .populate('followers', '_id name')
+        .select('following')
+        .select('followers')
         .exec();
         if(!user){
             return res.status(400).json({

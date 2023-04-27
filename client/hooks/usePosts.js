@@ -23,8 +23,9 @@ export default function usePosts(){
         });
 
         const checkPosts = (data) => {
+            console.log(data);
             if(data.length > 0){
-                setPosts([...posts, data]);
+                setPosts(data);
             }
         }
 

@@ -1,11 +1,6 @@
 import React, { useEffect } from "react";
-import MainRouter from './MainRouter';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, useTheme } from '@material-ui/styles';
-// import theme from "./theme";
 import { hot } from 'react-hot-loader';
-import design from "./theme";
-import { createTheme } from '@material-ui/core/styles';
 import Mode from "./components/core/Mode";
 
 

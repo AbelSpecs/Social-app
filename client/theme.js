@@ -2,7 +2,7 @@ import { createTheme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
 
 
-const design = {
+const palettes = {
         typography: {
         useNextVariants: true, 
         },
@@ -14,7 +14,6 @@ const design = {
                 contrastText: '#fff'
             },
             secondary: {
-                background: '#4D61C6',
                 light: '#ff79b0',
                 main: '#754DC6',
                 dark: '#c60055',
@@ -28,4 +27,4 @@ const design = {
 
 
 
-export default design;
+export default palettes;

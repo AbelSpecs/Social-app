@@ -18,10 +18,11 @@ import {StaticRouter} from 'react-router-dom/server';
 import MainRouter from '../client/MainRouter';
 // Material UI Modules 
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles';
-import theme from '../client/theme';
+import palettes from '../client/theme';
 import createEmotionCache from './createEmotionCache';
 import createEmotionServer from '@emotion/server/create-instance';
 import { CacheProvider } from '@emotion/react';
+import { createTheme } from '@material-ui/core/styles';
 
 const CURRENT_WORKING_DIR = process.cwd();
 console.log(CURRENT_WORKING_DIR);
@@ -33,7 +34,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cookieParser());
 app.use(compress());
-app.use(helmet());
+app.use(helmet.contentSecurityPolicy({useDefaults: true, directives: { "img-src": ["'self'", "https: data: blob:"] }}));
 app.use(cors());
 app.use('/', authRoutes);
 app.use('/', userRoutes);
@@ -52,6 +53,7 @@ app.get('*', (req, res) => {
     const cache = createEmotionCache();
     const { extractCriticalToChunks, constructStyleTagsFromChunks } = createEmotionServer(cache);
     const context = {};
+    const theme = createTheme(palettes);
     const markup = ReactDOMServer.renderToString(
         // sheets.collect(
             <StaticRouter location={req.url} context={context}>

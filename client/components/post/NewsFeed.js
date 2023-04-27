@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Divider, Paper } from '@material-ui/core';
 import NewPost from './NewPost';
 import PostList from './PostList';
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import usePostList from '../../hooks/usePostList';
 
 const useStyles = makeStyles(() => ({
@@ -13,14 +13,9 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export default function NewsFeed() {
+export default function NewsFeed({user}) {
   const classes = useStyles();
-  const { posts, setPosts } = usePostList();
-
-  const addPost = (post) => {
-    const updatedPosts = [...posts, post];
-    setPosts(updatedPosts);
-  }
+  const { posts, setPosts } = usePostList(user);
 
   const updatePostLikes = (id, likes) => {
     const index = posts.findIndex(p => p._id === id);
@@ -47,12 +42,13 @@ export default function NewsFeed() {
 
   return (
     <Paper className={classes.paper}>
-      <NewPost addUpdate={addPost} setPosts={setPosts} posts={posts}/>
+      <NewPost user={user} setPosts={setPosts} posts={posts}/>
       <Divider/>
       <PostList removeUpdate={removePost} 
                 updatePostLikes={updatePostLikes} 
                 updatePostComments={updatePostComments} 
                 posts={posts} 
+                user={user}
                 profile={false}/>
     </Paper>
 

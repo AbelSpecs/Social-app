@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { follow } from '../../services/api-user';
 import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import auth from '../../auth/auth-helper';
 import useFindPeople from '../../hooks/useFindPeople';
+import getMedia from '../../auth/media-helper';
 import { 
   List,
   ListItem, 
@@ -55,16 +55,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FindPeople () {
+export default function FindPeople ({user}) {
   const classes = useStyles();
-  const userData = auth.getData();
-  const { values, setValues, loading } = useFindPeople();
+  const { values, setValues, loading } = useFindPeople(user);
   
-  const clickfollow = (user, index) => {
+  const clickfollow = (item, index) => {
     follow({
-      params: { userId: userData.id},
-      credentials: { divineMole: userData.token},
-      followId: user._id
+      params: { userId: user.id},
+      credentials: { divineMole: user.token},
+      followId: item._id
     }).then(data => {
       if(data.error){
         console.log(error);
@@ -72,7 +71,7 @@ export default function FindPeople () {
       else{
         let newToFollow = values.users;
         newToFollow.splice(index, 1);
-        setValues({...values, users: newToFollow, open: true, message: `Following ${user.name}!`});
+        setValues({...values, users: newToFollow, open: true, message: `Following ${item.name}!`});
        
       }
     })
@@ -95,10 +94,12 @@ export default function FindPeople () {
           !loading && 
           <List>
             {values.users.map((item, i) => {
+              const avatar = getMedia(item?.photo);
+
               return <span key={i}>
                 <ListItem>
                   <ListItemAvatar className={classes.avatar}>
-                    <Avatar src={'/api/users/photo/'+item._id}/>
+                    <Avatar src={avatar}/>
                   </ListItemAvatar>
                   <Link to={"/user/" + item._id} className={classes.link}>
                     <ListItemText primary={item.name}/>

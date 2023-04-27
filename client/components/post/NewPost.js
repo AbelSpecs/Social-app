@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { create } from '../../services/api-post';
 import auth from '../../auth/auth-helper';
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import PhotoIcon from '@material-ui/icons/Photo';
 import { 
     Card, 
@@ -13,6 +13,7 @@ import {
     Button,
     IconButton
 } from '@material-ui/core';
+import getMedia from '../../auth/media-helper';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -49,11 +50,9 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function NewPost(props){
+export default function NewPost({user, setPosts, posts}){
     const classes = useStyles();
-    const userData = auth.getData();
-    const photoUrl = userData ? '/api/users/photo/'+ userData.id + `?${new Date().getTime()}`
-                                : '/api/users/defaultphoto';
+    const photoUrl = getMedia(user.photo);
     const [values, setValues] = useState({
         text: '',
         photo: '',
@@ -66,8 +65,8 @@ export default function NewPost(props){
         postData.append('photo', values.photo);
 
         create({
-            params: { userId: userData.id},
-            credentials: { divineMole: userData.token},
+            params: { userId: user.id},
+            credentials: { divineMole: user.token},
             post: postData
         }).then(data => {
             if(data.error){
@@ -78,8 +77,8 @@ export default function NewPost(props){
                 const img = document.querySelector('#image-preview');
                 img.src = '';
                 img.style.display = 'none';
-                const updatedPosts = [data, ...props.posts];
-                props.setPosts(updatedPosts);
+                const updatedPosts = [data, ...posts];
+                setPosts(updatedPosts);
             }
         });
     }
@@ -89,7 +88,6 @@ export default function NewPost(props){
         ? event.target.files[0]
         : event.target.value;
 
-        console.log(value);
         setValues({...values, [name]: value});
 
         if(name === 'photo'){

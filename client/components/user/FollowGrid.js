@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Link, Avatar, ImageListItem } from '@material-ui/core';
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import ImageList from '@material-ui/core/ImageList'
 
 const useStyles = makeStyles(theme => ({
@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     margin: 'auto'
   },
   gridList: {
-    width: 500
+    width: '100%'
   },
   tileText: {
     textAlign: 'center',

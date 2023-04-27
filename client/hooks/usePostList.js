@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { postList } from '../services/api-post';
 import auth from '../auth/auth-helper';
 
-export default function usePostList() {
-    const userData = auth.getData();
+export default function usePostList(user) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -13,8 +12,8 @@ export default function usePostList() {
         setLoading(true);
     
         postList({
-          params: {userId: userData.id},
-          credentials: {divineMole: userData.token},
+          params: {userId: user.id},
+          credentials: {divineMole: user.token},
           signal
         }).then(data => {
           setLoading(false);

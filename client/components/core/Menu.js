@@ -1,4 +1,4 @@
-import { Button ,AppBar, IconButton, Toolbar, Typography, InputBase, Paper, TextField } from "@material-ui/core";
+import { Button ,AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import HomeIcon from '@material-ui/icons/Home'
 import { useLocation, useNavigate } from "react-router-dom";
 import auth from "../../auth/auth-helper";

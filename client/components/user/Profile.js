@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { useNavigate } from "react-router";
 import auth from '../../auth/auth-helper';
 import DeleteUser from "./DeleteUser";
@@ -28,6 +28,7 @@ import {
     List,
     Avatar
 } from "@material-ui/core";
+import getMedia from "../../auth/media-helper";
 
 
 const useStyles = makeStyles(theme => ({
@@ -141,27 +142,29 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function Profile() {
-    const userData = auth.getData();
+export default function Profile({user}) {
     const navigate = useNavigate();
     const classes = useStyles();
-    const { user, setUser, loading, redirectToSigin, following, setFollowing } = useProfileUser();
+    const { users, setUsers, loading, redirectToSigin, following, setFollowing } = useProfileUser(user);
     const { posts, setPosts } = usePosts();
     const { values, setValues } = useImage();
     const [edit, setEdit] = useState(false);
+    const photoUrl = getMedia(user.photo);
+    const backgroundUrl = getMedia(user.background); 
+    
     
     const clickFollowButton = (api) => {
         api({
-            params: {userId: userData.id},
-            credentials: {divineMole: userData.token},
-            followId: userData.id
+            params: {userId: user.id},
+            credentials: {divineMole: user.token},
+            followId: user.id
         }).then((data) => {
             if(data.error){
                 console.log(data.error);
-                setUser({...values, error: data.error});
+                setUsers({...values, error: data.error});
             }
             else{
-                setUser(data);
+                setUsers(data);
                 setFollowing(!following);
             }
         })
@@ -182,14 +185,6 @@ export default function Profile() {
         const value = event.target.files[0];
         setValues({...values, [name]: value});
     }
-
-    const photoUrl = user._id
-    ? `/api/users/photo/${user._id}?${new Date().getTime()}`
-    : '/api/users/defaultphoto';
-
-    const backgroundUrl = user._id
-    ? `/api/users/background/${user._id}?${new Date().getTime()}`
-    : '/api/users/defaultbackground';
 
     if(redirectToSigin)
         navigate('/signin');
@@ -227,24 +222,24 @@ export default function Profile() {
                         </Icon>
                         <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
-                                {user.name}
+                                {users.name}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-                                {user.about}
+                                {users.about}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-                                {"Joined: " + (new Date(user.created)).toDateString()}
+                                {"Joined: " + (new Date(users.created)).toDateString()}
                             </Typography>
                         </CardContent>
                     </CardActionArea>
                     <CardActions className={classes.cardAction} disableSpacing>
-                        { userData && userData.id == user._id
+                        { user && user.id == users._id
                             ?
                             (<ListItemSecondaryAction>
                                 <IconButton aria-label="Edit" color="primary" onClick={handleEdit}>
                                     <EditOutlinedIcon/>
                                 </IconButton>
-                                <DeleteUser userId={user._id}/>
+                                <DeleteUser userId={users._id}/>
                             </ListItemSecondaryAction>)
                             :
                             (<ListItemSecondaryAction>
@@ -263,9 +258,9 @@ export default function Profile() {
             }
             </Card>
         
-            <Paper className={classes.paper} elevation={4}>
+            <Paper className={classes.paper}>
                 <List dense>
-                    <ProfileTabs people={user} posts={posts} profile={true} removeUpdate={removePost}></ProfileTabs>
+                    <ProfileTabs people={users} posts={posts} profile={true} removeUpdate={removePost}></ProfileTabs>
                 </List>
             </Paper>
         </Fragment>

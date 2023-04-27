@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { read } from "../services/api-user";
 import auth from '../auth/auth-helper';
 
-export default function useProfileUser(){
-    const userData = auth.getData();
+export default function useProfileUser(user){
     const [loading, setLoading] = useState(false);
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [following, setFollowing] = useState(false);
-    const [user, setUser] = useState({
+    const [users, setUsers] = useState({
         following: [],
         followers: []
     });
@@ -17,8 +16,8 @@ export default function useProfileUser(){
         const signal = abortController.signal;
         setLoading(true);
         read({
-            params: { userId: userData.id },
-            credentials: { divineMole: userData.token },
+            params: { userId: user.id },
+            credentials: { divineMole: user.token },
             signal
         }).then(data => {
             setLoading(false);
@@ -28,8 +27,9 @@ export default function useProfileUser(){
             }
             else
             {
+                console.log(data);
                 let following = checkFollow(data);
-                setUser(data);
+                setUsers(data);
                 setFollowing(following);
             }
         });
@@ -41,10 +41,10 @@ export default function useProfileUser(){
 
     const checkFollow = (user) => {
         const match = user.followers.some((follower) => {
-            return follower._id === userData.id;
+            return follower._id === user.id;
         });
         return match;
     }
 
-    return { user, setUser, loading, redirectToSigin, following, setFollowing };
+    return { users, setUsers, loading, redirectToSigin, following, setFollowing };
 }

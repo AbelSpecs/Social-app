@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import auth from '../../auth/auth-helper';
+import getMedia from '../../auth/media-helper';
 import { Link } from "react-router-dom";
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { useNavigate } from "react-router-dom";
@@ -80,16 +81,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function ProfileCard() {
-  const userData = auth.getData();
-  const photoUrl = userData ? `/api/users/photo/${userData.id}?${new Date().getTime()}`
-                            : '/api/users/defaultphoto';
-  const backgroundUrl = userData ? `/api/users/background/${userData.id}?${new Date().getTime()}`
-                                 : '/api/users/defaultbackground';
+export default function ProfileCard({user, followers, following}) {
   const classes = useStyles();
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
-  const { user, loading, error } = useUser();
+  const photoUrl = getMedia(user.photo);
+  const backgroundUrl = getMedia(user.background);
   
   const handleClick = (event) => {
     setOpen(event.currentTarget);
@@ -98,14 +95,9 @@ export default function ProfileCard() {
   const handleClose = () => {
     setOpen(null);
   }
-
+  
   return (
     <Card className={classes.card}>
-    {
-      loading && <CircularProgress className={classes.circularProgress}/>
-    }
-    {
-      !loading &&
       <Fragment>
         <CardHeader className={classes.settingsButton} action={
           <Fragment>
@@ -141,7 +133,7 @@ export default function ProfileCard() {
         <CardActions className={classes.cardAction} disableSpacing>
           <div>
             <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
-              {user.followers.length}
+              {followers.length}
             </Typography>
             <Typography variant='body2' component="p">
               Followers
@@ -150,7 +142,7 @@ export default function ProfileCard() {
           <Divider variant="middle" orientation="vertical" flexItem className={classes.divider}/>
           <div>
             <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
-              {user.following.length}
+              {following.length}
             </Typography>
             <Typography variant='body2' component="p">
               Following
@@ -159,14 +151,13 @@ export default function ProfileCard() {
         </CardActions>
         <Divider/>
         <CardActions className={classes.cardAction} disableSpacing>
-        <Link to={"/user/" + userData.id} className={classes.link}>
+        <Link to={"/user/" + user.id} className={classes.link}>
           <Button color='primary' className={classes.profileButton}>
             My Profile
           </Button>
         </Link>
         </CardActions>
       </Fragment>
-    }
     </Card>
   )
 }

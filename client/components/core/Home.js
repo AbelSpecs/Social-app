@@ -12,6 +12,8 @@ import { IconButton } from "@material-ui/core";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useContext } from "react";
 import { ModeContext }  from "./Mode";
+import auth from '../../auth/auth-helper';
+import useUser from '../../hooks/useUser';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -28,37 +30,42 @@ const useStyles = makeStyles(theme => ({
     },
     grid: {
         marginTop: '10px',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        position: 'relative'
     },
     gridChild: {
-        height: 'max-content'
+        height: 'max-content',
+        position: 'sticky',
+        top: 1
     }
 }));
     
 export default function Home () {
     const classes = useStyles();
     const mode = useContext(ModeContext);
+    const userData = auth.getData();
+    const { user } = useUser(userData);
     
     return ( 
         <Fragment>
             <Grid container justifyContent="flex-end" spacing={5} className={classes.grid}>
                 
                 <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-                    <ProfileCard/>
-                    <Followers/>
+                    <ProfileCard user={userData} followers={user.followers} following={user.following}/>
+                    <Followers user={userData}/>
                     <IconButton onClick={mode}>
                         <EditOutlinedIcon />
                     </IconButton>
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={5} className={classes.gridChild}>
-                    <NewsFeed/>
+                    <NewsFeed user={userData}/>
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-                    <SearchBar/>
-                    <Trends/>
-                    <FindPeople />
+                    <SearchBar user={userData}/>
+                    <Trends user={userData}/>
+                    <FindPeople user={userData}/>
                 </Grid>
                 
             </Grid>

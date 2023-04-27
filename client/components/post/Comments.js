@@ -3,22 +3,20 @@ import PropTypes from 'prop-types';
 import { Avatar, CardHeader, TextField, IconButton, Divider } from '@material-ui/core';
 import auth from '../../auth/auth-helper';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { comments, deleteComments } from '../../services/api-post';
+import { deleteComments } from '../../services/api-post';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
+import getMedia from '../../auth/media-helper';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   comment: {
     textDecoration: 'none',
     color: 'black'
   }
 }));
 
-export default function Comments(props) {
-  console.log(props);
-  const userData = auth.getData();
-  const photoUrl = userData ? '/api/users/photo/' + userData.id
-                            : '/api/users/defaultphoto';
+export default function Comments({postId, comments, updatePostComments, profile, user}) {
+  const photoUrl = getMedia(user.photo);
   const classes = useStyles();
   const [value, setValue] = useState({
     text: ''
@@ -34,14 +32,14 @@ export default function Comments(props) {
     if(event.keyCode === 13){
       event.preventDefault();
       comments({
-        params: {userId: userData.id, postId: props.postId},
-        credentials: {divineMole: userData.token},
+        params: {userId: user.id, postId: postId},
+        credentials: {divineMole: user.token},
         comment: {text: value.text}
       }).then(data => {
         if(data.error){
           console.log(data.error);
         }else{
-          props.updatePostComments(data._id, data.comments);
+          updatePostComments(data._id, data.comments);
           setValue({...value, text: ''});
         }
       });
@@ -50,15 +48,15 @@ export default function Comments(props) {
 
   const deleteComment = (comment) => {
     deleteComments({
-      params: {userId: userData.id, postId: props.postId},
-      credentials: {divineMole: userData.token},
+      params: {userId: user.id, postId: postId},
+      credentials: {divineMole: user.token},
       comment
     }).then(data => {
       if(data.error){
         console.log(data.error);
       }else{
         console.log(data);
-        // props.updateComments()
+        // updateComments()
       }
     })
   }
@@ -68,7 +66,7 @@ export default function Comments(props) {
       <p className={classes.commentText}>
         <Link className={classes.comment} to={'/user/'+comment.postedBy._id}>{comment.postedBy.name}</Link>
         <br/>
-        {comment.text} | { userData.id === comment.postedBy._id && 
+        {comment.text} | { user.id === comment.postedBy._id && 
         <IconButton onClick={() => {deleteComment(comment)}}>
           <DeleteIcon />               
         </IconButton>}
@@ -82,7 +80,7 @@ export default function Comments(props) {
   return (
     <div>
       {
-        !props.profile &&
+        !profile &&
         <CardHeader 
           avatar={
             <Avatar className={classes.smallAvatar} src={photoUrl}/>}
@@ -99,9 +97,8 @@ export default function Comments(props) {
       }
       <Divider/>
       {
-        props.comments.map((item, i) => {
-          const photoUserUrl = '/api/users/photo/' + item.postedBy._id;
-          
+        comments.map((item, i) => {
+          const photoUserUrl = getMedia(item.postedBy.photo)
           return (
             <CardHeader avatar={ 
                         <Avatar className={classes.smallAvatar} src={photoUserUrl}/>

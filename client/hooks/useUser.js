@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { read } from "../services/api-user";
 import auth from '../auth/auth-helper';
 
-export default function useUser(){
-    const userData = auth.getData();
+export default function useUser(userData){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [user, setUser] = useState({
@@ -24,7 +23,6 @@ export default function useUser(){
             if(data && data.error)
             {
                 console.log(data.error);
-                // setError(data.error);
             }
             else
             {

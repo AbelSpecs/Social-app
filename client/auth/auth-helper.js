@@ -36,7 +36,14 @@ const auth = {
             return;
         }
         const jwt = JSON.parse(sessionStorage.getItem('jwt'));
-        const user = { token: jwt.token, id: jwt.user._id, name: jwt.user.name, email: jwt.user.email, about: jwt.user.about }
+        const user = { token: jwt.token, 
+                        id: jwt.user._id, 
+                        name: jwt.user.name, 
+                        email: jwt.user.email, 
+                        about: jwt.user.about, 
+                        background: jwt.user.background,
+                        photo: jwt.user.photo 
+                    }
         return user;
     }
 }

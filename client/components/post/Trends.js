@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import useTrend from '../../hooks/useTrend';
@@ -52,9 +52,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Trends(){
+export default function Trends({user}){
   const classes = useStyles();
-  const {values, setValues, loading, setLoading } = useTrend();
+  const {values, setValues, loading, setLoading } = useTrend(user);
 
   return (  
     <Fragment>

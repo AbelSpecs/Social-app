@@ -20,6 +20,7 @@ import { useState } from 'react';
 import { remove } from '../../services/api-post';
 import Comments from './Comments';
 import { like, dislike } from '../../services/api-post';
+import getMedia from '../../auth/media-helper';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -37,51 +38,38 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export default function Post(props) {
-  const userData = auth.getData();
+export default function Post({user, profile, updatePostComments, updatePostLikes, onRemove, post}) {
   const classes = useStyles();
-  const userPostId = props.post.postedBy._id;
-  const postData = props.post;
-  const existLike = postData.likes.indexOf(userData.id) !== -1;
-  const photoUrl = userPostId
-  ? '/api/users/photo/' + userPostId + `?${new Date().getTime()}`
-  : '/api/users/defaultphoto';
+  const userPostId = post.postedBy._id;
+  const existLike = post.likes.indexOf(user.id) !== -1;
+  const photoUrl = getMedia(post.postedBy.photo);
   const [openComments, setOpenComments] = useState(false);
-
-  const getPostMedia = () => {
-    if(postData.photo) {
-      const arrayBuffer = new Uint8Array(postData.photo.data.data);
-      const blob = new Blob([arrayBuffer], {type: "image/*"});
-      const mediaPostUrl = URL.createObjectURL(blob);
-      return mediaPostUrl;
-    }
-  } 
+  const photoPostUrl = getMedia(post.photo);
 
   const deletePost = () => {
     remove({
-      params: { postId: postData._id},
-      credentials: { divineMole: userData.token }
+      params: { postId: post._id},
+      credentials: { divineMole: user.token }
     }).then(data => {
       if(data.error){
         console.log(data.error);
       }else{
-        props.onRemove(postData);
+        onRemove(post);
       }
     });
   }
 
-
   const clickLike = () => {
     let callApi = !existLike ? like : dislike;
     callApi({
-      params: {userId: userData.id},
-      credentials: {divineMole: userData.token},
-      postId: postData._id 
+      params: {userId: user.id},
+      credentials: {divineMole: user.token},
+      postId: post._id 
     }).then(data => {
       if(data.error){
         console.log(error);
       }else{
-        props.updatePostLikes(data._id, data.likes);
+        updatePostLikes(data._id, data.likes);
       }
     });
   } 
@@ -90,8 +78,6 @@ export default function Post(props) {
     setOpenComments(!openComments);
   }
 
-  const photoPostUrl = getPostMedia();
-
   return (
     <Fragment>
       <Card className={classes.card}>
@@ -99,21 +85,21 @@ export default function Post(props) {
           avatar={
             <Avatar src={photoUrl} className={classes.avatar}/>
           }
-          action={ userPostId === userData.id && 
+          action={ userPostId === user.id && 
             (<IconButton onClick={deletePost}>
                 <DeleteIcon />               
               </IconButton>)}
-          title={ <Link className={classes.cardName} to={"/user/" + userPostId}>{postData.postedBy.name}</Link>}
-          subheader={(new Date(postData.created)).toDateString()}
+          title={ <Link className={classes.cardName} to={"/user/" + userPostId}>{post.postedBy.name}</Link>}
+          subheader={(new Date(post.created)).toDateString()}
           className={classes.cardHeader}
         />
         <CardContent className={classes.cardContent}>
           <Typography className={classes.text} component="p">
-            {postData.text}
+            {post.text}
           </Typography>
         </CardContent>
         {
-          postData.photo &&
+          post.photo &&
           (<CardMedia component="img"
                       alt="PhotoPost"
                       height="fit-content" 
@@ -123,7 +109,7 @@ export default function Post(props) {
         }
         <CardActions>
           {
-            postData.likes.length
+            post.likes.length
             ? <IconButton onClick={clickLike} className={classes.button} aria-label="Like" color="secondary">
                 <FavoriteIcon />
               </IconButton>  
@@ -131,15 +117,15 @@ export default function Post(props) {
                 <FavoriteBorderIcon/>
               </IconButton>
           }
-          <span>{postData.likes.length}</span>
+          <span>{post.likes.length}</span>
           <IconButton className={classes.button} aria-label="Comment" color="secondary" onClick={makeComment}>
             <CommentIcon />
           </IconButton>
-          <span>{postData.comments.length}</span>
+          <span>{post.comments.length}</span>
         </CardActions>
         {
           openComments && 
-          <Comments postId={postData._id} comments={postData.comments} updatePostComments={props.updatePostComments} profile={props.profile}/>
+          <Comments postId={post._id} comments={post.comments} updatePostComments={updatePostComments} profile={profile} user={user}/>
         }
       </Card>
     </Fragment>
