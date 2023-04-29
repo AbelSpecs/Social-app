@@ -13,7 +13,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useContext } from "react";
 import { ModeContext }  from "./Mode";
 import auth from '../../auth/auth-helper';
-import useUser from '../../hooks/useUser';
+import useUserPeople from '../../hooks/useUserPeople';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -44,18 +45,15 @@ export default function Home () {
     const classes = useStyles();
     const mode = useContext(ModeContext);
     const userData = auth.getData();
-    const { user } = useUser(userData);
+    const { userPeople } = useUserPeople(userData);
     
     return ( 
         <Fragment>
             <Grid container justifyContent="flex-end" spacing={5} className={classes.grid}>
                 
                 <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-                    <ProfileCard user={userData} followers={user.followers} following={user.following}/>
+                    <ProfileCard user={userData} followers={userPeople.followers} following={userPeople.following}/>
                     <Followers user={userData}/>
-                    <IconButton onClick={mode}>
-                        <EditOutlinedIcon />
-                    </IconButton>
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={5} className={classes.gridChild}>

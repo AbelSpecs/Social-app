@@ -5,7 +5,7 @@ import Post from './Post';
 
 export default function PostList({removeUpdate, updatePostLikes, updatePostComments, posts, user, profile}) {
   return (
-    <div style={{marginTop: '24px'}}>
+    <div style={{marginTop: '24px', width: '100%'}}>
       {posts?.map((item, i) => {
         return <Post post={item} 
                       key={i} 
@@ -21,6 +21,6 @@ export default function PostList({removeUpdate, updatePostLikes, updatePostComme
   )
 } 
 
-PostList.propTypes = { posts: PropTypes.array.isRequired };
+PostList.propTypes = { };
 
 PostList.defaultProps = { removeUpdate: PropTypes.func.isRequired };

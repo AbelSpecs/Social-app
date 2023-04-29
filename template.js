@@ -1,6 +1,6 @@
 export default ({markup, css}) => {
     return `<!doctype html>
-    <html lang="en">
+    <html lang="en" style="height: 100%">
         <head>
             <meta charset="utf-8">
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400">
@@ -8,7 +8,7 @@ export default ({markup, css}) => {
             rel="stylesheet">
             <title>MERN Social</title>
         </head>
-        <body>
+        <body style="height: 100%">
             <div id="root">${markup}</div>
             <style id="jss-server-side">${css}</style>
             <script type="text/javascript" src="/dist/bundle.js"></script>

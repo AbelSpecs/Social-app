@@ -5,14 +5,15 @@ import postController from "../controllers/post.controller";
 
 const router = express.Router();
 
+
 router.route('/api/posts/feed/:userId')
-    .get(authController.requireSignin, postController.listNewsFeed)
+.get(authController.requireSignin, postController.listNewsFeed)
 
 router.route('/api/posts/postsby/:userId')
-    .get(authController.requireSignin, postController.listPostsByUser)
+.get(authController.requireSignin, postController.listPostsByUser)
 
 router.route('/api/posts/new/:userId')
-    .post(authController.requireSignin, postController.create)
+.post(authController.requireSignin, postController.create)
 
 router.param('userId', userCtrl.userById);
 

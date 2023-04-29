@@ -12,12 +12,13 @@ import SearchBar from "../core/SearchBar";
 import { Fragment } from 'react';
 import Profile from './Profile';
 import HomeIcon from '@material-ui/icons/Home';
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import useUser from '../../hooks/useUser';
+import { ModeContext }  from "../core/Mode";
+import { useContext } from "react";
+import Brightness4Icon from '@material-ui/icons/Brightness4';
 
 const useStyles = makeStyles(theme => ({
-  home: {
-    marginLeft: '80%'
-  },
   card: {
       maxWidth: 600,
       margin: 'auto'
@@ -31,11 +32,15 @@ const useStyles = makeStyles(theme => ({
       backgroundSize: "contain"
   },
   grid: {
-      marginTop: '10px',
-      justifyContent: 'center'
+      height: '100%',
+      justifyContent: 'center',
+      position: 'relative',
+      background: theme.palette.background.default
   },
   gridChild: {
-      height: 'max-content'
+      height: 'max-content',
+      position: 'sticky',
+      top: 1
   },
   profileGrid: {
     height: 'max-content',
@@ -46,22 +51,29 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ProfileDock() {
-  const userData = auth.getData();
+  const id = useParams();
   const navigate = useNavigate();
   const classes = useStyles();
+  const mode = useContext(ModeContext);
+  const userData = auth.getData();
+  const flag = id.userId === userData.id ? true : false;
+  const { userView } = useUser(id, flag, userData);
 
   return (
     <Fragment>
-      <Grid container justifyContent="flex-end" spacing={5} className={classes.grid}>
+      <Grid container justifyContent="flex-end" spacing={5} className={classes.grid} >
           <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-            <IconButton aria-label="home" className={classes.home} onClick={() => {navigate('/')}}>
+            <IconButton onClick={mode}>
+                <Brightness4Icon />
+            </IconButton>
+            <IconButton aria-label="home" onClick={() => {navigate('/')}}>
                 <HomeIcon/>
             </IconButton>
-            <Followers user={userData}/>
+            <Followers user={userData} />
           </Grid>
           
-          <Grid item xs={12} sm={12} md={5} className={classes.profileGrid} >
-              <Profile user={userData}/>
+          <Grid item xs={12} sm={12} md={5} className={classes.profileGrid}>
+            <Profile user={userData} actualuser={userView}/>
           </Grid>
           
           <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>

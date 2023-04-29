@@ -90,9 +90,29 @@ const userById = async (req, res, next, id) => {
         const user = await User.findById(id)
         .populate('following', '_id name')
         .populate('followers', '_id name')
-        .select('following')
-        .select('followers')
-        .exec();
+        .select('following followers')
+        .exec()
+        if(!user){
+            return res.status(400).json({
+                error: errorHandler.getErrorMessage(error)
+            });  
+        }
+        console.log('lista',user);
+        req.profile = user;
+        next();
+    } catch (error) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(error)
+        });
+    }
+}
+
+const userCompleteById = async (req, res, next, id) => {
+    try {
+        const user = await User.findById(id)
+        .populate('following', '_id name')
+        .populate('followers', '_id name')
+        .exec()
         if(!user){
             return res.status(400).json({
                 error: errorHandler.getErrorMessage(error)
@@ -255,5 +275,6 @@ export default {
     usersByName,
     listFollowers,
     background,
-    defaultBackground 
+    defaultBackground,
+    userCompleteById 
 };

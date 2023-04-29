@@ -16,7 +16,7 @@ const App = () => {
     }, []);
 
     return (
-        <BrowserRouter>
+        <BrowserRouter >
             <Mode/>
             {/*<ThemeProvider theme={theme}>
                 <MainRouter />

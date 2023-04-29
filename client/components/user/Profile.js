@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import auth from '../../auth/auth-helper';
 import DeleteUser from "./DeleteUser";
 import FollowButton from "./FollowButton";
@@ -10,9 +10,10 @@ import EditProfile from "./EditProfile";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate';
 import Slide from '@material-ui/core/Slide';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import useProfileUser from "../../hooks/useProfileUser";
 import usePosts from "../../hooks/usePosts";
 import useImage from "../../hooks/useImage";
+import getMedia from "../../auth/media-helper";
+import useUserPeople from "../../hooks/useUserPeople";
 import { 
     Card,
     CardHeader,
@@ -28,7 +29,6 @@ import {
     List,
     Avatar
 } from "@material-ui/core";
-import getMedia from "../../auth/media-helper";
 
 
 const useStyles = makeStyles(theme => ({
@@ -142,16 +142,16 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function Profile({user}) {
+export default function Profile({user, actualuser}) {
     const navigate = useNavigate();
     const classes = useStyles();
-    const { users, setUsers, loading, redirectToSigin, following, setFollowing } = useProfileUser(user);
-    const { posts, setPosts } = usePosts();
-    const { values, setValues } = useImage();
     const [edit, setEdit] = useState(false);
-    const photoUrl = getMedia(user.photo);
-    const backgroundUrl = getMedia(user.background); 
-    
+    const { posts, setPosts, loadingPosts } = usePosts(user);
+    const { values, setValues } = useImage(user);
+    const { userPeople, setUserPeople, loading, redirectToSigin, following, setFollowing } = useUserPeople(user);
+    const photoUrl = getMedia(actualuser.photo);
+    const hasBackground = actualuser.background ? true : false;
+    const backgroundUrl = getMedia(actualuser.background, hasBackground); 
     
     const clickFollowButton = (api) => {
         api({
@@ -161,14 +161,30 @@ export default function Profile({user}) {
         }).then((data) => {
             if(data.error){
                 console.log(data.error);
-                setUsers({...values, error: data.error});
+                setUserPeople({...values, error: data.error});
             }
             else{
-                setUsers(data);
+                setUserPeople(data);
                 setFollowing(!following);
             }
         })
     }
+
+    const updatePostLikes = (id, likes) => {
+        const index = posts.findIndex(p => p._id === id);
+        const postsList = [...posts];
+        const updatedPost = {...postsList[index], likes: likes};
+        postsList[index] = updatedPost;
+        setPosts(postsList);
+      }
+    
+      const updatePostComments = (id, comments) => {
+        const index = posts.findIndex(p => p._id === id);
+        const postsList = [...posts];
+        const updatedPost = {...postsList[index], comments: comments};
+        postsList[index] = updatedPost;
+        setPosts(postsList);
+      }
 
     const removePost = (post) => {
         const updatedPosts = [...post];
@@ -182,6 +198,7 @@ export default function Profile({user}) {
     };
 
     const handlePhoto = name => event => {
+        console.log(event);
         const value = event.target.files[0];
         setValues({...values, [name]: value});
     }
@@ -207,39 +224,49 @@ export default function Profile({user}) {
                         src={backgroundUrl}
                         title="Background"
                         />
-                        <input accept="image/*" type="file" onChange={handlePhoto('background')}
-                                style={{display: 'none'}} id="background-button-file" />
-                        <label htmlFor="background-button-file" className={classes.backgroundLabel}>
-                            <FileUpload/>
-                        </label>
+                        {
+                            user && user.id == userPeople._id &&
+                            <Fragment>
+                                <input accept="image/*" type="file" onChange={handlePhoto('background')}
+                                        style={{display: 'none'}} id="background-button-file" />
+                                <label htmlFor="background-button-file" className={classes.backgroundLabel}>
+                                    <FileUpload/>
+                                </label>
+                            </Fragment>
+                        }
                         <Icon aria-label="Edit" className={classes.avatarButton} >
                             <Avatar src={photoUrl} />
-                            <input accept="image/*" type="file" onChange={handlePhoto('photo')}
-                                style={{display: 'none'}} id="icon-button-file" />
-                            <label htmlFor="icon-button-file" className={classes.avatarLabel}>
-                                <FileUpload/>
-                            </label>
+                            {
+                                user && user.id == userPeople._id &&
+                                <Fragment>
+                                    <input accept="image/*" type="file" onChange={handlePhoto('photo')}
+                                        style={{display: 'none'}} id="icon-button-file" />
+                                    <label htmlFor="icon-button-file" className={classes.avatarLabel}>
+                                        <FileUpload/>
+                                    </label>
+                                </Fragment>
+                            }
                         </Icon>
                         <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
-                                {users.name}
+                                {actualuser.name}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-                                {users.about}
+                                {actualuser.about}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-                                {"Joined: " + (new Date(users.created)).toDateString()}
+                                {"Joined: " + (new Date(actualuser.created)).toDateString()}
                             </Typography>
                         </CardContent>
                     </CardActionArea>
                     <CardActions className={classes.cardAction} disableSpacing>
-                        { user && user.id == users._id
+                        { user && user.id == userPeople._id
                             ?
                             (<ListItemSecondaryAction>
                                 <IconButton aria-label="Edit" color="primary" onClick={handleEdit}>
                                     <EditOutlinedIcon/>
                                 </IconButton>
-                                <DeleteUser userId={users._id}/>
+                                <DeleteUser userId={user.id}/>
                             </ListItemSecondaryAction>)
                             :
                             (<ListItemSecondaryAction>
@@ -260,7 +287,17 @@ export default function Profile({user}) {
         
             <Paper className={classes.paper}>
                 <List dense>
-                    <ProfileTabs people={users} posts={posts} profile={true} removeUpdate={removePost}></ProfileTabs>
+                    <ProfileTabs 
+                        user={user} 
+                        people={userPeople} 
+                        posts={posts} 
+                        profile={true} 
+                        removeUpdate={removePost}
+                        updatePostLikes={updatePostLikes}
+                        updatePostComments={updatePostComments}
+                        loadingPosts={loadingPosts}
+                        >
+                    </ProfileTabs>
                 </List>
             </Paper>
         </Fragment>

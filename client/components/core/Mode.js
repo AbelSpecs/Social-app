@@ -19,7 +19,7 @@ export default function Mode() {
   
   return (
     <ModeContext.Provider value={handleMode}>
-      <ThemeProvider theme={newTheme}>
+      <ThemeProvider theme={newTheme} >
         <MainRouter />
       </ThemeProvider>
     </ModeContext.Provider>

@@ -44,4 +44,9 @@ router.route('/api/users/findfollowers/:userId')
 
 router.param('userId', userCtrl.userById);
 
+router.route('/api/users/complete/:usercompleteId')
+    .get(authController.requireSignin, userCtrl.read)
+
+router.param('usercompleteId', userCtrl.userCompleteById);
+
 export default router;

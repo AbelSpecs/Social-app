@@ -1,39 +1,34 @@
 import { useEffect, useState } from "react";
 import { loadPostsByUser } from "../services/api-post";
-import auth from '../auth/auth-helper';
+import { useParams } from "react-router";
 
-export default function usePosts(){
-    const userData = auth.getData();
+export default function usePosts(user){
+    const id = useParams();
     const [posts, setPosts] = useState([]);
+    const [loadingPosts, setLoadingPosts] = useState(false);
 
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        
+        setLoadingPosts(true);
         loadPostsByUser({
-            params: { userId: userData.id },
-            credentials: { divineMole: userData.token },
+            params: { userId: id.userId },
+            credentials: { divineMole: user.token },
             signal
         }).then(data => {
-            if(data.error){
+            setLoadingPosts(false);
+            if(data && data.error){
                 console.log(data.error);
             }else{
-                checkPosts(data);
-            }
-        });
-
-        const checkPosts = (data) => {
-            console.log(data);
-            if(data.length > 0){
                 setPosts(data);
             }
-        }
+        });
 
         return function cleanup() {
             abortController.abort();
         }
 
-    }, []);
+    }, [id.userId]);
 
-    return { posts, setPosts }
+    return { posts, setPosts, loadingPosts }
 }

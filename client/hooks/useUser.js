@@ -1,21 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { read } from "../services/api-user";
+import { readComplete } from "../services/api-user";
 import auth from '../auth/auth-helper';
 
-export default function useUser(userData){
+export default function useUserPeople(id, flag, userData){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [user, setUser] = useState({
-        following: [],
-        followers: []
-    });
+    const [userView, setUserView] = useState({id: '', name: '', email: '', about: '', background: '', photo: '', created: ''});
+
 
     useEffect(() => {
+        if(flag){
+            setUserView(userData);
+            return { userView };
+        }
+
         const abortController = new AbortController();
         const signal = abortController.signal;
+        
         setLoading(true);
-        read({
-            params: { userId: userData.id },
+        readComplete({
+            params: { userId: id.userId },
             credentials: { divineMole: userData.token },
             signal
         }).then(data => {
@@ -26,7 +30,9 @@ export default function useUser(userData){
             }
             else
             {
-                setUser(data);
+                
+                setUserView({...userView, id: data._id, name: data.name, email: data.email, about: data.about, 
+                            background: data.background, photo: data.photo, created: data.created});
             }
         });
     
@@ -34,9 +40,9 @@ export default function useUser(userData){
             abortController.abort();
         }
 
-    }, []);
+    }, [id.userId]);
 
-    return { user, loading, error }
+    return { userView, loading, error, setUserView }
 }
 
 

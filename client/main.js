@@ -5,4 +5,4 @@ import App from './App';
 
 
 //  hydrate(<App/>, document.getElementById('root'));
-render(<App/>, document.getElementById('root'));
+render(<App />, document.getElementById('root'));

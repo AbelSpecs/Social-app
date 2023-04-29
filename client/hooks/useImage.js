@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { update } from "../services/api-user";
 import auth from '../auth/auth-helper';
 
-export default function useImage(){
-    const userData = auth.getData();
+export default function useImage(user){
     const [values, setValues] = useState({
         photo: '',
         background: ''
@@ -17,8 +16,8 @@ export default function useImage(){
         values.background && imageData.append('background', values.background);
         
         update({
-            params: { userId: userData.id },
-            credentials: { divineMole: userData.token },
+            params: { userId: user.id },
+            credentials: { divineMole: user.token },
             user: imageData
         }).then(data => {
             if(data && data.error)

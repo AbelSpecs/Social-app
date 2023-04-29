@@ -43,6 +43,23 @@ const read = async ({params, credentials, signal}) => {
     }
 }
 
+const readComplete = async ({params, credentials, signal}) => {
+    try {
+        let response = await fetch('/api/users/complete/' + params.userId, {
+            method: 'GET',
+            signal: signal,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + credentials.divineMole
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const update = async ({params, credentials, user}) => {
     try {
         let response = await fetch('/api/users/' + params.userId, {
@@ -172,5 +189,6 @@ export {
     unfollow, 
     findpeople, 
     findpeoplebyname,
-    listfollowers
+    listfollowers,
+    readComplete
 };
