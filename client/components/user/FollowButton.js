@@ -7,8 +7,9 @@ import {
 
 
 export default function FollowButton(props) {
+  console.log(props);
   const followClick = () => {
-    props.onButtonClick(follow)
+    props.onButtonClick(follow);
   }
 
   const unfollowClick = () => {

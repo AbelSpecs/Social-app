@@ -21,30 +21,36 @@ import { remove } from '../../services/api-post';
 import Comments from './Comments';
 import { like, dislike } from '../../services/api-post';
 import getMedia from '../../auth/media-helper';
+import Slide from '@material-ui/core/Slide';
+import Grow from '@material-ui/core/Grow';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   card: {
-    boxShadow: 'none'
+    boxShadow: 'none',
+    marginTop: 10
   },
   cardName: {
     textDecoration: 'none',
-    color: 'black'
+    color: theme.palette.text.primary
   },
   img: {
-        width: 400,
-        objectFit: 'contain',
-        margin: 'auto',
-        borderRadius: 20
+    width: 400,
+    objectFit: 'contain',
+    margin: 'auto',
+    borderRadius: 20
+  },
+  like:{
+    color: 'red'
   }
 }));
 
-export default function Post({user, profile, updatePostComments, updatePostLikes, onRemove, post}) {
+export default function Post({user, profile, updatePostComments, updatePostLikes, removePost, post}) {
   const classes = useStyles();
   const userPostId = post.postedBy._id;
   const existLike = post.likes.indexOf(user.id) !== -1;
   const photoUrl = getMedia(post.postedBy.photo);
-  const [openComments, setOpenComments] = useState(false);
   const photoPostUrl = getMedia(post.photo);
+  const [openComments, setOpenComments] = useState(false);
 
   const deletePost = () => {
     remove({
@@ -54,7 +60,7 @@ export default function Post({user, profile, updatePostComments, updatePostLikes
       if(data.error){
         console.log(data.error);
       }else{
-        onRemove(post);
+        removePost(post);
       }
     });
   }
@@ -110,22 +116,29 @@ export default function Post({user, profile, updatePostComments, updatePostLikes
         <CardActions>
           {
             post.likes.length
-            ? <IconButton onClick={clickLike} className={classes.button} aria-label="Like" color="secondary">
-                <FavoriteIcon />
+            ? <IconButton className={classes.like} onClick={clickLike} aria-label="Like">
+                <FavoriteIcon style={{height: '0.7em'}}/>
               </IconButton>  
-            : <IconButton onClick={clickLike} className={classes.button} aria-label="Dislike" color="secondary">
-                <FavoriteBorderIcon/>
+            : <IconButton className={classes.like} onClick={clickLike} aria-label="Dislike">
+                <FavoriteBorderIcon style={{height: '0.7em'}}/>
               </IconButton>
           }
           <span>{post.likes.length}</span>
-          <IconButton className={classes.button} aria-label="Comment" color="secondary" onClick={makeComment}>
-            <CommentIcon />
+          <IconButton aria-label="Comment" color='default' onClick={makeComment}>
+            <CommentIcon style={{height: '0.7em'}}/>
           </IconButton>
           <span>{post.comments.length}</span>
         </CardActions>
         {
           openComments && 
-          <Comments postId={post._id} comments={post.comments} updatePostComments={updatePostComments} profile={profile} user={user}/>
+          <Grow in={openComments} mountOnEnter unmountOnExit>
+            <div style={{width: '100%'}}>
+              <Comments postId={post._id} comments={post.comments} 
+                        updatePostComments={updatePostComments} 
+                        profile={profile} user={user}
+              />
+            </div>
+          </Grow>
         }
       </Card>
     </Fragment>

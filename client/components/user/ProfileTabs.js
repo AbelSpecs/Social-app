@@ -7,6 +7,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import FollowGrid from "./FollowGrid";
 import PostList from "../post/PostList";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Slide from '@material-ui/core/Slide';
 import { 
   Box,
   BottomNavigation,
@@ -23,48 +24,63 @@ const useStyles = makeStyles(theme => ({
     margin: 'auto',
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    color: theme.palette.text.primary
   },
   navigation: {
-    width: '100%'
+    width: '100%',
+    '& .MuiButtonBase-root.MuiBottomNavigationAction-root.Mui-selected':{
+      color: theme.palette.text.primary
+    }
+  },
+  icon: {
+    color: theme.palette.text.primary,
+    '& .MuiBottomNavigationAction-label':{
+      color: theme.palette.text.primary,
+    }
   }
 }));
 
-export default function ProfileTabs({user, people, posts, profile, removeUpdate, 
-                                      updatePostLikes, updatePostComments, loadingPosts}) {
+export default function ProfileTabs({user, userPeople, postsProfile, profile, removePost, 
+                                      updatePostLikes, updatePostComments, loadingPostsProfile,
+                                      transition}) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [navigation, setNavigation] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setNavigation(newValue);
   }
 
   return (
     <Box sx={{ width: '100%' }} className={classes.box}>
-       <BottomNavigation
+      <BottomNavigation
         className={classes.navigation}
         showLabels
-        value={value}
+        value={navigation}
         onChange={handleChange}
       >
-        <BottomNavigationAction label="Posts" icon={<AssignmentIcon/>}/>
-        <BottomNavigationAction label="Following" icon={<PeopleIcon/>}/>
-        <BottomNavigationAction label="Followers" icon={<SupervisorAccountIcon/>} />
+        <BottomNavigationAction label="Posts" icon={<AssignmentIcon className={classes.icon} />}/>
+        <BottomNavigationAction label="Following" icon={<PeopleIcon className={classes.icon}/>}/>
+        <BottomNavigationAction label="Followers" icon={<SupervisorAccountIcon className={classes.icon}/>} />
       </BottomNavigation>
     {
-      value === 0 && loadingPosts && <CircularProgress/>
+      navigation === 0 && loadingPostsProfile && <CircularProgress/>
     }  
-    { value === 0 && !loadingPosts &&
-        <PostList user={user} 
-                  removeUpdate={removeUpdate} 
-                  posts={posts} 
-                  profile={profile} 
-                  updatePostLikes={updatePostLikes} 
-                  updatePostComments={updatePostComments}
-        />
+    { navigation === 0 && !loadingPostsProfile &&
+      <Slide direction="down" in={transition} mountOnEnter unmountOnExit>
+        <div style={{width: '100%'}}>
+          <PostList user={user} 
+                    removePost={removePost} 
+                    posts={postsProfile} 
+                    profile={profile} 
+                    updatePostLikes={updatePostLikes} 
+                    updatePostComments={updatePostComments}
+          />
+        </div>
+      </Slide>
     }
-    {value === 1 && <FollowGrid people={people.following}/>}
-    {value === 2 && <FollowGrid people={people.followers}/>}
+    {navigation === 1 && <FollowGrid people={userPeople.following}/>}
+    {navigation === 2 && <FollowGrid people={userPeople.followers}/>}
     </Box>
   );
 }

@@ -24,7 +24,6 @@ const listNewsFeed = async(req, res) => {
 }
 
 const listPostsByUser = async(req, res) => {
-    console.log(req.profile);
     const userId = req.profile._id;
     try {
         const posts = await Post.find({ postedBy: {$in: userId}})
@@ -56,7 +55,8 @@ const create = async (req, res) => {
             post.photo.contentType = files.photo.type;
         }
         try {
-            await post.save();
+            await post.save()
+            await post.populate('postedBy', '_id name photo')
             res.json(post);
         } catch (error) {
             return res.status(400).json({
@@ -151,6 +151,7 @@ const comments = async (req, res) => {
             {new: true})
             .populate('comments.postedBy', '_id name photo')
             .populate('postedBy', '_id name photo')
+            .select('comments postedBy')
             .exec()
         return res.json(result);
     } catch (error) {
@@ -165,10 +166,11 @@ const deleteComments = async (req, res) => {
     let comment = req.body.comment;
     try {
         const result = await Post.findByIdAndUpdate(postId, 
-            {$pull: {comments: {_id: comment._id}}},
+            {$pull: {comments: {_id: comment}}},
             {new: true})
-            .populate('comments.postedBy', '_id name')
-            .populate('postedBy', '_id name')
+            .populate('comments.postedBy', '_id name photo')
+            .populate('postedBy', '_id name photo')
+            .select('comments postedBy')
             .exec()
         return res.json(result);
     } catch (error) {

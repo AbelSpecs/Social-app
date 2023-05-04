@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 
 export default function useUserPeople(userData){
     const id = useParams();
-    const [loading, setLoading] = useState(false);
+    const [userPeopleLoading, setUserPeopleLoading] = useState(false);
     const [error, setError] = useState('');
     const [redirectToSigin, setRedirectToSignin] = useState(false);
     const [following, setFollowing] = useState(false);
@@ -20,13 +20,13 @@ export default function useUserPeople(userData){
 
         const abortController = new AbortController();
         const signal = abortController.signal;
-        setLoading(true);
+        setUserPeopleLoading(true);
         read({
             params: { userId: id.userId },
             credentials: { divineMole: userData.token },
             signal
         }).then(data => {
-            setLoading(false);
+            setUserPeopleLoading(false);
             if(data && data.error)
             {
                 console.log(data.error);
@@ -34,6 +34,7 @@ export default function useUserPeople(userData){
             }
             else
             {
+                console.log(data);
                 checkData(data);
             }
         });
@@ -54,12 +55,12 @@ export default function useUserPeople(userData){
 
     const checkFollow = (user) => {
         const match = user.followers.some((follower) => {
-            return follower._id === user.id;
+            return follower._id === userData.id;
         });
         return match;
     }
 
-    return { userPeople, loading, error, setUserPeople, redirectToSigin, following, setFollowing }
+    return { userPeople, userPeopleLoading, error, setUserPeople, redirectToSigin, following, setFollowing }
 }
 
 

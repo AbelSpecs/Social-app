@@ -13,7 +13,7 @@ const ProfileDock = React.lazy(() => import('./components/user/ProfileDock'));
 const Users = React.lazy(() => import('./components/user/Users'));
 
 const MainRouter = () => {
-    return (<div style={{height: '100%'}}>
+    return (<div style={{minHeight: 'inherit'}}>
             <Routes>
                 <Route path="/signin" element={<SignDock/>}/>
                 {/*<Route path="/signup" element={<Signup/>}/>*/}

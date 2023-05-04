@@ -30,7 +30,11 @@ const useStyles = makeStyles(theme => ({
     padding: `${theme.spacing(2)}px 0px 0px ${theme.spacing(2)}px`,
   },
   avatar: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    
+  },
+  avatarIcon: {
+    color: theme.palette.text.primary
   },
   follow: {
     right: theme.spacing(2)
@@ -48,16 +52,17 @@ const useStyles = makeStyles(theme => ({
   },
   link: {
     textDecoration: 'none',
-    color: '#000000'
+    color: theme.palette.text.primary
   },
   circularProgress: {
     margin: '10% 0 10% 43%'
   }
 }));
 
-export default function FindPeople ({user}) {
+export default function FindPeople ({user, userPeople, setUserPeople, findPeople, 
+                                      setFindPeople, findPeopleLoading, following, 
+                                      setFollowing}) {
   const classes = useStyles();
-  const { values, setValues, loading } = useFindPeople(user);
   
   const clickfollow = (item, index) => {
     follow({
@@ -69,37 +74,49 @@ export default function FindPeople ({user}) {
         console.log(error);
       }
       else{
-        let newToFollow = values.users;
+        let newToFollow = findPeople.users;
         newToFollow.splice(index, 1);
-        setValues({...values, users: newToFollow, open: true, message: `Following ${item.name}!`});
-       
+        setFindPeople({users: newToFollow, open: true, message: `Following ${item.name}!`});
+        setFollowing(!following);
+        addFollowing(data, user);
       }
-    })
+    });
+  }
+
+  const addFollowing = (data, user) => {
+    if(!userPeople){
+      setUserPeople({_id: user.id, followers: [], following: [{_id: data._id, name: data.name}]});
+      return;
+    }
+    let follow = [...userPeople.following];
+    follow.push({_id: data._id, name: data.name});
+    setUserPeople({...userPeople, _id: user.id, following: follow});
   }
 
   const handleClose = () => {
-    setValues({...values, open: false});
+    setFindPeople({...findPeople, open: false});
   }
 
   return (
+    findPeople.users.length > 0 &&
     <Fragment>
       <Paper className={classes.paper}>
         <Typography className={classes.title}>
           Who to follow
         </Typography>
         {
-          loading && <CircularProgress className={classes.circularProgress}/>
+          findPeopleLoading && <CircularProgress className={classes.circularProgress}/>
         }
         {
-          !loading && 
+          !findPeopleLoading && 
           <List>
-            {values.users.map((item, i) => {
+            {findPeople.users.map((item, i) => {
               const avatar = getMedia(item?.photo);
 
               return <span key={i}>
                 <ListItem>
                   <ListItemAvatar className={classes.avatar}>
-                    <Avatar src={avatar}/>
+                    <Avatar src={avatar} className={classes.avatarIcon}/>
                   </ListItemAvatar>
                   <Link to={"/user/" + item._id} className={classes.link}>
                     <ListItemText primary={item.name}/>
@@ -117,10 +134,10 @@ export default function FindPeople ({user}) {
         }
       </Paper>
       <Snackbar
-          open={values.open}
+          open={findPeople.open}
           autoHideDuration={3000}
           onClose={handleClose}
-          message={values.message}
+          message={findPeople.message}
           anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
       />
     </Fragment>

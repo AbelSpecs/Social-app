@@ -10,10 +10,8 @@ import EditProfile from "./EditProfile";
 import FileUpload from '@material-ui/icons/AddPhotoAlternate';
 import Slide from '@material-ui/core/Slide';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import usePosts from "../../hooks/usePosts";
 import useImage from "../../hooks/useImage";
 import getMedia from "../../auth/media-helper";
-import useUserPeople from "../../hooks/useUserPeople";
 import { 
     Card,
     CardHeader,
@@ -119,6 +117,9 @@ const useStyles = makeStyles(theme => ({
             borderRadius: '20px'
         }
     },
+    // editIcon: {
+    //     color: theme.palette.primary.main
+    // },
     edit: {
         width: '100%'
     },
@@ -142,55 +143,88 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function Profile({user, actualuser}) {
+export default function Profile({user, userProfileData, postsProfile, setPostsProfile, loadingPostsProfile, transition,
+                                userPeople, setUserPeople, userPeopleLoading, redirectToSigin, following,
+                                setFollowing, findPeople, setFindPeople}) {
+
     const navigate = useNavigate();
     const classes = useStyles();
     const [edit, setEdit] = useState(false);
-    const { posts, setPosts, loadingPosts } = usePosts(user);
     const { values, setValues } = useImage(user);
-    const { userPeople, setUserPeople, loading, redirectToSigin, following, setFollowing } = useUserPeople(user);
-    const photoUrl = getMedia(actualuser.photo);
-    const hasBackground = actualuser.background ? true : false;
-    const backgroundUrl = getMedia(actualuser.background, hasBackground); 
+    const photoUrl = getMedia(userProfileData.photo);
+    const hasBackground = userProfileData.background ? true : false;
+    const backgroundUrl = getMedia(userProfileData.background, hasBackground); 
     
     const clickFollowButton = (api) => {
         api({
             params: {userId: user.id},
             credentials: {divineMole: user.token},
-            followId: user.id
+            followId: userProfileData.id
         }).then((data) => {
             if(data.error){
                 console.log(data.error);
                 setUserPeople({...values, error: data.error});
             }
             else{
-                setUserPeople(data);
                 setFollowing(!following);
+                api.name === 'unfollow' ? addFindPeople(data) : removeFindPeople(data);
+                api.name === 'unfollow' ? removeUserPeople(user) : addUserPeople(user);
             }
         })
     }
 
+    const addUserPeople = (user) => {
+        if(!userPeople){
+            setUserPeople({followers: [{_id: user.id, name: user.name}]});
+        }
+        const followers = [...userPeople.followers];
+        followers.push({_id: user.id, name: user.name});
+        setUserPeople({following: [...userPeople.following], followers: followers});
+    }
+
+    const removeUserPeople = (user) => {
+        const followers = [...userPeople.followers];
+        const index = followers.findIndex(f => f._id === user.id);
+        followers.splice(index, 1);
+        setUserPeople({following: [...userPeople.following], followers: followers});
+    }
+
+    const addFindPeople = (data) => {
+        const addFindPeople = [...findPeople.users];
+        const newFindPeople = {_id: data._id, name: data.name};
+        addFindPeople.push(newFindPeople);
+        setFindPeople({...findPeople, users: addFindPeople});
+    }
+
+    const removeFindPeople = (data) => {
+        const deleteFindPeople = [...findPeople.users];
+        const itemFindPeople = {_id: data._id, name: data.name};
+        const index = deleteFindPeople.indexOf(itemFindPeople);
+        deleteFindPeople.splice(index, 1);
+        setFindPeople({findPeople, users: deleteFindPeople});
+    }
+
     const updatePostLikes = (id, likes) => {
-        const index = posts.findIndex(p => p._id === id);
-        const postsList = [...posts];
+        const index = postsProfile.findIndex(p => p._id === id);
+        const postsList = [...postsProfile];
         const updatedPost = {...postsList[index], likes: likes};
         postsList[index] = updatedPost;
-        setPosts(postsList);
-      }
+        setPostsProfile(postsList);
+    }
     
-      const updatePostComments = (id, comments) => {
-        const index = posts.findIndex(p => p._id === id);
-        const postsList = [...posts];
+    const updatePostComments = (id, comments) => {
+        const index = postsProfile.findIndex(p => p._id === id);
+        const postsList = [...postsProfile];
         const updatedPost = {...postsList[index], comments: comments};
         postsList[index] = updatedPost;
-        setPosts(postsList);
-      }
+        setPostsProfile(postsList);
+    }
 
     const removePost = (post) => {
-        const updatedPosts = [...post];
+        const updatedPosts = [...postsProfile];
         const index = updatedPosts.indexOf(post);
-        updatedPosts.splice(index);
-        setPosts(updatedPosts);
+        updatedPosts.splice(index, 1);
+        setPostsProfile(updatedPosts);
     }
 
     const handleEdit = () => {
@@ -198,7 +232,6 @@ export default function Profile({user, actualuser}) {
     };
 
     const handlePhoto = name => event => {
-        console.log(event);
         const value = event.target.files[0];
         setValues({...values, [name]: value});
     }
@@ -210,10 +243,10 @@ export default function Profile({user, actualuser}) {
         <Fragment>
             <Card className={classes.card}>
             {
-                loading && <CircularProgress/>
+                userPeopleLoading && <CircularProgress/>
             }
             {
-                !loading &&
+                !userPeopleLoading &&
                 <Fragment>
                     <CardHeader className={classes.settingsButton}/>
                     <CardActionArea className={classes.cardActionArea}>
@@ -249,13 +282,13 @@ export default function Profile({user, actualuser}) {
                         </Icon>
                         <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
-                                {actualuser.name}
+                                {userProfileData.name}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-                                {actualuser.about}
+                                {userProfileData.about}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p" className={classes.text}>
-                                {"Joined: " + (new Date(actualuser.created)).toDateString()}
+                                {"Joined: " + (new Date(userProfileData.created)).toDateString()}
                             </Typography>
                         </CardContent>
                     </CardActionArea>
@@ -263,15 +296,17 @@ export default function Profile({user, actualuser}) {
                         { user && user.id == userPeople._id
                             ?
                             (<ListItemSecondaryAction>
-                                <IconButton aria-label="Edit" color="primary" onClick={handleEdit}>
-                                    <EditOutlinedIcon/>
+                                <IconButton aria-label="Edit" onClick={handleEdit}>
+                                    <EditOutlinedIcon className={classes.editIcon}/>
                                 </IconButton>
                                 <DeleteUser userId={user.id}/>
                             </ListItemSecondaryAction>)
                             :
-                            (<ListItemSecondaryAction>
-                                <FollowButton following={following} onButtonClick={clickFollowButton}/>
-                            </ListItemSecondaryAction>)
+                            (
+                                <ListItemSecondaryAction>
+                                    <FollowButton following={following} onButtonClick={clickFollowButton}/>
+                                </ListItemSecondaryAction>
+                            )
                         }
                     </CardActions>
                     {
@@ -289,13 +324,14 @@ export default function Profile({user, actualuser}) {
                 <List dense>
                     <ProfileTabs 
                         user={user} 
-                        people={userPeople} 
-                        posts={posts} 
+                        userPeople={userPeople} 
+                        postsProfile={postsProfile} 
                         profile={true} 
-                        removeUpdate={removePost}
+                        removePost={removePost}
                         updatePostLikes={updatePostLikes}
                         updatePostComments={updatePostComments}
-                        loadingPosts={loadingPosts}
+                        loadingPostsProfile={loadingPostsProfile}
+                        transition={transition}
                         >
                     </ProfileTabs>
                 </List>

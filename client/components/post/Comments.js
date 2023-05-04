@@ -3,15 +3,19 @@ import PropTypes from 'prop-types';
 import { Avatar, CardHeader, TextField, IconButton, Divider } from '@material-ui/core';
 import auth from '../../auth/auth-helper';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { deleteComments } from '../../services/api-post';
+import { addcomments,deleteComments } from '../../services/api-post';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
 import getMedia from '../../auth/media-helper';
+import { Fragment } from 'react';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   comment: {
     textDecoration: 'none',
-    color: 'black'
+    color: theme.palette.text.primary
+  },
+  commentText: {
+    width: '80%'
   }
 }));
 
@@ -31,7 +35,7 @@ export default function Comments({postId, comments, updatePostComments, profile,
   const addComment = (event) => {
     if(event.keyCode === 13){
       event.preventDefault();
-      comments({
+      addcomments({
         params: {userId: user.id, postId: postId},
         credentials: {divineMole: user.token},
         comment: {text: value.text}
@@ -39,6 +43,7 @@ export default function Comments({postId, comments, updatePostComments, profile,
         if(data.error){
           console.log(data.error);
         }else{
+          console.log(data);
           updatePostComments(data._id, data.comments);
           setValue({...value, text: ''});
         }
@@ -50,13 +55,12 @@ export default function Comments({postId, comments, updatePostComments, profile,
     deleteComments({
       params: {userId: user.id, postId: postId},
       credentials: {divineMole: user.token},
-      comment
+      comment: comment._id
     }).then(data => {
       if(data.error){
         console.log(data.error);
       }else{
-        console.log(data);
-        // updateComments()
+        updatePostComments(data._id, data.comments)
       }
     })
   }
@@ -78,40 +82,42 @@ export default function Comments({postId, comments, updatePostComments, profile,
   }
 
   return (
-    <div>
+    <Fragment>
       {
         !profile &&
-        <CardHeader 
-          avatar={
-            <Avatar className={classes.smallAvatar} src={photoUrl}/>}
-          title={<TextField 
-                  multiline
-                  value={value.text}
-                  onChange={handleChange}
-                  placeholder='Write Something ...'
-                  className={classes.text}
-                  margin="normal"
-                  onKeyDown={addComment}
-                  />}>
-        </CardHeader>
+          <CardHeader 
+            avatar={
+              <Avatar className={classes.smallAvatar} src={photoUrl}/>}
+            title={<TextField 
+                    multiline
+                    value={value.text}
+                    onChange={handleChange}
+                    placeholder='Write Something ... and press Enter'
+                    className={classes.commentText}
+                    margin="normal"
+                    onKeyDown={addComment}
+                    />}>
+          </CardHeader>
       }
-      <Divider/>
       {
         comments.map((item, i) => {
-          const photoUserUrl = getMedia(item.postedBy.photo)
-          return (
+        const photoUserUrl = getMedia(item.postedBy.photo)
+        return (
+          <Fragment key={i}>
+            <Divider/>
             <CardHeader avatar={ 
-                        <Avatar className={classes.smallAvatar} src={photoUserUrl}/>
-                        }
-                        title={commentBody(item)}
-                        key={i}
-                        className={classes.cardHeader}
+              <Avatar className={classes.smallAvatar} src={photoUserUrl}/>
+              }
+              title={commentBody(item)}
+              className={classes.cardHeader}
             >           
-            </CardHeader>)
-          })
+            </CardHeader>
+          </Fragment>
+          )
+        })
       }
-
-    </div>
+      
+    </Fragment>
   )
 } 
 

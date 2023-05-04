@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Link, Avatar, ImageListItem, ListItemText } from '@material-ui/core';
+import { Typography, Avatar, ImageListItem } from '@material-ui/core';
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import ImageList from '@material-ui/core/ImageList'
 import getMedia from '../../auth/media-helper';
@@ -18,7 +19,8 @@ const useStyles = makeStyles(theme => ({
   bigAvatar: {
     width: 60,
     height: 60,
-    margin: 'auto'
+    margin: 'auto',
+    color: theme.palette.text.primary
   },
   gridList: {
     width: '100%'
@@ -29,7 +31,8 @@ const useStyles = makeStyles(theme => ({
     textDecoration: 'none'
   },
   link:{
-    textDecoration: 'none'
+    textDecoration: 'none',
+    color: theme.palette.text.primary
   }
 }));
 

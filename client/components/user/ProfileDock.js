@@ -17,6 +17,9 @@ import useUser from '../../hooks/useUser';
 import { ModeContext }  from "../core/Mode";
 import { useContext } from "react";
 import Brightness4Icon from '@material-ui/icons/Brightness4';
+import usePostsProfile from "../../hooks/usePostsProfile";
+import useUserPeople from "../../hooks/useUserPeople";
+import useFindPeople from '../../hooks/useFindPeople';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -32,15 +35,24 @@ const useStyles = makeStyles(theme => ({
       backgroundSize: "contain"
   },
   grid: {
-      height: '100%',
       justifyContent: 'center',
       position: 'relative',
-      background: theme.palette.background.default
+      background: theme.palette.background.default,
+      marginTop: 1,
+      minHeight: 'inherit'
   },
-  gridChild: {
+  gridChildLeft: {
       height: 'max-content',
       position: 'sticky',
-      top: 1
+      top: 1,
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'flex-end'
+  },
+  gridChildRight: {
+    height: 'max-content',
+    position: 'sticky',
+    top: 1
   },
   profileGrid: {
     height: 'max-content',
@@ -54,16 +66,19 @@ export default function ProfileDock() {
   const id = useParams();
   const navigate = useNavigate();
   const classes = useStyles();
-  const mode = useContext(ModeContext);
+  const handleMode = useContext(ModeContext);
   const userData = auth.getData();
   const flag = id.userId === userData.id ? true : false;
-  const { userView } = useUser(id, flag, userData);
+  const { userProfileData } = useUser(id, flag, userData);
+  const { postsProfile, setPostsProfile, loadingPostsProfile, transition } = usePostsProfile(id, userData);
+  const { userPeople, setUserPeople, userPeopleLoading, redirectToSigin, following, setFollowing } = useUserPeople(userData);
+  const { findPeople, setFindPeople, findPeopleLoading } = useFindPeople(userData);
 
   return (
     <Fragment>
       <Grid container justifyContent="flex-end" spacing={5} className={classes.grid} >
-          <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
-            <IconButton onClick={mode}>
+          <Grid item xs={12} sm={12} md={3} className={classes.gridChildLeft}>
+            <IconButton onClick={handleMode.toggle}>
                 <Brightness4Icon />
             </IconButton>
             <IconButton aria-label="home" onClick={() => {navigate('/')}}>
@@ -73,13 +88,23 @@ export default function ProfileDock() {
           </Grid>
           
           <Grid item xs={12} sm={12} md={5} className={classes.profileGrid}>
-            <Profile user={userData} actualuser={userView}/>
+            <Profile user={userData} userProfileData={userProfileData} postsProfile={postsProfile} 
+                      setPostsProfile={setPostsProfile} loadingPostsProfile={loadingPostsProfile} 
+                      transition={transition} userPeople={userPeople}
+                      setUserPeople={setUserPeople} userPeopleLoading={userPeopleLoading}
+                      redirectToSigin={redirectToSigin} following={following}
+                      setFollowing={setFollowing} findPeople={findPeople}
+                      setFindPeople={setFindPeople}
+            />
           </Grid>
           
-          <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
+          <Grid item xs={12} sm={12} md={3} className={classes.gridChildRight}>
               <SearchBar user={userData}/>
               <Trends user={userData}/>
-              <FindPeople user={userData}/>
+              <FindPeople user={userData} setUserPeople={setUserPeople} 
+                          findPeople={findPeople} findPeopleLoading={findPeopleLoading}
+                          setFindPeople={setFindPeople} following={following}
+                          setFollowing={setFollowing}/>
           </Grid>
           
       </Grid>

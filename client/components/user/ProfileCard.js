@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
   card: {
     borderRadius: '38px',
     position: 'relative',
-    marginBottom: `${theme.spacing(3)}px`
+    marginBottom: `${theme.spacing(3)}px`,
+    width: '80%'
   },
   avatarCard: {
     top: '50%',
@@ -59,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none'
   },
   profileButton: {
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    color: theme.palette.text.primary
   },
   settingsButton: {
     position: 'absolute',

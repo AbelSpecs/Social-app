@@ -8,13 +8,12 @@ import Followers from "../user/Followers";
 import Trends from "../post/Trends";
 import SearchBar from "./SearchBar";
 import { Fragment } from "react";
-import { IconButton } from "@material-ui/core";
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useContext } from "react";
 import { ModeContext }  from "./Mode";
 import auth from '../../auth/auth-helper';
 import useUserPeople from '../../hooks/useUserPeople';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
+import usePostHome from "../../hooks/usePostHome";
+import useFindPeople from "../../hooks/useFindPeople";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -30,11 +29,21 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: "contain"
     },
     grid: {
-        marginTop: '10px',
         justifyContent: 'center',
-        position: 'relative'
+        position: 'relative',
+        background: theme.palette.background.default,
+        minHeight: 'inherit',
+        marginTop: 1,
     },
-    gridChild: {
+    gridChildLeft: {
+        height: 'max-content',
+        position: 'sticky',
+        top: 1,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+    },
+    gridChildRight: {
         height: 'max-content',
         position: 'sticky',
         top: 1
@@ -45,25 +54,33 @@ export default function Home () {
     const classes = useStyles();
     const mode = useContext(ModeContext);
     const userData = auth.getData();
-    const { userPeople } = useUserPeople(userData);
+    const { userPeople, setUserPeople, following, setFollowing } = useUserPeople(userData);
+    const { postsHome, setPostsHome, postHomeLoading, transition } = usePostHome(userData);
+    const { findPeople, setFindPeople, findPeopleLoading } = useFindPeople(userData);
     
     return ( 
         <Fragment>
             <Grid container justifyContent="flex-end" spacing={5} className={classes.grid}>
                 
-                <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
+                <Grid item xs={12} sm={12} md={3} className={classes.gridChildLeft}>
                     <ProfileCard user={userData} followers={userPeople.followers} following={userPeople.following}/>
                     <Followers user={userData}/>
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={5} className={classes.gridChild}>
-                    <NewsFeed user={userData}/>
+                    <NewsFeed user={userData} postsHome={postsHome} 
+                              setPostsHome={setPostsHome} postHomeLoading={postHomeLoading} 
+                              transition={transition}/>
                 </Grid>
                 
-                <Grid item xs={12} sm={12} md={3} className={classes.gridChild}>
+                <Grid item xs={12} sm={12} md={3} className={classes.gridChildRight}>
                     <SearchBar user={userData}/>
                     <Trends user={userData}/>
-                    <FindPeople user={userData}/>
+                    <FindPeople user={userData} userPeople={userPeople} 
+                                setUserPeople={setUserPeople} findPeople={findPeople} 
+                                findPeopleLoading={findPeopleLoading} setFindPeople={setFindPeople} 
+                                following={following} setFollowing={setFollowing}
+                    />
                 </Grid>
                 
             </Grid>

@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
     padding: `${theme.spacing(2)}px 0px 0px ${theme.spacing(2)}px`,
   },
   avatar: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    color: theme.palette.text.primary
   },
   follow: {
     right: theme.spacing(2)
@@ -38,11 +39,12 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: '10px',
-    borderRadius: '19px'
+    borderRadius: '19px',
+    width: '100%'
   },
   link: {
     textDecoration: 'none',
-    color: '#000000'
+    color: theme.palette.text.primary
   },
   circularProgress: {
     margin: '10% 0 10% 43%'
@@ -54,10 +56,11 @@ export default function Followers({user}) {
   const { values, loading } = useFollowers(user);
 
   return (  
+    values.users.length > 0 &&
     <Fragment>
       <Paper className={classes.paper}>
         <Typography className={classes.title}>
-          Who are you Following
+          Who are Following you
         </Typography>
         {
           loading && <CircularProgress className={classes.circularProgress}/>
@@ -71,7 +74,7 @@ export default function Followers({user}) {
               <span key={i}>
                 <ListItem>
                   <ListItemAvatar className={classes.avatar}>
-                    <Avatar src={avatar}/>
+                    <Avatar src={avatar} className={classes.avatar}/>
                   </ListItemAvatar>
                   <Link to={"/user/" + item._id} className={classes.link}>
                     <ListItemText primary={item.name}/>

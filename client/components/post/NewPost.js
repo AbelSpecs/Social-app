@@ -17,7 +17,8 @@ import getMedia from '../../auth/media-helper';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        boxShadow: 'none'
+        boxShadow: 'none',
+        width: '100%'
     },
     cardHeader: {
         paddingTop: 0
@@ -131,7 +132,7 @@ export default function NewPost({user, setPosts, posts}){
             />
             <img id='image-preview' className={classes.img}/>
             <CardActions className={classes.button}>
-                <Button color='primary' onClick={handleCancel}>
+                <Button onClick={handleCancel}>
                     Cancel
                 </Button>
                 <IconButton className={classes.iconButton}>
@@ -141,7 +142,7 @@ export default function NewPost({user, setPosts, posts}){
                         <PhotoIcon/>
                     </label>
                 </IconButton>
-                <Button color='primary' onClick={clickPost}>
+                <Button onClick={clickPost}>
                     Post
                 </Button>
             </CardActions>

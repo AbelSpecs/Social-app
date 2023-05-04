@@ -57,6 +57,7 @@ export default function Trends({user}){
   const {values, setValues, loading, setLoading } = useTrend(user);
 
   return (  
+    values.trends.length > 0 &&
     <Fragment>
       <Paper className={classes.paper}>
         <Typography className={classes.title}>

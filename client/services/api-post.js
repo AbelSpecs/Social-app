@@ -50,7 +50,7 @@ const create = async ({params, credentials, post}) => {
 
 const remove = async({params, credentials}) => {
     try {
-        let response = await fetch('/api/posts/delete' + params.postId, {
+        let response = await fetch('/api/posts/delete/' + params.postId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -98,7 +98,7 @@ const dislike = async({params, credentials, postId}) => {
     }
 }
 
-const comments = async({params, credentials, comment}) => {
+const addcomments = async({params, credentials, comment}) => {
     try {
         let response = await fetch('/api/posts/comments', {
             method: 'PUT',
@@ -117,7 +117,7 @@ const comments = async({params, credentials, comment}) => {
 
 const deleteComments = async({params, credentials, comment}) => {
     try {
-        let response = await fetch('/api/post/deletecomment', {
+        let response = await fetch('/api/posts/deletecomment', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -172,7 +172,7 @@ export {
     remove, 
     like, 
     dislike, 
-    comments, 
+    addcomments, 
     deleteComments, 
     trendList
 };

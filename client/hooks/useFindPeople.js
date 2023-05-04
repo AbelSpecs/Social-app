@@ -3,8 +3,8 @@ import { findpeople } from '../services/api-user';
 import auth from '../auth/auth-helper';
 
 export default function useFindPeople(user) { 
-    const [loading, setLoading] = useState(false);
-    const [values, setValues] = useState({ 
+    const [findPeopleLoading, setFindPeopleLoading] = useState(false);
+    const [findPeople, setFindPeople] = useState({ 
         users: [],
         error: '',
         open: false,
@@ -14,18 +14,19 @@ export default function useFindPeople(user) {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        setLoading(true);
+        setFindPeopleLoading(true);
         findpeople({
           params: { userId: user.id},
           credentials: { divineMole: user.token},
           signal
         }).then((data) => {
-          setLoading(false);
+          setFindPeopleLoading(false);
           if(data && data.error){
             console.log(data.error);
           }
           else{
-            setValues({...values, users: data});
+            console.log(data);
+            setFindPeople({users: data});
           }
         });
         
@@ -34,7 +35,7 @@ export default function useFindPeople(user) {
         }
       
     
-    }, [values.users.length])
+    }, [findPeople.users.length])
 
-    return { values, setValues, loading, setLoading };
+    return { findPeople, setFindPeople, findPeopleLoading, setFindPeopleLoading };
 }

@@ -50,7 +50,7 @@ export default function DeleteUser({userId}) {
 
     return (
         <span>
-            <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
+            <IconButton aria-label="Delete" onClick={clickButton} >
                 <DeleteOutlineOutlinedIcon/>
             </IconButton>
 
