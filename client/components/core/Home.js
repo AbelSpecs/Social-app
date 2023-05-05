@@ -55,7 +55,7 @@ export default function Home () {
     const mode = useContext(ModeContext);
     const userData = auth.getData();
     const { userPeople, setUserPeople, following, setFollowing } = useUserPeople(userData);
-    const { postsHome, setPostsHome, postHomeLoading, transition } = usePostHome(userData);
+    const { postsHome, setPostsHome, postHomeLoading, transition } = usePostHome(userData, userPeople.following);
     const { findPeople, setFindPeople, findPeopleLoading } = useFindPeople(userData);
     
     return ( 

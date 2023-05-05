@@ -8,6 +8,14 @@ const auth = {
         }
         cb();
     },
+
+    update(jwt) {
+        if(typeof window !== "undefined") {
+            const userData = JSON.parse(sessionStorage.getItem('jwt'));
+            userData.user = {...userData.user, name: jwt.name, email: jwt.email, about: jwt.about};
+            sessionStorage.setItem("jwt", JSON.stringify(userData));
+        }
+    },
     
     isAuthenticated() {
         if(typeof window == "undefined"){

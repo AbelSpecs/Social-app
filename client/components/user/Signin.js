@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
       marginTop: theme.spacing(2),
-      color: theme.palette.openTitle,
+      color: ({mode}) => mode === 'light' ? theme.palette.openTitle : theme.palette.text.primary,
       fontSize: '1.5rem',
     },
     textField: {
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     forgotPassword: {
       fontSize: '0.8rem',
       textDecoration: 'none',
-      color: theme.palette.primary.main,
+      color: ({mode}) => mode === 'light' ? theme.palette.openTitle : theme.palette.text.primary,
       fontWeight: 'bold',
       marginTop: 10
     },
@@ -64,14 +64,15 @@ const useStyles = makeStyles(theme => ({
     },
     link: {
       textDecoration: 'none',
-      color: theme.palette.primary.main,
+      color: ({mode}) =>  mode === 'light' ? theme.palette.openTitle : theme.palette.text.primary,
       fontWeight: 'bold'
     }
 }));
 
 export default function SignIn(props) {
+    const mode = props.mode;
     const navigate = useNavigate();
-    const classes = useStyles();
+    const classes = useStyles({mode});
     const { login } = useAuth();
     const [variant, setVariant] = useState("contained");
     const [values, setValues] = useState({

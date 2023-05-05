@@ -7,7 +7,7 @@ import formidable from 'formidable';
 import fs from 'fs';
 
 const listNewsFeed = async(req, res) => {
-    const following = req.profile.followers;
+    const following = req.profile.following;
     following.push(req.profile._id);
     try {
         const posts = await Post.find({ postedBy: {$in: following}})

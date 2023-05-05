@@ -48,7 +48,7 @@ export default function useUser(id, flag, userData){
             abortController.abort();
         }
 
-    }, [id.userId]);
+    }, [id.userId, userData.about, userData.name, userData.email]);
 
     return { userProfileData, userPorfileDataLoading, error, setUserProfileData }
 }

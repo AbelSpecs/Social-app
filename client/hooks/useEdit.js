@@ -13,15 +13,13 @@ export default function useEdit() {
     });
 
     useEffect(() => {
-        let isMounted = true;
         const abortController = new AbortController();
 
-        if(userData && isMounted){
+        if(userData){
             setValues({...values, id: userData.id, name: userData.name, email: userData.email, about: userData.about});
         }
 
         return function cleanup() {
-            isMounted = false
             abortController.abort();
         } 
         

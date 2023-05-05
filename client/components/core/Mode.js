@@ -22,7 +22,7 @@ export default function Mode() {
   ) 
   
   return (
-    <ModeContext.Provider value={handleMode} >
+    <ModeContext.Provider value={{handleMode, mode}} >
       <ThemeProvider theme={newTheme} >
         <MainRouter />
       </ThemeProvider>

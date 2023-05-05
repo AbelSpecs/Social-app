@@ -25,6 +25,9 @@ import Slide from '@material-ui/core/Slide';
 import Grow from '@material-ui/core/Grow';
 
 const useStyles = makeStyles((theme) => ({
+  avatar: {
+    color: theme.palette.text.primary
+  },
   card: {
     boxShadow: 'none',
     marginTop: 10

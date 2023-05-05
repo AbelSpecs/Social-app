@@ -26,6 +26,7 @@ export default function useFollowers(user) {
             console.log(data.error);
           }
           else{
+            console.log(data);
             setValues({...values, users: data});
           }
         });

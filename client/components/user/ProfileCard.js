@@ -8,8 +8,7 @@ import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { useNavigate } from "react-router-dom";
 import { Fragment } from 'react';
 import Settings from '../core/Settings';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import useUser from '../../hooks/useUserPeople';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { 
   Avatar,
   Button, 
@@ -38,7 +37,8 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 60,
-    height: 60
+    height: 60,
+    color: theme.palette.text.primary
   },
   cardContent: {
     display: 'flex',
@@ -69,13 +69,13 @@ const useStyles = makeStyles((theme) => ({
     left: '70%'
   },
   settingsIcon: {
-    color: '#ffff'
+    color: theme.palette.background.paper
   },
   menu: {
     marginTop: '3.5%',
     '& .MuiPaper-rounded': {
       borderRadius: '20px',
-      backgroundColor: '#ffff' 
+      backgroundColor: theme.palette.background.default 
     }
   },
   circularProgress: {
@@ -104,7 +104,7 @@ export default function ProfileCard({user, followers, following}) {
         <CardHeader className={classes.settingsButton} action={
           <Fragment>
             <IconButton aria-label="settings" onClick={handleClick}>
-                <SettingsOutlinedIcon className={classes.settingsIcon}/>
+                <SettingsIcon className={classes.settingsIcon}/>
             </IconButton>
             <Settings 
               handleClose={handleClose} 
@@ -144,7 +144,7 @@ export default function ProfileCard({user, followers, following}) {
           <Divider variant="middle" orientation="vertical" flexItem className={classes.divider}/>
           <div>
             <Typography variant='body2' component="p" style={{textAlign: 'center'}}>
-              {following.length}
+              {following.length - 1}
             </Typography>
             <Typography variant='body2' component="p">
               Following

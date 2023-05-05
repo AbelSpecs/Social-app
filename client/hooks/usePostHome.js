@@ -1,13 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { postList } from '../services/api-post';
 import auth from '../auth/auth-helper';
 
-export default function usePostHome(user) {
+export default function usePostHome(user, following) {
     const [postsHome, setPostsHome] = useState([]);
     const [postHomeLoading, setPostHomeLoading] = useState(false);
     const [transition, setTransition] = useState(false);
+    const firstRender = useRef(true);
 
     useEffect(() => {
+        if(firstRender.current){
+          firstRender.current = false;
+          return;
+        }
+
         const abortController = new AbortController();
         const signal = abortController.signal;
         setPostHomeLoading(true);
@@ -17,10 +23,11 @@ export default function usePostHome(user) {
           credentials: {divineMole: user.token},
           signal
         }).then(data => {
+          console.log(data);
           setPostHomeLoading(false);
-          if(data.error){
+          if(data && data.error){
             console.log(data.error);
-          }else{      
+          }else{   
             setTransition(true);
             setPostsHome(data);
           }
@@ -30,7 +37,7 @@ export default function usePostHome(user) {
           abortController.abort(); 
         }
 
-      },[]);
+      },[following.length]);
 
     return { postsHome, setPostsHome, postHomeLoading, setPostHomeLoading, transition }; 
 }

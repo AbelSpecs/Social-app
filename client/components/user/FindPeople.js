@@ -6,7 +6,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 import { Fragment } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import useFindPeople from '../../hooks/useFindPeople';
 import getMedia from '../../auth/media-helper';
 import { 
   List,

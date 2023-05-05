@@ -66,8 +66,8 @@ export default function ProfileDock() {
   const id = useParams();
   const navigate = useNavigate();
   const classes = useStyles();
-  const handleMode = useContext(ModeContext);
-  const userData = auth.getData();
+  const {handleMode} = useContext(ModeContext);
+  const [userData, setUserData] = useState(auth.getData());
   const flag = id.userId === userData.id ? true : false;
   const { userProfileData } = useUser(id, flag, userData);
   const { postsProfile, setPostsProfile, loadingPostsProfile, transition } = usePostsProfile(id, userData);
@@ -88,8 +88,9 @@ export default function ProfileDock() {
           </Grid>
           
           <Grid item xs={12} sm={12} md={5} className={classes.profileGrid}>
-            <Profile user={userData} userProfileData={userProfileData} postsProfile={postsProfile} 
-                      setPostsProfile={setPostsProfile} loadingPostsProfile={loadingPostsProfile} 
+            <Profile user={userData} setUserData={setUserData} userProfileData={userProfileData} 
+                      postsProfile={postsProfile} setPostsProfile={setPostsProfile} 
+                      loadingPostsProfile={loadingPostsProfile} 
                       transition={transition} userPeople={userPeople}
                       setUserPeople={setUserPeople} userPeopleLoading={userPeopleLoading}
                       redirectToSigin={redirectToSigin} following={following}

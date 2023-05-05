@@ -49,9 +49,9 @@ const useStyles = makeStyles(theme => ({
     }
   }))
 
-export default function EditProfile() {
+export default function EditProfile({user, setUserData}) {
     const classes = useStyles();
-    const userData = auth.getData();
+    // const user = auth.getData();
     const { values, setValues } = useEdit();
 
     const handleChange = name => event => {
@@ -68,14 +68,16 @@ export default function EditProfile() {
         values.password && userForm.append('password', values.password);
 
         update({
-            params: { userId: userData.id },
-            credentials: { divineMole: userData.token },
+            params: { userId: user.id },
+            credentials: { divineMole: user.token },
             user: userForm
         }).then(data => {
             if(data && data.error)
                 setValues({...values, error: data.error});
             else{
-                setValues({...values});
+                auth.update(data);
+                setValues({...values, name: data.name, email: data.email, about: data.about});
+                setUserData({...user, name: data.name, email: data.email, about: data.about});
             }
         })
     }

@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
       textAlign: 'center',
       marginTop: theme.spacing(5),
       paddingBottom: theme.spacing(2),
-      borderRadius: 20
+      borderRadius: 20,
     },
     cardAction:{
       '& .MuiButton-root': {
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
       marginTop: theme.spacing(2),
-      color: theme.palette.openTitle,
+      color: ({mode}) => mode === 'light' ? theme.palette.openTitle : theme.palette.text.primary,
       fontSize: '1.5rem',
       display: 'flex',
       justifyContent: 'flex-start',
@@ -45,7 +45,8 @@ const useStyles = makeStyles(theme => ({
       alignItems: 'center'
     },
     backArrow: {
-      cursor: 'pointer'
+      cursor: 'pointer',
+      color: ({mode}) => mode === 'light' ? theme.palette.openTitle : theme.palette.text.primary
     },
     textField: {
       marginLeft: theme.spacing(1),
@@ -60,7 +61,8 @@ const useStyles = makeStyles(theme => ({
   }));
 
 export default function Signup(props) {
-    const classes = useStyles();
+    const mode = props.mode;
+    const classes = useStyles({mode});
     const [variant, setVariant] = useState("contained");
     const [values, setValues] = useState({
         name: '',
@@ -78,6 +80,7 @@ export default function Signup(props) {
 
     const handleClose = () => {
         setValues({...values, open: false});
+        props.handleHide();
     }
 
     const handleVariantIn = () => {
@@ -96,12 +99,12 @@ export default function Signup(props) {
         }
 
         create(user).then((data) => {
+            console.log(data);
             if(data.error){
                 setValues({...values, error: data.error});
             }
             else{
                 setValues({...values, error: '', name: '', password: '', email: '', open: true});
-                props.handleHide;
             }
         });
     }
@@ -147,14 +150,6 @@ export default function Signup(props) {
                         New account successfully created
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
-                    <Link to="/signin">
-                      <Button color="primary" autoFocus="autoFocus"
-                              variant="contained">
-                          Sign In
-                      </Button>
-                    </Link>
-                </DialogActions>
             </Dialog>
         </Fragment> 
       )

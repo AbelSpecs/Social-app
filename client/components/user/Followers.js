@@ -56,11 +56,11 @@ export default function Followers({user}) {
   const { values, loading } = useFollowers(user);
 
   return (  
-    values.users.length > 0 &&
+    values.users.length > 1 &&
     <Fragment>
       <Paper className={classes.paper}>
         <Typography className={classes.title}>
-          Who are Following you
+          Who is Following you
         </Typography>
         {
           loading && <CircularProgress className={classes.circularProgress}/>
@@ -69,6 +69,9 @@ export default function Followers({user}) {
           !loading && 
           <List>
           {values.users.map((item, i) => {
+            if(user.id === item._id){
+              return;
+            }
             const avatar = getMedia(item?.photo);
             return (
               <span key={i}>

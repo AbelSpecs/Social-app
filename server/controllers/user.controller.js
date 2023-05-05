@@ -3,13 +3,14 @@ import extend from 'lodash/extend';
 import errorHandler from '../helpers/dbErrorHandler';
 import formidable from 'formidable';
 import fs from 'fs';
-import profileImage from '../../client/assets/images/profile-pic.png';
 import backgroundImage from '../../client/assets/images/cherryblossom.png';
 
 const create = async (req, res, next) => {
     const user = new User(req.body);
     try {
-        await user.save();
+        const userCreated = await user.save();
+        await User.findByIdAndUpdate(userCreated._id,
+            {$push: {following: userCreated._id}});
         return res.status(200).json({
             message: 'Successfully signed up!'
         });
@@ -248,6 +249,7 @@ const listFollowers = async (req, res) => {
     let userId = req.profile._id;
     try {
         const users = await User.find({following: {$in: userId}})
+                                .select('name photo')
                                 .limit(5);
         res.json(users);
     } catch (error) {

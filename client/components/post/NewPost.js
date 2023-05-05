@@ -28,7 +28,8 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'flex-end   '
     },
     avatar: {
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(1),
+        color: theme.palette.text.primary
     },
     title: {
         '& .MuiOutlinedInput-root': {
@@ -51,7 +52,7 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function NewPost({user, setPosts, posts}){
+export default function NewPost({user, setPostsHome, postsHome}){
     const classes = useStyles();
     const photoUrl = getMedia(user.photo);
     const [values, setValues] = useState({
@@ -78,8 +79,8 @@ export default function NewPost({user, setPosts, posts}){
                 const img = document.querySelector('#image-preview');
                 img.src = '';
                 img.style.display = 'none';
-                const updatedPosts = [data, ...posts];
-                setPosts(updatedPosts);
+                const updatedPosts = [data, ...postsHome];
+                setPostsHome(updatedPosts);
             }
         });
     }

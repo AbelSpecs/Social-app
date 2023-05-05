@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Avatar, ImageListItem } from '@material-ui/core';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import ImageList from '@material-ui/core/ImageList'
 import getMedia from '../../auth/media-helper';
@@ -37,12 +37,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function FollowGrid({people}){
+  const userId = useParams();
   const classes = useStyles();
   
   return (
     <div className={classes.root}>
       <ImageList className={classes.gridList} cols={4}>
         {people.map((person, i) => {
+          if(userId.userId === person._id){
+            return;
+          }
           const photoUrl = getMedia(person.photo);
 
           return <ImageListItem style={{'height': 120}} key={i}>

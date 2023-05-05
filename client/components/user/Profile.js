@@ -53,6 +53,9 @@ const useStyles = makeStyles(theme => ({
         right: '1%',
         top: '240px'
     },
+    avatar: {
+        color: theme.palette.text.primary
+    },
     avatarButton: {    
         left: '10%',
         transform: 'translate(-70%, -30%)',
@@ -117,9 +120,6 @@ const useStyles = makeStyles(theme => ({
             borderRadius: '20px'
         }
     },
-    // editIcon: {
-    //     color: theme.palette.primary.main
-    // },
     edit: {
         width: '100%'
     },
@@ -143,8 +143,9 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function Profile({user, userProfileData, postsProfile, setPostsProfile, loadingPostsProfile, transition,
-                                userPeople, setUserPeople, userPeopleLoading, redirectToSigin, following,
+export default function Profile({user, setUserData, userProfileData, postsProfile, setPostsProfile, 
+                                loadingPostsProfile, transition, userPeople, setUserPeople, 
+                                userPeopleLoading, redirectToSigin, following,
                                 setFollowing, findPeople, setFindPeople}) {
 
     const navigate = useNavigate();
@@ -268,7 +269,7 @@ export default function Profile({user, userProfileData, postsProfile, setPostsPr
                             </Fragment>
                         }
                         <Icon aria-label="Edit" className={classes.avatarButton} >
-                            <Avatar src={photoUrl} />
+                            <Avatar src={photoUrl} className={classes.avatar}/>
                             {
                                 user && user.id == userPeople._id &&
                                 <Fragment>
@@ -312,7 +313,7 @@ export default function Profile({user, userProfileData, postsProfile, setPostsPr
                     {
                         <Slide direction="down" in={edit} mountOnEnter unmountOnExit>
                             <div className={classes.edit}>
-                                <EditProfile />
+                                <EditProfile user={user} setUserData={setUserData}/>
                             </div>
                         </Slide>
                     }
