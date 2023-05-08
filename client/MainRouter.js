@@ -1,23 +1,26 @@
 import React from "react";
 import { Route, Routes } from 'react-router-dom';
-import Home from './core/Home';
-import Profile from "./user/Profile";
-import Signin from "./user/Signin";
-import Signup from "./user/Signup";
-import Users from './user/Users';
-import EditProfile from "./user/EditProfile";
-import Menu from "./core/Menu";
+import Signin from "./components/user/Signin";
+import Signup from "./components/user/Signup";
+import AuthDeck from "./components/design/authDeck";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import PrivateRoute from "./auth/PrivateRoute";
+import SignDock from "./components/user/SignDock";
+// import ProfileDock from "./user/ProfileDock";
+
+const Home = React.lazy(() => import('./components/core/Home'));
+const ProfileDock = React.lazy(() => import('./components/user/ProfileDock'));
+const Users = React.lazy(() => import('./components/user/Users'));
 
 const MainRouter = () => {
-    return (<div>
-            <Menu/>
+    return (<div style={{minHeight: 'inherit'}}>
             <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/users" element={<Users/>}/>
-                <Route path="/signup" element={<Signup/>}/>
-                <Route path="/signin" element={<Signin/>}/>
-                <Route path="/user/:userId" element={<Profile/>}/>
-                <Route path="/user/:userId/edit" element={<EditProfile/>}/>
+                <Route path="/signin" element={<SignDock/>}/>
+                {/*<Route path="/signup" element={<Signup/>}/>*/}
+                <Route path="/" element={<React.Suspense fallback={<CircularProgress />}><PrivateRoute><Home/></PrivateRoute></React.Suspense>}/>
+                <Route path="/users" element={<React.Suspense fallback={<CircularProgress />}><PrivateRoute><Users/></PrivateRoute></React.Suspense>}/>
+                <Route path="/user/:userId" element={<React.Suspense fallback={<CircularProgress />}><PrivateRoute><ProfileDock/></PrivateRoute></React.Suspense>}/>
+                {/*<Route path="/auth" element={<AuthDeck/>}/>*/}
                 
             </Routes>
         </div>)
