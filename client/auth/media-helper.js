@@ -1,4 +1,4 @@
-import img from "../assets/images/cherryblossom.png";
+import img from "../assets/images/react.png";
 
 const getMedia = (media, type = true) => {
     if(media) {
