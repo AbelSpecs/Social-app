@@ -23,7 +23,6 @@ export default function usePostHome(user, following) {
           credentials: {divineMole: user.token},
           signal
         }).then(data => {
-          console.log(data);
           setPostHomeLoading(false);
           if(data && data.error){
             console.log(data.error);

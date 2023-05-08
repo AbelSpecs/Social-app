@@ -1,9 +1,11 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { create } from '../../services/api-post';
-import auth from '../../auth/auth-helper';
+import { textCohere } from '../../services/api-cohere';
 import { makeStyles } from "@material-ui/core/styles";
 import PhotoIcon from '@material-ui/icons/Photo';
+import AdjustIcon from '@material-ui/icons/Adjust';
+import getMedia from '../../auth/media-helper';
 import { 
     Card, 
     CardHeader, 
@@ -13,7 +15,6 @@ import {
     Button,
     IconButton
 } from '@material-ui/core';
-import getMedia from '../../auth/media-helper';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -42,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     iconButton: {
         paddingBottom: '7px'
     },
+    iconAiButton: {
+        marginBottom: 2
+    },
     img: {
         display: 'none',
         width: 400,
@@ -52,13 +56,16 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
-export default function NewPost({user, setPostsHome, postsHome}){
+export default function NewPost({user, addPost}){
     const classes = useStyles();
     const photoUrl = getMedia(user.photo);
+    const [ai, setAi] = useState(false);
     const [values, setValues] = useState({
         text: '',
+        aiText: '',
         photo: '',
-        error: ''
+        error: '',
+        placeholderText: 'Share what you want...'
     });
   
     const clickPost = () => {
@@ -79,8 +86,23 @@ export default function NewPost({user, setPostsHome, postsHome}){
                 const img = document.querySelector('#image-preview');
                 img.src = '';
                 img.style.display = 'none';
-                const updatedPosts = [data, ...postsHome];
-                setPostsHome(updatedPosts);
+                addPost(data);
+            }
+        });
+    }
+
+    const clickAi = () => {
+        textCohere({
+            credentials: { divineMole: user.token},
+            text: { text: values.aiText }
+        }).then(data => {
+            if(data && data.error){
+                // setValues({...values, error: data.error});
+                console.log(data.error);
+            }
+            else{
+                setValues({...values, aiText: ''});
+                addPost(data);
             }
         });
     }
@@ -111,6 +133,13 @@ export default function NewPost({user, setPostsHome, postsHome}){
         img.style.display = 'none';
     }
 
+    const handleAi = () => {
+        !ai 
+        ? setValues({...values, placeholderText: 'Tell me what you need...'}) 
+        : setValues({...values, placeholderText: 'Share what you want...'});
+        setAi(prev => !prev);
+    }
+
     return (
         <Card className={classes.card}>
             <CardHeader className={classes.cardHeader}
@@ -118,6 +147,8 @@ export default function NewPost({user, setPostsHome, postsHome}){
               <Avatar src={photoUrl} aria-label="recipe" className={classes.avatar} />
             }
             title={
+                !ai 
+                ?
                 <TextField className={classes.title}
                     multiline
                     id="outlined-full-width"
@@ -129,23 +160,51 @@ export default function NewPost({user, setPostsHome, postsHome}){
                     margin="normal"
                     variant="outlined"
                 />
+                :
+                <TextField className={classes.title}
+                    multiline
+                    id="outlined-full-width"
+                    value={values.aiText}
+                    onChange={handleChange('aiText')}
+                    style={{ margin: 8 }}
+                    placeholder="Tell me what you need..."
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                />
             }
             />
             <img id='image-preview' className={classes.img}/>
             <CardActions className={classes.button}>
-                <Button onClick={handleCancel}>
-                    Cancel
-                </Button>
-                <IconButton className={classes.iconButton}>
-                    <input accept="image/*" type="file" onChange={handleChange('photo')}
-                        style={{display: 'none'}} id="icon-button-file" />
-                    <label htmlFor="icon-button-file" className={classes.avatarLabel}>
-                        <PhotoIcon/>
-                    </label>
+                {
+                    !ai &&   
+                    <Fragment>
+                        <Button onClick={handleCancel}>
+                            Cancel
+                        </Button>
+                        <IconButton className={classes.iconButton}>
+                            <input accept="image/*" type="file" onChange={handleChange('photo')}
+                                style={{display: 'none'}} id="icon-button-file" />
+                            <label htmlFor="icon-button-file" className={classes.avatarLabel}>
+                                <PhotoIcon/>
+                            </label>
+                        </IconButton>
+                    </Fragment>
+                }
+                <IconButton className={classes.iconAiButton} onClick={handleAi}>
+                    <AdjustIcon/>
                 </IconButton>
-                <Button onClick={clickPost}>
-                    Post
-                </Button>
+                {
+                    ai 
+                    ?
+                    <Button onClick={clickAi}>
+                        Ask
+                    </Button>
+                    :
+                    <Button onClick={clickPost}>
+                        Post
+                    </Button>
+                }
             </CardActions>
         </Card>
         

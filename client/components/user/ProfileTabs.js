@@ -7,7 +7,6 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import FollowGrid from "./FollowGrid";
 import PostList from "../post/PostList";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Slide from '@material-ui/core/Slide';
 import { 
   Box,
   BottomNavigation,
@@ -66,18 +65,16 @@ export default function ProfileTabs({user, userPeople, postsProfile, profile, re
     {
       navigation === 0 && loadingPostsProfile && <CircularProgress/>
     }  
-    { navigation === 0 && !loadingPostsProfile &&
-      <Slide direction="down" in={transition} mountOnEnter unmountOnExit>
-        <div style={{width: '100%'}}>
-          <PostList user={user} 
-                    removePost={removePost} 
-                    posts={postsProfile} 
-                    profile={profile} 
-                    updatePostLikes={updatePostLikes} 
-                    updatePostComments={updatePostComments}
-          />
-        </div>
-      </Slide>
+    { 
+      navigation === 0 && !loadingPostsProfile &&
+      <PostList user={user} 
+                removePost={removePost} 
+                posts={postsProfile} 
+                profile={profile} 
+                updatePostLikes={updatePostLikes} 
+                updatePostComments={updatePostComments}
+      />
+        
     }
     {navigation === 1 && <FollowGrid people={userPeople.following}/>}
     {navigation === 2 && <FollowGrid people={userPeople.followers}/>}

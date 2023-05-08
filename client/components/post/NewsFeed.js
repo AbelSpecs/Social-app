@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Divider, Paper } from '@material-ui/core';
 import NewPost from './NewPost';
 import PostList from './PostList';
 import { makeStyles } from "@material-ui/core/styles";
-import usePostHome from '../../hooks/usePostHome';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Slide from '@material-ui/core/Slide';
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -19,8 +17,13 @@ const useStyles = makeStyles(() => ({
 
 }));
 
-export default function NewsFeed({user, postsHome, setPostsHome, postHomeLoading, transition}) {
+export default function NewsFeed({user, postsHome, setPostsHome, postHomeLoading}) {
   const classes = useStyles();
+
+  const addPost = (data) => {
+    const updatedPosts = [data, ...postsHome];
+    setPostsHome(updatedPosts);
+  }
   
   const updatePostLikes = (id, likes) => {
     const index = postsHome.findIndex(p => p._id === id);
@@ -47,25 +50,20 @@ export default function NewsFeed({user, postsHome, setPostsHome, postHomeLoading
 
   return (
     <Paper className={classes.paper}>
-      <NewPost user={user} setPostsHome={setPostsHome} postsHome={postsHome}/>
+      <NewPost user={user} addPost={addPost}/>
       <Divider style={{width: '100%'}}/>
       {
         postHomeLoading && <CircularProgress style={{margin: '10px 0'}}/>
       }
       {
         !postHomeLoading && 
-        <Slide direction="down" in={transition} mountOnEnter unmountOnExit>
-            <div style={{width: '100%'}}>
-              <PostList removePost={removePost} 
-                        updatePostLikes={updatePostLikes} 
-                        updatePostComments={updatePostComments} 
-                        posts={postsHome} 
-                        user={user}
-                        profile={false}
-              />
-            </div>
-        </Slide>
-        
+          <PostList removePost={removePost} 
+                    updatePostLikes={updatePostLikes} 
+                    updatePostComments={updatePostComments} 
+                    posts={postsHome} 
+                    user={user}
+                    profile={false}
+          />
       }
     </Paper>
 

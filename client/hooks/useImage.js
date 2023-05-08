@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { update } from "../services/api-user";
 import auth from '../auth/auth-helper';
 
-export default function useImage(user){
+export default function useImage(user, setUserData, updateProfilePhotoPosts){
     const [values, setValues] = useState({
         photo: '',
         background: ''
@@ -23,7 +23,10 @@ export default function useImage(user){
             if(data && data.error)
                 console.log(data.error);
             else{
+                auth.update(data);
                 setValues({...values});
+                setUserData({...user, photo: auth.getData().photo, background: auth.getData().background});
+                values.photo && updateProfilePhotoPosts(data.photo);
             }
         });
 

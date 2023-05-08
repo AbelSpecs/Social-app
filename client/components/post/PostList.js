@@ -1,22 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Post from './Post';
+import { TransitionGroup } from 'react-transition-group';
+import Collapse from '@material-ui/core/Collapse';
+
 
 
 export default function PostList({removePost, updatePostLikes, updatePostComments, posts, user, profile}) {
   return (
     <div style={{marginTop: '24px', width: '100%'}}>
-      {posts?.map((item, i) => {
-        return <Post post={item} 
-                      key={i} 
-                      removePost={removePost} 
-                      updatePostLikes={updatePostLikes}
-                      updatePostComments={updatePostComments}
-                      profile={profile} 
-                      user={user}
-                      >
-                </Post>
-      })}
+      <TransitionGroup >
+        {posts?.map((item, i) => {
+          return ( 
+            <Collapse key={i}>
+              <Post post={item} 
+                    removePost={removePost} 
+                    updatePostLikes={updatePostLikes}
+                    updatePostComments={updatePostComments}
+                    profile={profile} 
+                    user={user}
+              >
+              </Post>
+            </Collapse>
+          )
+        })}
+      </TransitionGroup>   
     </div>
   )
 } 

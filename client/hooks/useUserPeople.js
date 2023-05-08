@@ -34,7 +34,6 @@ export default function useUserPeople(userData){
             }
             else
             {
-                console.log(data);
                 checkData(data);
             }
         });

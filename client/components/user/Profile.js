@@ -146,12 +146,12 @@ const useStyles = makeStyles(theme => ({
 export default function Profile({user, setUserData, userProfileData, postsProfile, setPostsProfile, 
                                 loadingPostsProfile, transition, userPeople, setUserPeople, 
                                 userPeopleLoading, redirectToSigin, following,
-                                setFollowing, findPeople, setFindPeople}) {
+                                setFollowing, findPeople, setFindPeople, updateProfilePhotoPosts}) {
 
     const navigate = useNavigate();
     const classes = useStyles();
     const [edit, setEdit] = useState(false);
-    const { values, setValues } = useImage(user);
+    const { values, setValues } = useImage(user, setUserData, updateProfilePhotoPosts);
     const photoUrl = getMedia(userProfileData.photo);
     const hasBackground = userProfileData.background ? true : false;
     const backgroundUrl = getMedia(userProfileData.background, hasBackground); 

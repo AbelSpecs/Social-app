@@ -4,7 +4,7 @@ import palettes from "../../theme";
 import { createTheme } from '@material-ui/core/styles';
 import MainRouter from '../../MainRouter';
 
-export const ModeContext = createContext();
+export const ModeContext = createContext({toogle: () => {}, mode: 'light'});
 
 export default function Mode() {
   const [mode, setMode] = useState('light');

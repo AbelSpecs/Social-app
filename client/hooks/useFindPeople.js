@@ -25,7 +25,6 @@ export default function useFindPeople(user) {
             console.log(data.error);
           }
           else{
-            console.log(data);
             setFindPeople({users: data});
           }
         });

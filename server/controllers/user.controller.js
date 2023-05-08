@@ -24,7 +24,6 @@ const create = async (req, res, next) => {
 const list = async (req, res) => {
     try {
         const users = await User.find().select('name email created updated');
-        console.log(users);
         res.json(users);
     } catch (error) {
         return res.status(400).json({

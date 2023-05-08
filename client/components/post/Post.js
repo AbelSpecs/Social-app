@@ -47,11 +47,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Post({user, profile, updatePostComments, updatePostLikes, removePost, post}) {
+export default function Post({user, profile, updatePostComments, updatePostLikes, removePost, post }) {
   const classes = useStyles();
-  const userPostId = post.postedBy._id;
+  const userPostId = post.postedBy?._id;
+  const userPostName = post.postedBy ? post.postedBy.name : 'Cohere';
   const existLike = post.likes.indexOf(user.id) !== -1;
-  const photoUrl = getMedia(post.postedBy.photo);
+  const photoUrl = getMedia(post.postedBy?.photo);
   const photoPostUrl = getMedia(post.photo);
   const [openComments, setOpenComments] = useState(false);
 
@@ -98,7 +99,7 @@ export default function Post({user, profile, updatePostComments, updatePostLikes
             (<IconButton onClick={deletePost}>
                 <DeleteIcon />               
               </IconButton>)}
-          title={ <Link className={classes.cardName} to={"/user/" + userPostId}>{post.postedBy.name}</Link>}
+          title={ <Link className={classes.cardName} to={"/user/" + userPostId}>{userPostName}</Link>}
           subheader={(new Date(post.created)).toDateString()}
           className={classes.cardHeader}
         />

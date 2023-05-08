@@ -74,6 +74,15 @@ export default function ProfileDock() {
   const { userPeople, setUserPeople, userPeopleLoading, redirectToSigin, following, setFollowing } = useUserPeople(userData);
   const { findPeople, setFindPeople, findPeopleLoading } = useFindPeople(userData);
 
+  const updateProfilePhotoPosts = (photoData) => {
+    let newPostsProfile = [...postsProfile];
+    newPostsProfile = newPostsProfile.map((p,i) => {
+        const userReference = p.postedBy;
+        userReference.photo = photoData;
+        return {...newPostsProfile[i], postedBy: userReference};
+    });
+  }
+
   return (
     <Fragment>
       <Grid container justifyContent="flex-end" spacing={5} className={classes.grid} >
@@ -95,7 +104,7 @@ export default function ProfileDock() {
                       setUserPeople={setUserPeople} userPeopleLoading={userPeopleLoading}
                       redirectToSigin={redirectToSigin} following={following}
                       setFollowing={setFollowing} findPeople={findPeople}
-                      setFindPeople={setFindPeople}
+                      setFindPeople={setFindPeople} updateProfilePhotoPosts={updateProfilePhotoPosts}
             />
           </Grid>
           

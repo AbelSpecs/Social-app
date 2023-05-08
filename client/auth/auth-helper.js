@@ -12,7 +12,12 @@ const auth = {
     update(jwt) {
         if(typeof window !== "undefined") {
             const userData = JSON.parse(sessionStorage.getItem('jwt'));
-            userData.user = {...userData.user, name: jwt.name, email: jwt.email, about: jwt.about};
+            const keys = Object.keys(userData.user);
+            keys.forEach((k) => { 
+                if(!jwt[k])
+                    return;
+                userData.user = {...userData.user, [k]: jwt[k]};
+            });
             sessionStorage.setItem("jwt", JSON.stringify(userData));
         }
     },

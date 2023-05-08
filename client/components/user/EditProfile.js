@@ -51,7 +51,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function EditProfile({user, setUserData}) {
     const classes = useStyles();
-    // const user = auth.getData();
     const { values, setValues } = useEdit();
 
     const handleChange = name => event => {

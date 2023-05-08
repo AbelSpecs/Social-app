@@ -70,7 +70,7 @@ export default function Home () {
                 <Grid item xs={12} sm={12} md={5} className={classes.gridChild}>
                     <NewsFeed user={userData} postsHome={postsHome} 
                               setPostsHome={setPostsHome} postHomeLoading={postHomeLoading} 
-                              transition={transition}/>
+                              transition={transition} />
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={3} className={classes.gridChildRight}>
