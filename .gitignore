@@ -104,7 +104,7 @@ dist
 .tern-port
 
 # Assets
-assets/
+#assets/
 
 # Desings
 design/

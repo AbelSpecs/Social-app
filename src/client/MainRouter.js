@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, Routes } from 'react-router-dom';
-import Signin from "./components/user/Signin";
-import Signup from "./components/user/Signup";
-import AuthDeck from "./components/design/authDeck";
+// import Signin from "./components/user/Signin";
+// import Signup from "./components/user/Signup";
+// import AuthDeck from "./components/design/authDeck";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PrivateRoute from "./auth/PrivateRoute";
 import SignDock from "./components/user/SignDock";
