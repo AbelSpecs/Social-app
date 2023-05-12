@@ -30,10 +30,11 @@ const config = {
         new HtmlWebpackPlugin({
             template: './src/public/index.html',
             filename: './index.html',
-        }),
+        })
+        /* ,
         new webpack.DefinePlugin({
             BASE_URL: JSON.stringify(process.env.BASE_URL),
-        })
+        }) */
     ],
 };
 

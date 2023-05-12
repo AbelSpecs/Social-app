@@ -2,7 +2,7 @@ const BASE_URL = 'https://feedlikeserver.onrender.com';
 // const BASE_URL = 'http://localhost:3000';
 const postList = async ({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/feed/' + params.userId, {
+        let response = await fetch('/api/posts/feed/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -19,7 +19,7 @@ const postList = async ({params, credentials, signal}) => {
 
 const loadPostsByUser = async ({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/postsby/' + params.userId, {
+        let response = await fetch('/api/posts/postsby/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -36,7 +36,7 @@ const loadPostsByUser = async ({params, credentials, signal}) => {
 
 const create = async ({params, credentials, post}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/new/' + params.userId, {
+        let response = await fetch('/api/posts/new/' + params.userId, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -52,7 +52,7 @@ const create = async ({params, credentials, post}) => {
 
 const remove = async({params, credentials}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/delete/' + params.postId, {
+        let response = await fetch('/api/posts/delete/' + params.postId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -68,7 +68,7 @@ const remove = async({params, credentials}) => {
 
 const like = async({params, credentials, postId}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/like', {
+        let response = await fetch('/api/posts/like', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -85,7 +85,7 @@ const like = async({params, credentials, postId}) => {
 
 const dislike = async({params, credentials, postId}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/dislike', {
+        let response = await fetch('/api/posts/dislike', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -102,7 +102,7 @@ const dislike = async({params, credentials, postId}) => {
 
 const addcomments = async({params, credentials, comment}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/comments', {
+        let response = await fetch('/api/posts/comments', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -119,7 +119,7 @@ const addcomments = async({params, credentials, comment}) => {
 
 const deleteComments = async({params, credentials, comment}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/deletecomment', {
+        let response = await fetch('/api/posts/deletecomment', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -152,7 +152,7 @@ const deleteComments = async({params, credentials, comment}) => {
 
 const trendList = async ({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/posts/listtrends', {
+        let response = await fetch('/api/posts/listtrends', {
             method: 'GET',
             signal: signal,
             headers: {

@@ -3,7 +3,7 @@ const BASE_URL = 'https://feedlikeserver.onrender.com';
 const signin = async (user) => {
     console.log(BASE_URL);
     try {
-        let response = await fetch(BASE_URL+'/auth/signin', {
+        let response = await fetch('/auth/signin', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -21,7 +21,7 @@ const signin = async (user) => {
 
 const signout = async () => {
     try {
-        let response = await fetch(BASE_URL+'/auth/signout', {
+        let response = await fetch('/auth/signout', {
             method: 'GET'
         });
         return await response.json();

@@ -2,7 +2,7 @@ const BASE_URL = 'https://feedlikeserver.onrender.com';
 // const BASE_URL = 'http://localhost:3000';
 const create = async (user) => {
     try{
-        let response = await fetch(BASE_URL+'/api/users/', {
+        let response = await fetch('/api/users/', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -18,7 +18,7 @@ const create = async (user) => {
 
 const list = async (signal) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/', {
+        let response = await fetch('/api/users/', {
             method: 'GET',
             signal: signal
         });
@@ -30,7 +30,7 @@ const list = async (signal) => {
 
 const read = async ({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/' + params.userId, {
+        let response = await fetch('/api/users/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -47,7 +47,7 @@ const read = async ({params, credentials, signal}) => {
 
 const readComplete = async ({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/complete/' + params.userId, {
+        let response = await fetch('/api/users/complete/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -64,7 +64,7 @@ const readComplete = async ({params, credentials, signal}) => {
 
 const update = async ({params, credentials, user}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/' + params.userId, {
+        let response = await fetch('/api/users/' + params.userId, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -80,7 +80,7 @@ const update = async ({params, credentials, user}) => {
 
 const remove = async ({params, credentials}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/' + params.userId, {
+        let response = await fetch('/api/users/' + params.userId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -96,7 +96,7 @@ const remove = async ({params, credentials}) => {
 
 const follow = async ({params, credentials, followId}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/follow', {
+        let response = await fetch('/api/users/follow', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -114,7 +114,7 @@ const follow = async ({params, credentials, followId}) => {
 const unfollow = async ({params, credentials, followId}) => {
     console.log(followId);
     try {
-        let response = await fetch(BASE_URL+'/api/users/unfollow', {
+        let response = await fetch('/api/users/unfollow', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -131,7 +131,7 @@ const unfollow = async ({params, credentials, followId}) => {
 
 const findpeople = async ({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/findpeople/' + params.userId, {
+        let response = await fetch('/api/users/findpeople/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -149,7 +149,7 @@ const findpeople = async ({params, credentials, signal}) => {
 
 const findpeoplebyname = async({params, credentials, signal}) => {
     try {
-        const response = await fetch(BASE_URL+'/api/users/usersbyname/' + params.name, {
+        const response = await fetch('/api/users/usersbyname/' + params.name, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -167,7 +167,7 @@ const findpeoplebyname = async({params, credentials, signal}) => {
 
 const listfollowers = async({params, credentials, signal}) => {
     try {
-        let response = await fetch(BASE_URL+'/api/users/findfollowers/' + params.userId, {
+        let response = await fetch('/api/users/findfollowers/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {

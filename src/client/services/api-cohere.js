@@ -3,7 +3,7 @@ const BASE_URL = 'https://feedlikeserver.onrender.com';
 const textCohere = async ({params, credentials, text}) => {
     console.log(text);
     try {
-        let response = await fetch(BASE_URL+'/api/ai/cohere', {
+        let response = await fetch('/api/ai/cohere', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
