@@ -1,4 +1,4 @@
-const BASE_URL = 'https://feedlikeserver.netlify.app';
+const BASE_URL = 'https://feedlikeserver.onrender.com';
 // const BASE_URL = 'http://localhost:3000';
 const postList = async ({params, credentials, signal}) => {
     try {
