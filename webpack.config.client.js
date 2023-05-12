@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CURRENT_WORKING_DIR = process.cwd();
+require('dotenv').config();
 
 const config = {
     name: "browser",
@@ -8,7 +10,7 @@ const config = {
     devtool: "source-map",
     entry: [
         'webpack-hot-middleware/client?reload=true',
-        path.join(CURRENT_WORKING_DIR, 'client/main.js')
+        path.join(CURRENT_WORKING_DIR, './src/client/index.js')
     ],
     output: {
         path: path.join(CURRENT_WORKING_DIR, '/dist/'),
@@ -30,7 +32,14 @@ const config = {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin(),
+        new HtmlWebpackPlugin({
+            template: './src/public/index.html',
+            filename: './index.html',
+        }),
+        new webpack.DefinePlugin({
+            BASE_URL: JSON.stringify(process.env.BASE_URL),
+        })
     ],
     resolve: {
         alias: {

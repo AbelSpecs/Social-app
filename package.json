@@ -1,9 +1,11 @@
 {
-  "name": "social-app",
+  "name": "social",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-client": "webpack --config webpack.config.client.production.js",
+    "build-server": "webpack --config webpack.config.server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "development": "nodemon",
     "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
@@ -54,6 +56,7 @@
     "webpack-node-externals": "3.0.0"
   },
   "devDependencies": {
+    "html-webpack-plugin": "^5.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
