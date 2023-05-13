@@ -3,7 +3,7 @@ import extend from 'lodash/extend';
 import errorHandler from '../helpers/dbErrorHandler';
 import formidable from 'formidable';
 import fs from 'fs';
-import backgroundImage from '../../client/assets/images/react.png';
+// import backgroundImage from '../../client/assets/images/react.png';
 
 const create = async (req, res, next) => {
     const user = new User(req.body);

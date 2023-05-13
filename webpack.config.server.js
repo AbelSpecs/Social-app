@@ -10,7 +10,7 @@ const config = {
     output: {
         path: path.join(CURRENT_WORKING_DIR, '/dist/'),
         filename: "server.generated.js",
-        publicPath: '/',
+        publicPath: '/dist/',
         libraryTarget: "commonjs2"
     },
     externals: [nodeExternals()],
