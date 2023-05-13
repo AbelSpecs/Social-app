@@ -11,7 +11,7 @@ export default ({markup, css}) => {
         <body style="min-height: inherit; margin: 0; padding: 0">
             <div id="root" style="min-height: inherit">${markup}</div>
             <style id="jss-server-side">${css}</style>
-            <script type="text/javascript" src="/dist/bundle.js"></script>
+            <script type="text/javascript" src="/bundle.js"></script>
         </body>    
     </html>`
 }
