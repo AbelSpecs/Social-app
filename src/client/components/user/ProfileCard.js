@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     height: 60,
     color: theme.palette.text.primary
   },
+  background: {
+    background: 'gray'
+  },
   cardContent: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -120,6 +123,7 @@ export default function ProfileCard({user, followers, following}) {
             height="140"
             src={backgroundUrl}
             title="Background"
+            className={classes.background}
           />
           <Avatar src={photoUrl} className={classes.avatarCard}/>
           <CardContent className={classes.cardContent}>

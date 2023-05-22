@@ -82,6 +82,9 @@ const useStyles = makeStyles(theme => ({
             opacity: 1
         }
     },
+    background: {
+        background: 'gray'
+    },
     backgroundLabel: {
         position: 'absolute',
         top: '20px',
@@ -257,6 +260,7 @@ export default function Profile({user, setUserData, userProfileData, postsProfil
                         height="200"
                         src={backgroundUrl}
                         title="Background"
+                        className={classes.background}
                         />
                         {
                             user && user.id == userPeople._id &&
