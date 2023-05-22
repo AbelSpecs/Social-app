@@ -156,8 +156,7 @@ export default function Profile({user, setUserData, userProfileData, postsProfil
     const [edit, setEdit] = useState(false);
     const { values, setValues } = useImage(user, setUserData, updateProfilePhotoPosts);
     const photoUrl = getMedia(userProfileData.photo);
-    const hasBackground = userProfileData.background ? true : false;
-    const backgroundUrl = getMedia(userProfileData.background, hasBackground); 
+    const backgroundUrl = getMedia(userProfileData.background); 
     
     const clickFollowButton = (api) => {
         api({
@@ -254,14 +253,19 @@ export default function Profile({user, setUserData, userProfileData, postsProfil
                 <Fragment>
                     <CardHeader className={classes.settingsButton}/>
                     <CardActionArea className={classes.cardActionArea}>
-                        <CardMedia
-                        component="img"
-                        alt="Background"
-                        height="200"
-                        src={backgroundUrl}
-                        title="Background"
-                        className={classes.background}
-                        />
+                        {
+                            backgroundUrl 
+                            ? <CardMedia
+                                component="img"
+                                height="200"
+                                src={backgroundUrl}
+                              />
+                            : <CardMedia
+                                component="img"
+                                height="200"
+                                className={classes.background}
+                               />
+                        }
                         {
                             user && user.id == userPeople._id &&
                             <Fragment>

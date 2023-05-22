@@ -117,14 +117,20 @@ export default function ProfileCard({user, followers, following}) {
           </Fragment>
           }/>
         <CardActionArea>
-          <CardMedia
-            component="img"
-            alt="Background"
-            height="140"
-            src={backgroundUrl}
-            title="Background"
-            className={classes.background}
-          />
+          {
+            backgroundUrl
+            ? <CardMedia
+                component="img"
+                height="140"
+                src={backgroundUrl}
+              />
+            : <CardMedia
+                component="img"
+                height="140"
+                className={classes.background}
+              />
+          }
+          
           <Avatar src={photoUrl} className={classes.avatarCard}/>
           <CardContent className={classes.cardContent}>
             <Typography gutterBottom variant="h6" component="h6" className={classes.text}>
